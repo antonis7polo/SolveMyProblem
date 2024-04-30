@@ -1,6 +1,7 @@
+// rabbitMQ.js
 const amqp = require('amqplib');
 require('dotenv').config();
-const { createOrUpdateSubmission } = require('../controllers/rabbitMQController');
+const { handleMessage } = require('../controllers/messageHandler');
 
 let connection = null;
 let channel = null;
@@ -16,52 +17,32 @@ async function setupRabbitMQ() {
         setTimeout(setupRabbitMQ, 5000);  // Retry connection after 5 seconds
     }
 }
+async function consumeMessages(queueName) {
+    console.log(`Listening for messages on queue ${queueName}`);
+    channel.consume(queueName, (msg) => {
+        if (msg) {
+            handleMessage(msg, channel);
+            channel.ack(msg);
+        }
+    }, { noAck: false });
+}
 
 async function configureRabbitMQ() {
     const EXCHANGE_NAME = process.env.EXCHANGE_NAME;
     const QUEUE_NAME = process.env.QUEUE;
     const ROUTING_KEY = process.env.ROUTING_KEY;
-    try {
-        await channel.assertExchange(EXCHANGE_NAME, 'direct', {durable: true});
-        await channel.assertQueue(QUEUE_NAME, {durable: true});
-        await channel.bindQueue(QUEUE_NAME, EXCHANGE_NAME, ROUTING_KEY);
+    await channel.assertExchange(EXCHANGE_NAME, 'direct', {durable: true});
+    await channel.assertQueue(QUEUE_NAME, {durable: true});
+    await channel.bindQueue(QUEUE_NAME, EXCHANGE_NAME, ROUTING_KEY);
+    channel.prefetch(1);
+    await consumeMessages(QUEUE_NAME);
+}
 
-        await consumeMessages(QUEUE_NAME);
-    } catch (error) {
-        console.error('Failed to configure RabbitMQ:', error);
-        throw error;
-
+process.on('exit', () => {
+    if (channel) {
+        channel.close();
     }
-}
-
-async function consumeMessages(queueName) {
-    console.log(`Listening for messages on queue ${queueName}`);
-    try {
-        channel.consume(queueName, (msg) => {
-            if (msg !== null) {
-                handleMessage(msg);
-            }
-            channel.ack(msg);
-        }, {noAck: false});
-    } catch (error) {
-        console.error('Failed to consume messages from queue:', error);
-        throw error;
-    }
-}
-
-function handleMessage(msg) {
-    const messageContent = msg.content.toString();
-    const messageData = JSON.parse(messageContent);
-    console.log('Received message:', messageData);
-
-    createOrUpdateSubmission(messageData)
-        .then(result => console.log('Submission processed successfully:', result))
-        .catch(error => console.error('Failed to process submission:', error));
-}
-
-process.on('exit', (code) => {
-    channel.close();
-    console.log(`Closing rabbitmq channel`);
+    console.log('RabbitMQ channel closed');
 });
 
 module.exports = { setupRabbitMQ };

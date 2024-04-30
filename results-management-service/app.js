@@ -2,7 +2,7 @@ const express = require('express');
 const cors = require('cors');
 const originAuth = require('./middlewares/originMiddleware');
 
-const issues = require('./routes/issueRoutes');
+const results = require('./routes/resultsRoutes');
 
 const app = express();
 
@@ -12,7 +12,7 @@ app.use(cors());
 
 //app.use(originAuth);
 
-app.use('/submission', issues);
+app.use('/', results);
 
 app.use((req, res, next ) => { res.status(404).json({message: 'Endpoint not found!'}); })
 

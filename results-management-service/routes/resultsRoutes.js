@@ -1,12 +1,12 @@
-//issueRoutes.js
+//resultRoutes.js
 
 const express = require('express');
 const router = express.Router();
-const issueController = require('../controllers/runProblemController');
+const resultsController = require('../controllers/resultsController');
 const originAuth = require('../middlewares/originMiddleware');
 const auth = require('../middlewares/authMiddleware');
 
 
-router.post('/run', issueController.runProblem);
+router.get('/result/:id', resultsController.getResultById);
 
 module.exports = router;

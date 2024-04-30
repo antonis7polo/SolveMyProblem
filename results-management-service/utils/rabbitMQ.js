@@ -1,0 +1,48 @@
+// rabbitMQResults.js
+const amqp = require('amqplib');
+require('dotenv').config();
+const { handleMessage } = require('../controllers/messageHandler');
+
+let channel = null;
+
+const solverExchange = process.env.SOLVER_EXCHANGE;
+const submissionExchange = process.env.SUBMISSION_EXCHANGE;
+const logExchange = process.env.LOG_EXCHANGE;
+
+async function setupRabbitMQ() {
+    const connection = await amqp.connect(process.env.RABBITMQ_URL);
+    channel = await connection.createChannel();
+
+    // Configuring exchanges
+    await channel.assertExchange(solverExchange, 'direct', { durable: true });
+    await channel.assertExchange(submissionExchange, 'direct', { durable: true });
+    await channel.assertExchange(logExchange, 'direct', { durable: true });
+
+    // Configuring queues
+    await channel.assertQueue(process.env.SOLVER_QUEUE , { durable: true });
+    await channel.assertQueue(process.env.SUBMISSION_QUEUE, { durable: true });
+    await channel.assertQueue(process.env.LOG_QUEUE, { durable: true });
+
+    // Binding queues
+    await channel.bindQueue( process.env.SOLVER_QUEUE, solverExchange, process.env.SOLVER_ROUTING_KEY);
+    await channel.bindQueue( process.env.SUBMISSION_QUEUE, submissionExchange, process.env.SUBMISSION_ROUTING_KEY);
+    await channel.bindQueue( process.env.LOG_QUEUE, logExchange, process.env.LOG_ROUTING_KEY);
+
+    channel.prefetch(1);
+    await consumeMessages(channel);
+
+}
+
+async function consumeMessages(channel) {
+    console.log('Listening for messages on SOLVER_QUEUE');
+    channel.consume(process.env.SOLVER_QUEUE, (msg) => {
+        if (msg) {
+            console.log('Received message:', msg.content.toString());
+            handleMessage(msg, channel);
+            channel.ack(msg);
+        }
+    }, {noAck: false});
+}
+
+module.exports = { setupRabbitMQ };
+
