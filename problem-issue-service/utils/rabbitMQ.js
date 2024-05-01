@@ -33,6 +33,7 @@ const SOLVER_EXCHANGE = process.env.SOLVER_EXCHANGE_NAME; // New exchange for so
 const SOLVER_QUEUE = process.env.SOLVER_QUEUE_NAME; // New queue for sending problems to the solver
 const SOLVER_ROUTING_KEY = process.env.SOLVER_ROUTING_KEY;
 
+
 async function setupExchangesAndQueues() {
 
     try{
@@ -49,6 +50,8 @@ async function setupExchangesAndQueues() {
         await channel.assertExchange(SOLVER_EXCHANGE, 'direct', { durable: true });
         await channel.assertQueue(SOLVER_QUEUE, { durable: true });
         await channel.bindQueue(SOLVER_QUEUE, SOLVER_EXCHANGE, SOLVER_ROUTING_KEY);
+
+        await channel.assertExchange(process.env.PROGRESS_EXCHANGE_NAME, 'direct', { durable: true });
 
         await consumeMessages(QUEUE_NAME);
         await consumeMessages(CREDITS_QUEUE);
@@ -108,18 +111,15 @@ async function handleMessage(msg, queueName) {
                     });
                     console.log('Problem updated successfully:', result);
                 }
-                channel.ack(msg);
                 break;
             case CREDITS_QUEUE:
                 if (action === 'update') {
                      await updateCredits(messageContent.data);
                 }
-                channel.ack(msg);
                 break;
 
             default:
                 console.log('No action specified');
-                channel.nack(msg);
         }
 
     } catch (error) {
@@ -135,11 +135,21 @@ async function publishToSolverQueue(problem) {
 }
 
 async function publishCreditsUpdate(userID, creditsChange) {
-    console.log(userID);
     const msg = JSON.stringify({ userID: userID, credits: creditsChange });
     await channel.publish(CREDITS_EXCHANGE, CREDITS_UPDATED_ROUTING_KEY, Buffer.from(msg));
     console.log('Credits update published');
 }
 
+async function publishToSubmissionsQueue(data) {
+    const message = JSON.stringify({
+        submissionId: data.submissionId,
+        action: data.action,
+        status: data.status
+    })
 
-module.exports = { connectRabbitMQ, publishCreditsUpdate, publishToSolverQueue };
+    await channel.publish(process.env.PROGRESS_EXCHANGE_NAME, process.env.PROGRESS_ROUTING_KEY, Buffer.from(message));
+    console.log('Message published to submissions queue: ', message);
+}
+
+
+module.exports = { connectRabbitMQ, publishCreditsUpdate, publishToSolverQueue, publishToSubmissionsQueue };

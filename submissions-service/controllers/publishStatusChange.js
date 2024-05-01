@@ -42,4 +42,22 @@ function publishStatusChange(submissionId, action, submissionData, channel) {
     }
 }
 
-module.exports = { publishStatusChange };
+async function publishDeletionToResultsService(submissionId, channel) {
+    const message = {
+        submissionId: submissionId,
+        action: 'delete'
+    };
+
+    try {
+        const exchange = process.env.RESULT_DELETE_EXCHANGE_NAME;
+        const routingKey = process.env.RESULT_DELETE_ROUTING_KEY;
+
+        channel.publish(exchange, routingKey, Buffer.from(JSON.stringify(message)), { persistent: true });
+        console.log(`Deletion message published for submission ID ${submissionId} to results service.`);
+    } catch (error) {
+        console.error('Error publishing deletion message to results service:', error);
+    }
+}
+
+
+module.exports = { publishStatusChange, publishDeletionToResultsService};

@@ -1,6 +1,6 @@
 // rabbitMQController.js
 const Submission = require('../models/Submission');
-const { publishStatusChange } = require('./publishStatusChange');
+const { publishStatusChange, publishDeletionToResultsService } = require('./publishStatusChange');
 
 async function createOrUpdateSubmission(messageData, channel) {
     const { id, name, userId, inputData } = messageData;
@@ -28,6 +28,94 @@ async function createOrUpdateSubmission(messageData, channel) {
     return newSubmission;
 }
 
+async function deleteSubmission(data, channel) {
+    const { id } = data;
+
+    try {
+        const submission = await Submission.findById(id);
+        if (!submission) {
+            throw new Error('Submission not found');
+        }
+
+        // Check the current status before deletion
+        const isReady = submission.status === 'ready';
+
+
+        // Always delete the submission regardless of its status
+        await Submission.findByIdAndDelete(id);
+        console.log(`Submission with ID ${id} has been deleted.`);
+
+        // Publish a delete status change if the status was 'ready'
+        if (isReady) {
+            publishStatusChange(id, 'delete', null, channel);
+            console.log(`Delete message published for submission ID ${id} because it was ready.`);
+        } else {
+            console.log(`Delete message not published for submission ID ${id} because it was not ready.`);
+        }
+
+        const isFinished = submission.status === 'completed' || submission.status === 'failed';
+
+        if (isFinished) {
+            await publishDeletionToResultsService(id, channel);
+            console.log(`Delete message published for submission ID ${id} because it was finished.`);
+        } else {
+            console.log(`Delete message not published for submission ID ${id} because it was not finished.`);
+        }
+
+    } catch (error) {
+        console.error(`Failed to delete submission with ID ${id}:`, error);
+    }
+}
+
+
+async function updateSubmissionStatus(resultData, channel) {
+    const { submissionId, label } = resultData;
+    try {
+        const currentSubmission = await Submission.findById(submissionId);
+        if (!currentSubmission) {
+            throw new Error('Submission not found');
+        }
+
+        // Determine new status based on the result label
+        const newStatus = label === 'success' ? 'completed' : label === 'fail' ? 'failed' : currentSubmission.status;
+
+        if (currentSubmission.status !== newStatus) {
+            // Update the submission status and save
+            currentSubmission.status = newStatus;
+            await currentSubmission.save();
+            console.log(`Submission status updated to ${newStatus} for ID: ${submissionId}`);
+
+        }
+
+
+    } catch (error) {
+        console.error(`Error updating submission status for ID ${submissionId}:`, error);
+    }
+}
+
+async function updateProgressStatus(messageData) {
+    const { submissionId, status } = messageData;
+    try {
+
+        const submission = await Submission.findById(submissionId);
+        if (!submission) {
+            throw new Error('Submission not found');
+        }
+
+        if (status === 'in_progress' && submission.status !== 'in_progress') {
+            submission.status = 'in_progress';
+            await submission.save();
+            console.log(`Submission status updated to 'in progress' for ID: ${submissionId}`);
+        } else {
+            console.log(`No status update needed for ID: ${submissionId}`);
+        }
+    } catch (error) {
+        console.error(`Error updating submission status for ID ${submissionId}:`, error);
+    }
+}
+
+
+
 function handleStatusChange(previousStatus, newStatus, submission, channel) {
     if (previousStatus !== newStatus) {
         if (previousStatus === 'ready' && newStatus !== 'ready') {
@@ -40,4 +128,4 @@ function handleStatusChange(previousStatus, newStatus, submission, channel) {
     }
 }
 
-module.exports = { createOrUpdateSubmission };
+module.exports = { createOrUpdateSubmission, updateSubmissionStatus, deleteSubmission, updateProgressStatus };

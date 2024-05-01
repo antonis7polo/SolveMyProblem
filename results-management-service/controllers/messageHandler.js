@@ -25,7 +25,7 @@ async function handleMessage(msg, channel) {
             publishToSubmissions({
                 submissionId: data.submissionId,
                 label: data.label
-            }, channel);  // Pass channel to publishing functions
+            }, channel);
 
             publishToLog({
                 ...data
@@ -43,6 +43,14 @@ async function handleMessage(msg, channel) {
             ...data,
             label: 'fail'
         }, channel);
+    } else if (data.action === 'delete') {
+        try {
+            await Result.deleteOne({submissionId: data.submissionId});
+            console.log('Result deleted:', data.submissionId);
+        } catch (error) {
+            console.error('Error deleting result:', error);
+        }
+
     }
 }
 
@@ -57,5 +65,7 @@ function publishToLog(data, channel) {
     channel.publish(process.env.LOG_EXCHANGE, process.env.LOG_ROUTING_KEY, message, {persistent: true});
     console.log("Published to log queue:", data);
 }
+
+
 
 module.exports = { handleMessage };
