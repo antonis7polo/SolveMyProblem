@@ -1,4 +1,3 @@
-
 const User = require('../models/User');
 const { publishUserCreated } = require('../config/rabbitMQ');
 

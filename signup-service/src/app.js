@@ -1,9 +1,12 @@
 require('dotenv').config({ path: '../.env' });
 const express = require('express');
 const connectDB = require('./config/database');
+const { consumeCredits } = require('./config/rabbitMQ')
 
 const app = express();
-connectDB();  
+connectDB().then(() => {
+    consumeCredits();  
+});
 
 app.use(express.json());
 
