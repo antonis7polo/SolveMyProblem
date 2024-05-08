@@ -5,7 +5,13 @@ const mongoose = require('mongoose');
 const problemSchema = new mongoose.Schema({
     submissionId: { type: mongoose.Schema.Types.ObjectId, required: true, unique: true },
     name: { type: String, required: true },
-    inputData: mongoose.Schema.Types.Mixed,
+    inputData: {
+        parameters: { type: String },
+        solver: { type: String },
+        numVehicles: { type: Number },
+        depot: { type: Object },
+        maxDistance: { type: Number }
+    },
     userId: { type: Number, required: true }
 }, { timestamps: true });
 

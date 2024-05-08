@@ -4,15 +4,20 @@
     "description": "Solver Service",
     "main": "server.js",
     "scripts": {
-        "start": "node server.js"
+        "start": "nodemon server.js"
     },
     "dependencies": {
-        "express": "^4.16.4",
+        "amqp": "^0.2.7",
+        "amqplib": "^0.10.4",
+        "axios": "^1.6.8",
+        "body-parser": "^1.19.0",
+        "child_process": "^1.0.2",
         "cors": "^2.8.5",
-        "axios": "^0.18.0",
-        "dotenv": "16.4.5",
+        "dotenv": "^16.4.5",
+        "express": "^4.16.4",
+        "fs": "^0.0.1-security",
         "mongoose": "^5.4.0",
-        "amqplib": "^0.5.3",
-        "body-parser": "^1.19.0"
+        "os": "^0.1.2",
+        "path": "^0.12.7"
     }
 }

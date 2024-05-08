@@ -30,7 +30,6 @@ const CREDITS_ADDED_ROUTING_KEY = process.env.CREDITS_ADDED_ROUTING_KEY;
 const CREDITS_UPDATED_ROUTING_KEY = process.env.CREDITS_UPDATED_ROUTING_KEY;
 
 const SOLVER_EXCHANGE = process.env.SOLVER_EXCHANGE_NAME; // New exchange for solver
-const SOLVER_QUEUE = process.env.SOLVER_QUEUE_NAME; // New queue for sending problems to the solver
 const SOLVER_ROUTING_KEY = process.env.SOLVER_ROUTING_KEY;
 
 
@@ -48,8 +47,6 @@ async function setupExchangesAndQueues() {
         await channel.bindQueue(CREDITS_UPDATE_QUEUE, CREDITS_EXCHANGE, CREDITS_UPDATED_ROUTING_KEY);
 
         await channel.assertExchange(SOLVER_EXCHANGE, 'direct', { durable: true });
-        await channel.assertQueue(SOLVER_QUEUE, { durable: true });
-        await channel.bindQueue(SOLVER_QUEUE, SOLVER_EXCHANGE, SOLVER_ROUTING_KEY);
 
         await channel.assertExchange(process.env.PROGRESS_EXCHANGE_NAME, 'direct', { durable: true });
 

@@ -10,7 +10,13 @@ const submissionSchema = new mongoose.Schema({
         default: 'not_ready'
     },
     userId: { type: Number, required: true, index: true },
-    inputData: mongoose.Schema.Types.Mixed
+    inputData: {
+        parameters: { type: String },
+        solver: { type: String },
+        numVehicles: { type: Number },
+        depot : { type: Number },
+        maxDistance: { type: Number }
+    }
 }, { timestamps: true });
 
 module.exports = mongoose.models.Submission || mongoose.model('Submission', submissionSchema);

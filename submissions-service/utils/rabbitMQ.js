@@ -38,9 +38,6 @@ async function consumeResults(queueName) {
     }, { noAck: false });
 }
 
-
-
-
 async function configureRabbitMQ() {
     const EXCHANGE_NAME = process.env.EXCHANGE_NAME;
     const RESULTS_EXCHANGE_NAME = process.env.RESULTS_EXCHANGE_NAME;
