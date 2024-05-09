@@ -1,4 +1,4 @@
-const User = require('../models/User');
+const User = require('../models/user');
 const { publishUserCreated } = require('../config/rabbitMQ');
 
 exports.createUser = async (req, res) => {

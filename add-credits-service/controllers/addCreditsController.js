@@ -1,32 +1,48 @@
 const amqp = require('amqplib');
+require('dotenv').config();
 
-const publishCreditAdded = async (userId, amount) => {
-    const connection = await amqp.connect(process.env.RABBITMQ_URL);
-    const channel = await connection.createChannel();
+let connection, channel;
 
-    // Define the exchange and the type
-    const exchange = 'creditsExchange';
-    const routingKey = 'credit.added';
-    
-    // Ensure the exchange exists
-    await channel.assertExchange(exchange, 'direct', { durable: true });
+const setupRabbitMQ = async () => {
+    try {
+        connection = await amqp.connect(process.env.RABBITMQ_URL);
+        channel = await connection.createChannel();
 
-    // Prepare the message
-    const msg = JSON.stringify({ userId, amount });
+        const exchange = process.env.CREDITS_EXCHANGE_NAME;
+        await channel.assertExchange(exchange, 'direct', { durable: true });
 
-    // Publish message to the exchange with the specific routing key
-    channel.publish(exchange, routingKey, Buffer.from(msg), { persistent: true });
-    console.log(" [x] Sent %s to %s", msg, exchange);
-
-    await channel.close();
-    await connection.close();
+    } catch (error) {
+        console.error("Failed to connect to RabbitMQ:", error);
+        setTimeout(setupRabbitMQ, 5000); // Retry connection
+    }
 };
 
+const publishCreditAdded = async (userId, amount) => {
+    const exchange = process.env.CREDITS_EXCHANGE_NAME;
+    const routingKey = process.env.CREDITS_ADDED_ROUTING_KEY;
+    const usersRoutingKey = process.env.USER_CREDITS_ROUTING_KEY;
+
+    const msg = JSON.stringify({
+        action: 'update',
+        data: { userID: userId, creditsChange: amount }
+    });
+
+    channel.publish(exchange, routingKey, Buffer.from(msg), { persistent: true });
+    channel.publish(exchange, usersRoutingKey, Buffer.from(msg), { persistent: true });
+    console.log(`Credit addition message published for user ${userId}`);
+
+};
+
+setupRabbitMQ().then(r => console.log('RabbitMQ setup complete')).catch(e => console.error('Failed to set up RabbitMQ:', e));
+
 exports.addCredits = async (req, res) => {
-    const { amount } = req.body;
-    const userId = req.user.id;
+    const { id, amount } = req.body;
 
-    await publishCreditAdded(userId, amount);
-
-    res.json({ status: 'success', message: 'Credits addition initiated' });
+    try {
+        await publishCreditAdded(id, amount);
+        res.json({ status: 'success', message: 'Credits addition initiated' });
+    } catch (error) {
+        console.error('Error publishing credit addition:', error);
+        res.status(500).json({ error: 'Failed to initiate credit addition' });
+    }
 };

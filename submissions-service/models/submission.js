@@ -1,6 +1,7 @@
 //submission.js
-
 const mongoose = require('mongoose');
+const Schema = mongoose.Schema;
+
 
 const submissionSchema = new mongoose.Schema({
     name: { type: String, required: true },
@@ -9,7 +10,7 @@ const submissionSchema = new mongoose.Schema({
         enum: ['not_ready', 'ready', 'completed', 'failed', 'in_progress'],
         default: 'not_ready'
     },
-    userId: { type: Number, required: true, index: true },
+    userId: { type: Schema.Types.ObjectId, required: true, unique: true, index: true },
     inputData: {
         parameters: { type: String },
         solver: { type: String },

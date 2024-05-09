@@ -3,6 +3,9 @@ const { exec } = require('child_process');
 const fs = require('fs');
 const os = require('os');
 const path = require('path');
+const util = require('util');
+const execPromise = util.promisify(exec);
+
 require('dotenv').config();
 
 let connection, channel;
@@ -34,23 +37,21 @@ async function setupQueues() {
 }
 
 async function consumeSolverQueue() {
+    await channel.prefetch(1);
     console.log(`Listening for problems on ${SOLVER_QUEUE}`);
     channel.consume(SOLVER_QUEUE, async (msg) => {
         if (msg !== null) {
-            const problem = JSON.parse(msg.content.toString());
-            await solveProblem(problem);
-
+            await solveProblem(JSON.parse(msg.content.toString()));
             channel.ack(msg);
         }
     }, { noAck: false });
 }
 
+
 const EXECUTION_TIMEOUT = 3600000; // 1 hour in milliseconds
 
 async function solveProblem(problem) {
     const { parameters, solver, numVehicles, depot, maxDistance } = problem.inputData;
-
-
     const tempDir = os.tmpdir();
     const solverPath = path.join(tempDir, `solver_${problem.submissionId}.py`);
     const parametersPath = path.join(tempDir, `parameters_${problem.submissionId}.json`);
@@ -60,30 +61,19 @@ async function solveProblem(problem) {
     fs.writeFileSync(parametersPath, Buffer.from(parameters, 'base64'));
 
     const command = `python3 ${solverPath} ${parametersPath} ${numVehicles} ${depot} ${maxDistance}`;
-
-    exec(command, { timeout: EXECUTION_TIMEOUT }, async (error, stdout, stderr) => {
-        // Cleanup files after execution
-        try { fs.unlinkSync(solverPath); } catch (e) { console.error(e); }
-        try { fs.unlinkSync(parametersPath); } catch (e) { console.error(e); }
-
-        if (error) {
-            if (error.killed && error.signal === 'SIGTERM') {
-                console.error(`Execution of VRP Solver was terminated due to timeout.`);
-                await publishResults(problem, null, 'fail');
-            } else {
-                console.error(`Error executing VRP Solver: ${error}`);
-                await publishResults(problem, null, 'fail');
-            }
-            return;
-        }
-        if (stderr) {
-            console.error(`Error in VRP Solver output: ${stderr}`);
-            await publishResults(problem, null, 'fail');
-            return;
-        }
+    try {
+        const { stdout } = await execPromise(command, { timeout: EXECUTION_TIMEOUT });
         await publishResults(problem, stdout, 'success');
-    });
+    } catch (error) {
+        console.error(`Error executing VRP Solver:`, error);
+        await publishResults(problem, null, 'fail');
+    } finally {
+        // Cleanup files after execution
+        fs.unlinkSync(solverPath);
+        fs.unlinkSync(parametersPath);
+    }
 }
+
 
 async function publishResults(problem, solution, label = 'success') {
     const message = JSON.stringify({

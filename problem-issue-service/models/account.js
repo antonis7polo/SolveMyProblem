@@ -1,9 +1,8 @@
-//account.js
-
 const mongoose = require('mongoose');
+const Schema = mongoose.Schema;
 
 const accountSchema = new mongoose.Schema({
-    userID: { type: Number, required: true, unique: true },
+    userID: { type: Schema.Types.ObjectId, required: true, unique: true },
     credits: { type: Number, required: true }
 }, { timestamps: true });
 

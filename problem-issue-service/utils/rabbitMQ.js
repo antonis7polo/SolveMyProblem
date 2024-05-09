@@ -25,7 +25,6 @@ const ROUTING_KEY = process.env.ROUTING_KEY;
 
 const CREDITS_EXCHANGE = process.env.CREDITS_EXCHANGE_NAME; // New exchange for credits
 const CREDITS_QUEUE = process.env.CREDITS_ADDED_QUEUE_NAME // New queue for receiving credit updates
-const CREDITS_UPDATE_QUEUE = process.env.CREDITS_UPDATED_QUEUE_NAME; // New queue for sending credit updates
 const CREDITS_ADDED_ROUTING_KEY = process.env.CREDITS_ADDED_ROUTING_KEY;
 const CREDITS_UPDATED_ROUTING_KEY = process.env.CREDITS_UPDATED_ROUTING_KEY;
 
@@ -43,8 +42,6 @@ async function setupExchangesAndQueues() {
         await channel.assertExchange(CREDITS_EXCHANGE, 'direct', { durable: true });
         await channel.assertQueue(CREDITS_QUEUE, { durable: true });
         await channel.bindQueue(CREDITS_QUEUE, CREDITS_EXCHANGE, CREDITS_ADDED_ROUTING_KEY);
-        await channel.assertQueue(CREDITS_UPDATE_QUEUE, { durable: true });
-        await channel.bindQueue(CREDITS_UPDATE_QUEUE, CREDITS_EXCHANGE, CREDITS_UPDATED_ROUTING_KEY);
 
         await channel.assertExchange(SOLVER_EXCHANGE, 'direct', { durable: true });
 
@@ -132,7 +129,10 @@ async function publishToSolverQueue(problem) {
 }
 
 async function publishCreditsUpdate(userID, creditsChange) {
-    const msg = JSON.stringify({ userID: userID, credits: creditsChange });
+    const msg = JSON.stringify({
+        action: 'update',
+        data: { userID: userID, creditsChange: creditsChange }
+    });
     await channel.publish(CREDITS_EXCHANGE, CREDITS_UPDATED_ROUTING_KEY, Buffer.from(msg));
     console.log('Credits update published');
 }

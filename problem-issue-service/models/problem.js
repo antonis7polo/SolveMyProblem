@@ -1,6 +1,6 @@
 //problem.js
-
 const mongoose = require('mongoose');
+const Schema = mongoose.Schema;
 
 const problemSchema = new mongoose.Schema({
     submissionId: { type: mongoose.Schema.Types.ObjectId, required: true, unique: true },
@@ -12,7 +12,7 @@ const problemSchema = new mongoose.Schema({
         depot: { type: Object },
         maxDistance: { type: Number }
     },
-    userId: { type: Number, required: true }
+    userId: { type: Schema.Types.ObjectId, required: true, unique: true }
 }, { timestamps: true });
 
 module.exports = mongoose.models.Problem || mongoose.model('Problem', problemSchema);
