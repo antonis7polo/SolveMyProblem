@@ -13,7 +13,7 @@ async function setupRabbitMQ() {
         await configureRabbitMQ();
     } catch (error) {
         console.error('Failed to connect or configure RabbitMQ:', error);
-        setTimeout(setupRabbitMQ, 5000);  // Retry connection after 5 seconds
+        setTimeout(setupRabbitMQ, 5000);  
     }
 }
 
