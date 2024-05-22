@@ -1,27 +1,28 @@
-// const User = require('../models/User'); // Ensure this points to your User model
-//
-// async function authMiddleware(req, res, next) {
-//     // Check for a username in the request body
-//     const username = req.body.username;
-//
-//     if (!username) {
-//         return res.status(400).send('Username is required');
-//     }
-//
-//     try {
-//         // Find the user in the database by username
-//         const user = await User.findOne({ username: username });
-//         if (!user) {
-//             return res.status(404).send('User not found');
-//         }
-//
-//         // Set the user ID on the request object
-//         req.user = { id: user._id };
-//         next();
-//     } catch (error) {
-//         console.error('Database error:', error);
-//         res.status(500).send('Server error');
-//     }
-// }
-//
-// module.exports = authMiddleware;
+const jwt = require('jsonwebtoken');
+
+module.exports = async (req, res, next) => {
+    const authHeader = req.header('X-OBSERVATORY-AUTH');
+    if (!authHeader) {
+        return res.status(401).json({ message: 'Not authenticated', type: 'error' });
+    }
+
+    const token = authHeader;
+    let decodedToken;
+
+    try {
+        decodedToken = jwt.verify(token, process.env.SECRET_JWT);
+    } catch (err) {
+        console.error(err);
+        return res.status(500).json({ message: 'Failed to authenticate token.', type: 'error' });
+    }
+
+    if (!decodedToken) {
+        return res.status(401).json({ message: 'Not authenticated', type: 'error' });
+    }
+
+
+    req.user = decodedToken.user;
+    console.log(req.user)
+    next();
+
+};

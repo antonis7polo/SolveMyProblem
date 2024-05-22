@@ -5,7 +5,15 @@ module.exports = [
     body('username')
         .not().isEmpty().withMessage('Username field is mandatory')
         .isLength({ min: 3, max: 30 }).withMessage('Username must be between 3 and 30 characters')
-        .isAlpha().withMessage('Username must contain only letters'),
+        .matches(/^[a-zA-Z0-9]+$/).withMessage('Username must contain only alphanumeric characters')
+        .custom(async (username) => {
+            const existingUser = await User.findOne({ username });
+            if (existingUser) {
+                throw new Error('Username already in use');
+            }
+            return true;
+        }),
+
 
     body('email')
         .not().isEmpty().withMessage('Email field is mandatory')
@@ -31,4 +39,9 @@ module.exports = [
             }
             return true;
         }),
+
+    body('isAdmin')
+        .not().isEmpty().withMessage('isAdmin field is mandatory')
+        .isBoolean().withMessage('isAdmin must be a boolean')
+
 ];

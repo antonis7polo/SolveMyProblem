@@ -1,6 +1,5 @@
 const express = require('express');
 const cors = require('cors');
-const originAuth = require('./middlewares/originMiddleware');
 const bodyParser = require('body-parser');
 
 const modifySubmissions = require('./routes/modifySubmissionsRoutes');
@@ -11,7 +10,6 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cors());
 
-//app.use(originAuth);
 
 app.use('/submission', modifySubmissions);
 

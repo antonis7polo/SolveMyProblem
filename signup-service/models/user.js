@@ -7,7 +7,7 @@ const userSchema = new mongoose.Schema({
     password: { type: String, required: true },
     isAdmin: { type: Boolean, default: false },
     credits: { type: Number, default: 0 }
-}, { collection: 'Users' });
+}, { collection: 'Users', timestamps: true });
 
 userSchema.pre('save', async function(next) {
     if (this.isModified('password') || this.isNew) {
