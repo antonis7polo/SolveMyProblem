@@ -1,4 +1,4 @@
-const { publishToQueue } = require('../utils/mqService');
+const { publishToQueue } = require('../config/mqService');
 
 exports.deleteSubmission = async (req, res) => {
     try {

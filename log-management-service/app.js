@@ -5,7 +5,7 @@ const originAuth = require('./middlewares/originAuthMiddleware');
 const auth = require('./middlewares/authMiddleware');
 const logsRoutes = require('./routes/logsRoutes');
 const analyticsRoutes = require('./routes/analyticsRoutes');
-const { setupRabbitMQ } = require('./utils/rabbitMQ');
+const { setupRabbitMQ } = require('./config/rabbitMQ');
 
 const app = express();
 

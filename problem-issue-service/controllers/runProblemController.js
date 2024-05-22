@@ -1,10 +1,10 @@
-//runProblemController.js
+// runProblemController.js
 const Account = require('../models/account');
 const Problem = require('../models/problem');
+const { publishToSolverQueue, publishCreditsUpdate, publishToSubmissionsQueue } = require('../config/rabbitMQ');
+const calculateCost = require('../config/calculateCost');
 
-const { publishToSolverQueue, publishCreditsUpdate, publishToSubmissionsQueue } = require('../utils/rabbitMQ');
-
-const COST_OF_SOLUTION = 10;
+const BASE_COST = 10;
 
 exports.runProblem = async (req, res) => {
     try {
@@ -17,20 +17,26 @@ exports.runProblem = async (req, res) => {
 
         const userId = problem.userId;
 
-
         const account = await Account.findOne({ userID: userId });
         if (!account) {
             return res.status(404).json({ message: "Account not found" });
         }
 
-        if (account.credits < COST_OF_SOLUTION) {
+        const decodedParameters = JSON.parse(Buffer.from(problem.inputData.parameters, 'base64').toString('utf-8'));
+
+        // Calculate cost dynamically
+        let costOfSolution = calculateCost(decodedParameters);
+
+        console.log(costOfSolution);
+
+        if (account.credits < costOfSolution) {
             return res.status(400).json({ message: "Not enough credits" });
         }
 
-        account.credits -= COST_OF_SOLUTION;
+        account.credits -= costOfSolution;
         await account.save();
 
-        await publishCreditsUpdate(userId, -COST_OF_SOLUTION);
+        await publishCreditsUpdate(userId, -costOfSolution);
 
         await publishToSolverQueue({
             submissionId: problem.submissionId,
@@ -48,9 +54,7 @@ exports.runProblem = async (req, res) => {
             submissionId: problem.submissionId,
             action: "update",
             status: "in_progress"
-
         });
-
 
         res.json({ message: "Problem submitted for solving, credits deducted." });
 

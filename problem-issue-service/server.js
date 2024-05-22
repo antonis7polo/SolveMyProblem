@@ -1,7 +1,7 @@
 const http = require('http');
 const app = require('./app');
 require('dotenv').config();
-const { connectRabbitMQ } = require('./utils/rabbitMQ');
+const { connectRabbitMQ } = require('./config/rabbitMQ');
 const mongoose = require("mongoose");
 
 const port = process.env.PORT || 3002;

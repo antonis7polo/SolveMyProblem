@@ -1,4 +1,3 @@
-const mongoose = require('mongoose');
 const Account = require('../models/account');
 
 async function updateCredits(data) {
