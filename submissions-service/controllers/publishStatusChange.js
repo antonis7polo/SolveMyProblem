@@ -8,6 +8,7 @@ function publishStatusChange(submissionId, action, submissionData, channel) {
                 submissionId: submissionId.toString(),
                 name: submissionData.name,
                 userId: submissionData.userId,
+                username: submissionData.username,
                 inputData: submissionData.inputData
             }
         };
@@ -23,6 +24,7 @@ function publishStatusChange(submissionId, action, submissionData, channel) {
                 submissionId: submissionId.toString(),
                 name: submissionData.name,
                 userId: submissionData.userId,
+                username: submissionData.username,
                 inputData: submissionData.inputData
             }
         };

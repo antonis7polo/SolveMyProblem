@@ -16,7 +16,7 @@ exports.deleteSubmission = async (req, res) => {
 exports.uploadFiles = async (req, res) => {
     try {
         const { pythonFile, jsonFile } = req.files;
-        const { id, name, userId, numVehicles, depot, maxDistance } = req.body;
+        const { id, name, username, userId, numVehicles, depot, maxDistance } = req.body;
 
         const inputData = {};
 
@@ -63,6 +63,7 @@ exports.uploadFiles = async (req, res) => {
         const message = {
             id,
             name,
+            username,
             userId,
             inputData
         };

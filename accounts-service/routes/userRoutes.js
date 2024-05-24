@@ -8,6 +8,9 @@ const { login } = require('../controllers/loginController')
 
 router.post('/signup', signUpValidator, createUser);
 router.post('/login', login);
-router.get('/user/:id', AuthMiddleware, getUserData)
+// router.get('/user/:id', AuthMiddleware, getUserData);
+router.get('/user/:id', getUserData);
+
+
 
 module.exports = router;

@@ -3,7 +3,7 @@ const Submission = require('../models/Submission');
 const { publishStatusChange, publishDeletionToResultsService } = require('./publishStatusChange');
 
 async function createOrUpdateSubmission(messageData, channel) {
-    const { id, name, userId, inputData } = messageData;
+    const { id, name, userId, username, inputData } = messageData;
     let previousStatus = null;
 
     console.log('Creating or updating submission:', inputData);
@@ -18,13 +18,13 @@ async function createOrUpdateSubmission(messageData, channel) {
         const fullInputData = { ...currentSubmission.inputData, ...inputData };
         const status = (fullInputData.parameters && fullInputData.solver && fullInputData.numVehicles && fullInputData.depot && fullInputData.maxDistance ) ? 'ready' : 'not_ready';
 
-        const updatedSubmission = await Submission.findByIdAndUpdate(id, { name, status, userId, inputData: fullInputData }, { new: true, runValidators: true });
+        const updatedSubmission = await Submission.findByIdAndUpdate(id, { name, status, userId, username, inputData: fullInputData }, { new: true, runValidators: true });
         await handleStatusChange(previousStatus, updatedSubmission.status, updatedSubmission, channel);
         return updatedSubmission;
     }
 
     const status = (inputData && inputData.parameters && inputData.solver && inputData.numVehicles && inputData.depot && inputData.maxDistance) ? 'ready' : 'not_ready';
-    const newSubmission = new Submission({ name, status, userId, inputData });
+    const newSubmission = new Submission({ name, status, userId, username, inputData });
     await newSubmission.save();
     await handleStatusChange(null, status, newSubmission, channel);
     return newSubmission;

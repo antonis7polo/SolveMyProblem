@@ -90,6 +90,7 @@ async function handleMessage(msg, queueName) {
                         submissionId: messageContent.data.submissionId,
                         name: messageContent.data.name,
                         userId: messageContent.data.userId,
+                        username: messageContent.data.username,
                         inputData: messageContent.data.inputData
                     });
                     console.log('Problem inserted successfully:', result);
@@ -101,6 +102,7 @@ async function handleMessage(msg, queueName) {
                         submissionId: messageContent.data.submissionId,
                         name: messageContent.data.name,
                         userId: messageContent.data.userId,
+                        username: messageContent.data.username,
                         inputData: messageContent.data.inputData
                     });
                     console.log('Problem updated successfully:', result);

@@ -11,6 +11,7 @@ const submissionSchema = new mongoose.Schema({
         default: 'not_ready'
     },
     userId: { type: Schema.Types.ObjectId, required: true, unique: true, index: true },
+    username: { type: String, required: true },
     inputData: {
         parameters: { type: String },
         solver: { type: String },

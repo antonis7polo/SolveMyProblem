@@ -9,7 +9,7 @@ exports.getSubmissionsByUserId = async (req, res) => {
 
     try {
         // Fetch submissions from the database where userId matches
-        const submissions = await Submission.find({ userId: userId });
+        const submissions = await Submission.find({ userId: userId }).sort({ updatedAt: -1 });
         if (submissions.length === 0) {
             return res.status(404).json({ message: 'No submissions found for this user.' });
         }
@@ -21,8 +21,9 @@ exports.getSubmissionsByUserId = async (req, res) => {
 };
 
 exports.getAllSubmissions = async (req, res) => {
+    console.log('Getting all submissions');
     try {
-        const submissions = await Submission.find({}).sort({ createdAt: -1 });
+        const submissions = await Submission.find({}).sort({ updatedAt: -1 });
         res.json(submissions); // Send the fetched submissions as a JSON response
     } catch (error) {
         console.error('Error retrieving all submissions:', error);

@@ -4,8 +4,6 @@ const Problem = require('../models/problem');
 const { publishToSolverQueue, publishCreditsUpdate, publishToSubmissionsQueue } = require('../config/rabbitMQ');
 const calculateCost = require('../config/calculateCost');
 
-const BASE_COST = 10;
-
 exports.runProblem = async (req, res) => {
     try {
         const { problemId } = req.body;
