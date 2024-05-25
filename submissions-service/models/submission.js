@@ -14,7 +14,15 @@ const submissionSchema = new mongoose.Schema({
     username: { type: String, required: true },
     inputData: {
         parameters: { type: String },
+        parametersMetadata: {
+            size: { type: Number },
+            type: { type: String }
+        },
         solver: { type: String },
+        solverMetadata: {
+            size: { type: Number },
+            type: { type: String }
+        },
         numVehicles: { type: Number },
         depot : { type: Number },
         maxDistance: { type: Number }

@@ -6,7 +6,8 @@ const modifySubmissionsController = require('../controllers/modifySubmissionsCon
 const originAuth = require('../middlewares/originAuthMiddleware');
 const auth = require('../middlewares/authMiddleware');
 
-router.delete('/delete/:id', auth, modifySubmissionsController.deleteSubmission);
+// router.delete('/delete/:id', auth, modifySubmissionsController.deleteSubmission);
+router.delete('/delete/:id', modifySubmissionsController.deleteSubmission);
 // router.post('/create', auth, upload.fields([{ name: 'pythonFile', maxCount: 1 }, { name: 'jsonFile', maxCount: 1 }]), modifySubmissionsController.uploadFiles);
 router.post('/create', upload.fields([{ name: 'pythonFile', maxCount: 1 }, { name: 'jsonFile', maxCount: 1 }]), modifySubmissionsController.uploadFiles);
 

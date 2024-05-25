@@ -1,12 +1,13 @@
-// app/submissions/page.js
 "use client";
 
 import { useEffect, useState } from 'react';
 import axios from 'axios';
+import { useRouter } from 'next/navigation';
 
 const Submissions = () => {
     const [submissions, setSubmissions] = useState([]);
     const [loading, setLoading] = useState(true);
+    const router = useRouter();
 
     useEffect(() => {
         const fetchSubmissions = async () => {
@@ -22,6 +23,19 @@ const Submissions = () => {
 
         fetchSubmissions();
     }, []);
+
+    const handleDelete = async (submissionId) => {
+        try {
+            await axios.delete(`http://localhost:3001/submission/delete/${submissionId}`);
+            setSubmissions(submissions.filter(submission => submission._id !== submissionId));
+        } catch (error) {
+            console.error('Error deleting submission:', error);
+        }
+    };
+
+    const handleView = (submissionId) => {
+        router.push(`/submission/${submissionId}`);
+    };
 
     return (
         <div>
@@ -49,9 +63,9 @@ const Submissions = () => {
                             <td>{new Date(submission.updatedAt).toLocaleString()}</td>
                             <td>{submission.status}</td>
                             <td>
-                                <button>View</button>
+                                <button onClick={() => handleView(submission._id)}>View</button>
                                 {submission.status === 'completed' && <button>View Results</button>}
-                                <button>Delete</button>
+                                <button onClick={() => handleDelete(submission._id)}>Delete</button>
                             </td>
                         </tr>
                     ))}

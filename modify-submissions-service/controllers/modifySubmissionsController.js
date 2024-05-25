@@ -17,48 +17,31 @@ exports.uploadFiles = async (req, res) => {
     try {
         const { pythonFile, jsonFile } = req.files;
         const { id, name, username, userId, numVehicles, depot, maxDistance } = req.body;
-
         const inputData = {};
 
         if (pythonFile && pythonFile.length > 0) {
-            inputData.solver = pythonFile[0].buffer.toString('base64');
-        }
-        else {
-            inputData.solver = '';
+            const solver = pythonFile[0];
+            inputData.solver = solver.buffer.toString('base64');
+            inputData.solverMetadata = { size: solver.size, type: solver.mimetype };
         }
 
         if (jsonFile && jsonFile.length > 0) {
-            inputData.parameters = jsonFile[0].buffer.toString('base64');
-        }
-        else {
-            inputData.parameters = '';
+            const parameters = jsonFile[0];
+            inputData.parameters = parameters.buffer.toString('base64');
+            inputData.parametersMetadata = { size: parameters.size, type: parameters.mimetype };
         }
 
         if (numVehicles) {
             inputData.numVehicles = numVehicles;
         }
 
-        else {
-            inputData.numVehicles = '';
-        }
-
         if (depot) {
             inputData.depot = depot;
-        }
-
-        else {
-            inputData.depot = '';
         }
 
         if (maxDistance) {
             inputData.maxDistance = maxDistance;
         }
-
-        else {
-            inputData.maxDistance = '';
-        }
-
-
 
         const message = {
             id,

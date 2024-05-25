@@ -15,8 +15,18 @@ async function createOrUpdateSubmission(messageData, channel) {
         }
         previousStatus = currentSubmission.status;
 
+        if (inputData.solver === '') {
+            inputData.solver = null;
+            inputData.solverMetadata = null;
+        }
+
+        if (inputData.parameters === '') {
+            inputData.parameters = null;
+            inputData.parametersMetadata = null;
+        }
+
         const fullInputData = { ...currentSubmission.inputData, ...inputData };
-        const status = (fullInputData.parameters && fullInputData.solver && fullInputData.numVehicles && fullInputData.depot && fullInputData.maxDistance ) ? 'ready' : 'not_ready';
+        const status = (fullInputData.parameters && fullInputData.solver && fullInputData.numVehicles && fullInputData.depot && fullInputData.maxDistance) ? 'ready' : 'not_ready';
 
         const updatedSubmission = await Submission.findByIdAndUpdate(id, { name, status, userId, username, inputData: fullInputData }, { new: true, runValidators: true });
         await handleStatusChange(previousStatus, updatedSubmission.status, updatedSubmission, channel);

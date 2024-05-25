@@ -1,4 +1,3 @@
-// app/submissions/[userId]/create/page.js
 "use client";
 
 import { useState, useEffect } from 'react';
@@ -12,7 +11,7 @@ const CreateProblem = ({ params }) => {
     const [depot, setDepot] = useState('');
     const [maxDistance, setMaxDistance] = useState('');
     const [pythonFile, setPythonFile] = useState(null);
-    const [jsonFile, setJsonFile] = useState(null);
+    const [jsonFile, setJsonFile] =useState(null);
     const [loading, setLoading] = useState(false);
     const [username, setUsername] = useState('');
     const router = useRouter();
@@ -47,7 +46,7 @@ const CreateProblem = ({ params }) => {
         formData.append('jsonFile', jsonFile);
         formData.append('name', name);
         formData.append('userId', userId);
-        formData.append('username', username); // Add username to the form data
+        formData.append('username', username);
         formData.append('numVehicles', numVehicles);
         formData.append('depot', depot);
         formData.append('maxDistance', maxDistance);
@@ -65,6 +64,10 @@ const CreateProblem = ({ params }) => {
         } finally {
             setLoading(false);
         }
+    };
+
+    const handleCancel = () => {
+        router.push(`/submissions/${userId}`);
     };
 
     return (
@@ -120,9 +123,14 @@ const CreateProblem = ({ params }) => {
                         onChange={handleFileChange}
                     />
                 </div>
-                <button type="submit" disabled={loading}>
-                    {loading ? 'Submitting...' : 'Submit'}
-                </button>
+                <div>
+                    <button type="submit" disabled={loading}>
+                        {loading ? 'Submitting...' : 'Submit'}
+                    </button>
+                    <button type="button" onClick={handleCancel}>
+                        Cancel
+                    </button>
+                </div>
             </form>
         </div>
     );
