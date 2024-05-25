@@ -1,6 +1,7 @@
 // controllers/getLogsController.js
 
 const Logs = require('../models/logs');
+const mongoose = require('mongoose');
 
 async function getLogs(req, res) {
 
@@ -14,7 +15,9 @@ async function getLogs(req, res) {
         filter.userId = parseInt(userId);
     }
     if (resultsId) {
-        filter.resultsId = parseInt(resultsId);
+        if (mongoose.Types.ObjectId.isValid(resultsId)) {
+            filter.resultsId = resultsId; 
+        }
     }
 
     try {
