@@ -40,8 +40,8 @@ module.exports = [
             return true;
         }),
 
-    body('isAdmin')
-        .not().isEmpty().withMessage('isAdmin field is mandatory')
-        .isBoolean().withMessage('isAdmin must be a boolean')
+    //body('isAdmin')
+        //.not().isEmpty().withMessage('isAdmin field is mandatory')
+        //.isBoolean().withMessage('isAdmin must be a boolean')
 
 ];

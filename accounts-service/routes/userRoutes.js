@@ -7,6 +7,9 @@ const { login } = require('../controllers/loginController')
 
 
 router.post('/signup', signUpValidator, createUser);
+// router.post('/signup', (req, res) => {
+//     res.status(200).json({ message: 'Signup endpoint works!' });
+// });
 router.post('/login', login);
 // router.get('/user/:id', AuthMiddleware, getUserData);
 router.get('/user/:id', getUserData);

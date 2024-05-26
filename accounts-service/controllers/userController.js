@@ -9,8 +9,8 @@ exports.createUser = async (req, res) => {
     }
     
     try {
-        const { username, email, password, isAdmin } = req.body;
-        const newUser = new User({ username, email, password, isAdmin });
+        const { username, email, password} = req.body;
+        const newUser = new User({ username, email, password, isAdmin: false });
         await newUser.save();
 
         
