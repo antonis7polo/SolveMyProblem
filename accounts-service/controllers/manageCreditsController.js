@@ -1,21 +1,26 @@
 const User = require('../models/user');
+const { publishCreditsAdded } = require('../config/rabbitMQ');  
 
-const updateUserCredits = async (msg) => {
+exports.addCredits = async (req, res) => {
+    const { userId, creditsChange } = req.body;
+
     try {
-        const data = JSON.parse(msg.content.toString());
-        console.log('Received message:', data);
-        const {userID, creditsChange} = data.data;
-        const user = await User.findById(userID);
+        const user = await User.findById(userId);
         if (!user) {
-            throw new Error('User not found');
+            return res.status(404).json({ message: 'User not found' });
         }
+
         user.credits += creditsChange;
         await user.save();
-        console.log(`Updated credits for user ${userID} to ${user.credits}`);
-    } catch (error) {
-        console.error('Failed to update credits:', error);
-    }
-}
 
-module.exports = { updateUserCredits };
+        // Publish the credits addition event to RabbitMQ
+        await publishCreditsAdded({ userID: userId, creditsChange });
+
+        res.status(200).json({ message: 'Credits added successfully', user });
+    } catch (error) {
+        console.error('Failed to add credits:', error);
+        res.status(500).json({ message: 'Error adding credits', error: error.message });
+    }
+};
+
 

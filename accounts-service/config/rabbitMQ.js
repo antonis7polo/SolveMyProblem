@@ -1,6 +1,5 @@
 const amqp = require('amqplib');
-const { updateUserCredits } = require('../controllers/manageCreditsController');
-
+const rabbitMQExports = {};
 
 let connection = null;
 let channel = null;
@@ -50,24 +49,24 @@ async function consumeMessages(queueName) {
     console.log(`Listening for messages on queue ${queueName}`);
     channel.consume(queueName, (msg) => {
         if (msg) {
-            updateUserCredits(msg);
             channel.ack(msg);
         }
     }, { noAck: false });
 }
 
 
-async function publishUserCreated(data) {
-
-
+rabbitMQExports.publishUserCreated = async (data) => {
     const exchange = process.env.USER_CREATED_EXCHANGE;
     const routingKey = process.env.USER_CREATED_ROUTING_KEY;
-
     channel.publish(exchange, routingKey, Buffer.from(JSON.stringify(data)));
-
     console.log(`User created event published: ${JSON.stringify(data)}`);
+};
 
-}
+rabbitMQExports.publishCreditsAdded = async (data) => {
+    const exchange = process.env.CREDITS_EXCHANGE_NAME;
+    const routingKey = process.env.CREDITS_ADDED_ROUTING_KEY;
+    channel.publish(exchange, routingKey, Buffer.from(JSON.stringify(data)));
+    console.log(`Credits added event published: ${JSON.stringify(data)}`);
+};
 
-
-module.exports = { publishUserCreated, setupRabbitMQ };
+module.exports = { setupRabbitMQ, ...rabbitMQExports };

@@ -30,14 +30,20 @@ const Signup = () => {
     try {
       const response = await axios.post('http://localhost:3005/signup', formData);
       if (response.data.user) {
-        router.push('/login');
+        localStorage.setItem('token', response.data.token);
+        localStorage.setItem('userId', response.data.user._id);
+        router.push('/landing'); // Redirect to landing page
       } else if (response.data.errors) {
         setErrors(response.data.errors);
+      } else if (response.data.message) {
+        setErrors([{ msg: response.data.message }]);
       }
     } catch (error) {
       console.error('Error signing up:', error);
       if (error.response && error.response.data && error.response.data.errors) {
         setErrors(error.response.data.errors);
+      } else if (error.response && error.response.data && error.response.data.message) {
+        setErrors([{ msg: error.response.data.message }]);
       } else {
         setErrors([{ msg: 'An error occurred. Please try again.' }]);
       }

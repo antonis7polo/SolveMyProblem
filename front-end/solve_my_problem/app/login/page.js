@@ -27,16 +27,20 @@ const Login = () => {
     e.preventDefault();
     try {
       const response = await axios.post('http://localhost:3005/login', formData);
+      console.log('Response from server:', response.data); // Log the server response
       if (response.data.token) {
         localStorage.setItem('token', response.data.token);
-        router.push('/');
+        localStorage.setItem('userId', response.data.user.id);
+        router.push('/landing');
       } else if (response.data.errors) {
         setErrors(response.data.errors);
+      } else if (response.data.message) {
+        setErrors([{ msg: response.data.message }]);
       }
     } catch (error) {
       console.error('Error logging in:', error);
-      if (error.response && error.response.data && error.response.data.errors) {
-        setErrors(error.response.data.errors);
+      if (error.response && error.response.data && error.response.data.message) {
+        setErrors([{ msg: error.response.data.message }]);
       } else {
         setErrors([{ msg: 'An error occurred. Please try again.' }]);
       }

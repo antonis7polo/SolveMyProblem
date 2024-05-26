@@ -1,4 +1,5 @@
 const User = require('../models/user');
+const jwt = require('jsonwebtoken');
 const { validationResult } = require('express-validator');
 const { publishUserCreated } = require('../config/rabbitMQ');
 
@@ -15,6 +16,13 @@ exports.createUser = async (req, res) => {
 
         
         await publishUserCreated({ username, email });
+
+        const token = jwt.sign(
+            { user: { id: newUser._id, username: newUser.username, email: newUser.email, isAdmin: newUser.isAdmin } },
+            process.env.SECRET_JWT,
+            { expiresIn: '1h' }
+        );
+
 
         res.status(201).json({ message: 'User created successfully', user: newUser });
     } catch (error) {
