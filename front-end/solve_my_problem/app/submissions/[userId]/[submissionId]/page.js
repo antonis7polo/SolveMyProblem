@@ -149,6 +149,8 @@ const ViewEditSubmission = ({ params }) => {
         return <p>Submission not found</p>;
     }
 
+    const isUpdateEnabled = submission.status === 'ready' || submission.status === 'not_ready';
+
     return (
         <div>
             <h1>View/Edit Submission</h1>
@@ -161,6 +163,7 @@ const ViewEditSubmission = ({ params }) => {
                         type="text"
                         value={name}
                         onChange={(e) => setName(e.target.value)}
+                        disabled={!isUpdateEnabled}
                     />
                 </div>
                 <div>
@@ -168,7 +171,9 @@ const ViewEditSubmission = ({ params }) => {
                 </div>
                 <p><strong>Creator:</strong> {submission.username}</p>
                 <p><strong>Created At:</strong> {new Date(submission.createdAt).toLocaleString()}</p>
-                <p><strong>Updated At:</strong> {new Date(submission.updatedAt).toLocaleString()}</p>
+                {submission.submissionTimestamp && (
+                    <p><strong>Submitted At:</strong> {new Date(submission.submissionTimestamp).toLocaleString()}</p>
+                )}
             </div>
             <div>
                 <h2>Input Data</h2>
@@ -180,6 +185,7 @@ const ViewEditSubmission = ({ params }) => {
                     <input
                         type="file"
                         onChange={(e) => handleFileChange(e, setSolverFile, setSolverMetadata)}
+                        disabled={!isUpdateEnabled}
                     />
                     {solverMetadata.size && (
                         <p>
@@ -196,6 +202,7 @@ const ViewEditSubmission = ({ params }) => {
                     <input
                         type="file"
                         onChange={(e) => handleFileChange(e, setParametersFile, setParametersMetadata)}
+                        disabled={!isUpdateEnabled}
                     />
                     {parametersMetadata.size && (
                         <p>
@@ -219,21 +226,24 @@ const ViewEditSubmission = ({ params }) => {
                     type="number"
                     value={numVehicles}
                     onChange={(e) => setNumVehicles(e.target.value)}
+                    disabled={!isUpdateEnabled}
                 />
                 <p><strong>Depot:</strong></p>
                 <input
                     type="number"
                     value={depot}
                     onChange={(e) => setDepot(e.target.value)}
+                    disabled={!isUpdateEnabled}
                 />
                 <p><strong>Max Distance:</strong></p>
                 <input
                     type="number"
                     value={maxDistance}
                     onChange={(e) => setMaxDistance(e.target.value)}
+                    disabled={!isUpdateEnabled}
                 />
             </div>
-            <button onClick={handleUpdate}>Update Submission</button>
+            <button onClick={handleUpdate} disabled={!isUpdateEnabled}>Update Submission</button>
             <button onClick={handleGoBack}>Back to Submissions</button>
         </div>
     );

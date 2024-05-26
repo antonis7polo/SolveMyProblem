@@ -15,7 +15,10 @@ async function handleMessage(msg, channel) {
             submissionId: data.submissionId,
             name: data.name,
             userId: data.userId,
-            results: data.results
+            results: data.results,
+            creationTimestamp: data.createdAt,
+            updateTimestamp: data.updatedAt,
+            submissionTimestamp: data.submissionTimestamp
         });
 
         try {

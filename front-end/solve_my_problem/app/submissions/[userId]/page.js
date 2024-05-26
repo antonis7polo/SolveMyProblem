@@ -34,7 +34,7 @@ const UserSubmissions = ({ params }) => {
 
     const handleDelete = async (submissionId) => {
         try {
-            await axios.delete(`http://localhost:3000/submission/delete/${submissionId}`);
+            await axios.delete(`http://localhost:3001/submission/delete/${submissionId}`);
             setSubmissions(submissions.filter(submission => submission._id !== submissionId));
         } catch (error) {
             console.error('Error deleting submission:', error);
@@ -52,13 +52,20 @@ const UserSubmissions = ({ params }) => {
         }
     };
 
+    const handleViewResults = (submissionId) => {
+        router.push(`/submissions/${userId}/${submissionId}/results`);
+    };
+
     const handleContinue = async () => {
         try {
             const response = await axios.post(`http://localhost:3002/submission/run`, { problemId: currentSubmissionId });
             console.log(response.data.message);
             setShowModal(false);
+            const updatedTimestamp = new Date().toISOString();
             setSubmissions(submissions.map(submission =>
-                submission._id === currentSubmissionId ? { ...submission, status: 'in_progress' } : submission
+                submission._id === currentSubmissionId
+                    ? { ...submission, status: 'in_progress', updatedAt: updatedTimestamp, submissionTimestamp: updatedTimestamp }
+                    : submission
             ));
         } catch (error) {
             console.error('Error running problem:', error);
@@ -83,8 +90,8 @@ const UserSubmissions = ({ params }) => {
                             <th>Creator</th>
                             <th>Submission Name</th>
                             <th>Created At</th>
-                            <th>Updated At</th>
                             <th>Status</th>
+                            <th>Submission Timestamp</th>
                             <th>Actions</th>
                         </tr>
                         </thead>
@@ -94,12 +101,12 @@ const UserSubmissions = ({ params }) => {
                                 <td>{submission.username}</td>
                                 <td>{submission.name}</td>
                                 <td>{new Date(submission.createdAt).toLocaleString()}</td>
-                                <td>{new Date(submission.updatedAt).toLocaleString()}</td>
                                 <td>{submission.status}</td>
+                                <td>{submission.submissionTimestamp ? new Date(submission.submissionTimestamp).toLocaleString() : 'N/A'}</td>
                                 <td>
                                     <button onClick={() => handleViewSubmission(submission._id)}>View</button>
                                     {submission.status === 'ready' && <button onClick={() => handleRun(submission._id)}>Run</button>}
-                                    {submission.status === 'completed' && <button>View Results</button>}
+                                    {submission.status === 'completed' && <button onClick={() => handleViewResults(submission._id)}>View Results</button>}
                                     <button onClick={() => handleDelete(submission._id)}>Delete</button>
                                 </td>
                             </tr>
@@ -147,4 +154,3 @@ const UserSubmissions = ({ params }) => {
 };
 
 export default UserSubmissions;
-

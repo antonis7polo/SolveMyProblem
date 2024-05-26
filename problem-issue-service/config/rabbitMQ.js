@@ -91,7 +91,7 @@ async function handleMessage(msg, queueName) {
                         name: messageContent.data.name,
                         userId: messageContent.data.userId,
                         username: messageContent.data.username,
-                        inputData: messageContent.data.inputData
+                        inputData: messageContent.data.inputData,
                     });
                     console.log('Problem inserted successfully:', result);
                 } else if (action === 'delete') {
@@ -103,7 +103,7 @@ async function handleMessage(msg, queueName) {
                         name: messageContent.data.name,
                         userId: messageContent.data.userId,
                         username: messageContent.data.username,
-                        inputData: messageContent.data.inputData
+                        inputData: messageContent.data.inputData,
                     });
                     console.log('Problem updated successfully:', result);
                 }
@@ -143,7 +143,8 @@ async function publishToSubmissionsQueue(data) {
     const message = JSON.stringify({
         submissionId: data.submissionId,
         action: data.action,
-        status: data.status
+        status: data.status,
+        submissionTimestamp: data.submissionTimestamp
     })
 
     await channel.publish(process.env.PROGRESS_EXCHANGE_NAME, process.env.PROGRESS_ROUTING_KEY, Buffer.from(message));

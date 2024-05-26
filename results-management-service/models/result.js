@@ -6,8 +6,9 @@ const resultSchema = new mongoose.Schema({
     name: String,
     userId: {type: Schema.Types.ObjectId, required: true, unique: true},
     results: String,
+    creationTimestamp: { type: Date },
+    updateTimestamp: { type: Date },
+    submissionTimestamp: { type: Date }
 } , { timestamps: true });
 
 module.exports = mongoose.models.Result || mongoose.model('Result', resultSchema);
-
-

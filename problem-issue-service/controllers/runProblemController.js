@@ -1,4 +1,3 @@
-// runProblemController.js
 const Account = require('../models/account');
 const Problem = require('../models/problem');
 const { publishToSolverQueue, publishCreditsUpdate, publishToSubmissionsQueue } = require('../config/rabbitMQ');
@@ -36,13 +35,17 @@ exports.runProblem = async (req, res) => {
 
         await publishCreditsUpdate(userId, -costOfSolution);
 
+        const submissionTimestamp = new Date().toISOString();
+        problem.submissionTimestamp = submissionTimestamp;
+
         await publishToSolverQueue({
             submissionId: problem.submissionId,
             name: problem.name,
             userId: userId,
             inputData: problem.inputData,
             createdAt: problem.createdAt,
-            updatedAt: problem.updatedAt
+            updatedAt: problem.updatedAt,
+            submissionTimestamp: submissionTimestamp
         });
 
         await Problem.deleteOne({ submissionId: problemId });
@@ -51,7 +54,8 @@ exports.runProblem = async (req, res) => {
         await publishToSubmissionsQueue({
             submissionId: problem.submissionId,
             action: "update",
-            status: "in_progress"
+            status: "in_progress",
+            submissionTimestamp: submissionTimestamp
         });
 
         res.json({ message: "Problem submitted for solving, credits deducted." });

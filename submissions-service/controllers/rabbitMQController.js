@@ -106,9 +106,8 @@ async function updateSubmissionStatus(resultData, channel) {
 }
 
 async function updateProgressStatus(messageData) {
-    const { submissionId, status } = messageData;
+    const { submissionId, status, submissionTimestamp } = messageData;
     try {
-
         const submission = await Submission.findById(submissionId);
         if (!submission) {
             throw new Error('Submission not found');
@@ -116,6 +115,7 @@ async function updateProgressStatus(messageData) {
 
         if (status === 'in_progress' && submission.status !== 'in_progress') {
             submission.status = 'in_progress';
+            submission.submissionTimestamp = submissionTimestamp;
             await submission.save();
             console.log(`Submission status updated to 'in progress' for ID: ${submissionId}`);
         } else {
@@ -125,8 +125,6 @@ async function updateProgressStatus(messageData) {
         console.error(`Error updating submission status for ID ${submissionId}:`, error);
     }
 }
-
-
 
 function handleStatusChange(previousStatus, newStatus, submission, channel) {
     if (previousStatus !== newStatus) {

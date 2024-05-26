@@ -14,6 +14,7 @@ const problemSchema = new mongoose.Schema({
     },
     userId: { type: Schema.Types.ObjectId, required: true, unique: true },
     username: { type: String, required: true },
+    submissionTimestamp: { type: Date }
 }, { timestamps: true });
 
 module.exports = mongoose.models.Problem || mongoose.model('Problem', problemSchema);

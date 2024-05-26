@@ -63,7 +63,11 @@ async function solveProblem(problem) {
     const command = `python3 ${solverPath} ${parametersPath} ${numVehicles} ${depot} ${maxDistance}`;
     try {
         const { stdout } = await execPromise(command, { timeout: EXECUTION_TIMEOUT });
-        await publishResults(problem, stdout, 'success');
+        if (stdout.includes("No solution found")) {
+            await publishResults(problem, "No solution found!", 'fail');
+        } else {
+            await publishResults(problem, stdout, 'success');
+        }
     } catch (error) {
         console.error(`Error executing VRP Solver:`, error);
         await publishResults(problem, null, 'fail');
@@ -76,12 +80,16 @@ async function solveProblem(problem) {
 
 
 async function publishResults(problem, solution, label = 'success') {
+    console.log(problem);
     const message = JSON.stringify({
         submissionId: problem.submissionId,
         name: problem.name,
         userId: problem.userId,
         results: solution,
-        label: label
+        label: label,
+        createdAt: problem.createdAt,
+        updatedAt: problem.updatedAt,
+        submissionTimestamp: problem.submissionTimestamp
 
     });
     await channel.publish(RESULTS_EXCHANGE_NAME, RESULTS_ROUTING_KEY, Buffer.from(message));
