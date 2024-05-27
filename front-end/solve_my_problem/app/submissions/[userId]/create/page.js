@@ -3,6 +3,8 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useRouter } from 'next/navigation';
+import withAuth from '../../../utils/withAuth';
+
 
 const CreateProblem = ({ params }) => {
     const { userId } = params;
@@ -122,4 +124,4 @@ const CreateProblem = ({ params }) => {
     );
 };
 
-export default CreateProblem;
+export default withAuth(CreateProblem);

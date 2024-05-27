@@ -59,4 +59,10 @@
     margin: 1rem 0;
     padding: 0.5rem;
   }
-  
+
+  .expiredMessage {
+    color: red;
+    font-weight: bold;
+    margin: 20px 0;
+    text-align: center;
+  }

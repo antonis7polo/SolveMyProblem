@@ -27,13 +27,14 @@ const Login = () => {
     e.preventDefault();
     try {
       const response = await axios.post('http://localhost:3005/login', formData);
-      console.log('Response from server:', response.data); 
+      console.log('Response from server:', response.data);
       if (response.data.token) {
+        const expirationTime = new Date().getTime() + 60 * 60 * 1000; // 1 hour
         localStorage.setItem('token', response.data.token);
+        localStorage.setItem('tokenExpiration', expirationTime);
         localStorage.setItem('userId', response.data.user.id);
         localStorage.setItem('username', response.data.user.username);
-        //router.push('/submissions/' + response.data.user.id);
-        router.push('/landing');
+        router.push('/submissions/' + response.data.user.id);
       } else if (response.data.errors) {
         setErrors(response.data.errors);
       } else if (response.data.message) {

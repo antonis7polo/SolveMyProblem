@@ -3,6 +3,8 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useRouter } from 'next/navigation';
+import withAuth from '../../../utils/withAuth';
+
 
 const ViewEditSubmission = ({ params }) => {
     const { userId, submissionId } = params;
@@ -249,4 +251,4 @@ const ViewEditSubmission = ({ params }) => {
     );
 };
 
-export default ViewEditSubmission;
+export default withAuth(ViewEditSubmission);

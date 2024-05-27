@@ -1,5 +1,6 @@
 // app/analytics/page.js
 "use client";
+import withAuth from '../utils/withAuth';
 
 import { useEffect, useState } from 'react';
 import axios from 'axios';
@@ -352,4 +353,4 @@ const Analytics = () => {
     );
 };
 
-export default Analytics;
+export default withAuth(Analytics);

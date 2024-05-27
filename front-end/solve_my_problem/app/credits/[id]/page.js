@@ -6,6 +6,8 @@ import { useRouter } from 'next/navigation';
 import { loadStripe } from '@stripe/stripe-js';
 import { Elements, CardElement, useStripe, useElements } from '@stripe/react-stripe-js';
 import styles from './Credits.module.css';
+import withAuth from '../../utils/withAuth';
+
 require('dotenv').config();
 
 const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLIC_KEY);
@@ -149,4 +151,4 @@ const StripePaymentForm = ({ id, creditsChange }) => {
   );
 };
 
-export default Credits;
+export default withAuth(Credits);

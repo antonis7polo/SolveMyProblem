@@ -5,6 +5,8 @@ import axios from 'axios';
 import { useRouter } from 'next/navigation';
 import { Bar } from 'react-chartjs-2';
 import { Chart, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend } from 'chart.js';
+import withAuth from '../../../../utils/withAuth';
+
 
 Chart.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
@@ -126,4 +128,4 @@ const ViewResults = ({ params }) => {
     );
 };
 
-export default ViewResults;
+export default withAuth(ViewResults);

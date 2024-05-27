@@ -2,6 +2,7 @@
 import axios from 'axios';
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import withAuth from '../../utils/withAuth';
 
 const UserSubmissions = ({ params }) => {
     const router = useRouter();
@@ -159,4 +160,4 @@ const UserSubmissions = ({ params }) => {
     );
 };
 
-export default UserSubmissions;
+export default withAuth(UserSubmissions);

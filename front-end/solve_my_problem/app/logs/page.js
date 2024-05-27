@@ -1,5 +1,7 @@
 // app/logs/page.js
 "use client";
+import withAuth from '../utils/withAuth';
+
 
 import { useEffect, useState } from 'react';
 import axios from 'axios';
@@ -131,4 +133,4 @@ const Logs = () => {
     );
 };
 
-export default Logs;
+export default withAuth(Logs);
