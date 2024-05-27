@@ -31,7 +31,8 @@ const Login = () => {
       if (response.data.token) {
         localStorage.setItem('token', response.data.token);
         localStorage.setItem('userId', response.data.user.id);
-        router.push('/landing');
+        localStorage.setItem('username', response.data.user.username);
+        router.push('/submissions/' + response.data.user.id);
       } else if (response.data.errors) {
         setErrors(response.data.errors);
       } else if (response.data.message) {

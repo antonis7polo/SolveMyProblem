@@ -16,7 +16,9 @@ const UserSubmissions = ({ params }) => {
     useEffect(() => {
         const fetchSubmissions = async () => {
             try {
-                const response = await axios.get(`http://localhost:3000/submission/${userId}`);
+                const response = await axios.get(`http://localhost:3000/submission/${userId}`, {
+                    headers: { 'X-OBSERVATORY-AUTH': localStorage.getItem('token') }
+                });
                 setSubmissions(response.data);
             } catch (error) {
                 console.error('Error fetching submissions:', error);
@@ -34,7 +36,9 @@ const UserSubmissions = ({ params }) => {
 
     const handleDelete = async (submissionId) => {
         try {
-            await axios.delete(`http://localhost:3001/submission/delete/${submissionId}`);
+            await axios.delete(`http://localhost:3001/submission/delete/${submissionId}`, {
+                headers: { 'X-OBSERVATORY-AUTH': localStorage.getItem('token') }
+            });
             setSubmissions(submissions.filter(submission => submission._id !== submissionId));
         } catch (error) {
             console.error('Error deleting submission:', error);
@@ -43,7 +47,9 @@ const UserSubmissions = ({ params }) => {
 
     const handleRun = async (submissionId) => {
         try {
-            const response = await axios.get(`http://localhost:3002/submission/cost/${submissionId}`);
+            const response = await axios.get(`http://localhost:3002/submission/cost/${submissionId}`, {
+                headers: { 'X-OBSERVATORY-AUTH': localStorage.getItem('token') }
+            });
             setCost(response.data.cost);
             setCurrentSubmissionId(submissionId);
             setShowModal(true);

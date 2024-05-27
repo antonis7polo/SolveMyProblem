@@ -42,14 +42,15 @@ const Credits = ({ params }) => {
 
     try {
       const response = await axios.post(
-        'http://localhost:3005/credits',
-        { userId: id, creditsChange: Number(creditsChange) },
+        'http://localhost:3004/credits/add',
+        { id: id, amount: Number(creditsChange) },
         {
           headers: { 'X-OBSERVATORY-AUTH': token },
         }
       );
 
       if (response.data.message) {
+        console.log('Credits updated successfully:', response.data.message);
         router.push('/landing');
       }
     } catch (error) {

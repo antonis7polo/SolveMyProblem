@@ -13,22 +13,7 @@ const CreateProblem = ({ params }) => {
     const [pythonFile, setPythonFile] = useState(null);
     const [jsonFile, setJsonFile] =useState(null);
     const [loading, setLoading] = useState(false);
-    const [username, setUsername] = useState('');
     const router = useRouter();
-
-    useEffect(() => {
-        const fetchUsername = async () => {
-            try {
-                const response = await axios.get(`http://localhost:3005/user/${userId}`);
-                setUsername(response.data.userData.username);
-                console.log('Username:', response.data.userData.username);
-            } catch (error) {
-                console.error('Error fetching username:', error);
-            }
-        };
-
-        fetchUsername();
-    }, [userId]);
 
     const handleFileChange = (e) => {
         if (e.target.name === 'pythonFile') {
@@ -42,6 +27,7 @@ const CreateProblem = ({ params }) => {
         e.preventDefault();
         setLoading(true);
         const formData = new FormData();
+        const username = localStorage.getItem('username');
         formData.append('pythonFile', pythonFile);
         formData.append('jsonFile', jsonFile);
         formData.append('name', name);
