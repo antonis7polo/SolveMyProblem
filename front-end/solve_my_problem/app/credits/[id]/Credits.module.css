@@ -1,62 +1,54 @@
-/* app/landing/Landing.module.css */
 .container {
-    display: flex;
-    flex-direction: column;
-    height: 100vh;
-  }
-  
-  .header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 1rem;
-    background-color: #f0f0f0;
-  }
-  
-  .userInfo {
-    display: flex;
-    align-items: center;
-  }
-  
-  .userInfo span {
-    margin-right: 1rem;
-  }
-  
-  .content {
-    flex-grow: 1;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
-  
-  .logoArea {
-    width: 70%;
-    height: 70%;
-    background-color: #e0e0e0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
-  
-  .footer {
-    padding: 1rem;
-    background-color: #f0f0f0;
-    text-align: center;
-  }
-  
-  /* app/credits/Credits.module.css */
-  .container {
-    padding: 1rem;
-  }
-  
-  .balanceInfo {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-  }
-  
-  .balanceInfo input {
-    margin: 1rem 0;
-    padding: 0.5rem;
-  }
-  
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  background-color: #f9f9f9;
+}
+
+.balanceInfo {
+  margin-top: 20px;
+}
+
+.input {
+  width: 100%;
+  padding: 10px;
+  margin: 10px 0;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.paymentForm {
+  margin-top: 20px;
+}
+
+.cardElement {
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.button {
+  padding: 10px 20px;
+  margin-top: 10px;
+  border: none;
+  border-radius: 5px;
+  background-color: #0070f3;
+  color: white;
+  cursor: pointer;
+}
+
+.button:disabled {
+  background-color: #cccccc;
+}
+
+.cost {
+  margin-top: 10px;
+  font-weight: bold;
+}
+
+.message {
+  margin-top: 10px;
+  color: red;
+}

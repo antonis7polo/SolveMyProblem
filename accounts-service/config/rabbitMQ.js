@@ -1,5 +1,5 @@
 const amqp = require('amqplib');
-const rabbitMQExports = {};
+const User = require('../models/user');
 
 let connection = null;
 let channel = null;
@@ -47,26 +47,46 @@ async function configureRabbitMQ() {
 
 async function consumeMessages(queueName) {
     console.log(`Listening for messages on queue ${queueName}`);
-    channel.consume(queueName, (msg) => {
+    channel.consume(queueName, async (msg) => {
         if (msg) {
+            const messageContent = JSON.parse(msg.content.toString());
+            await processMessage(messageContent);
             channel.ack(msg);
         }
     }, { noAck: false });
 }
 
+async function processMessage(message) {
+    const { action, data } = message;
+    const { userID, creditsChange } = data;
 
-rabbitMQExports.publishUserCreated = async (data) => {
+    if (action === 'update') {
+        await updateCredits(userID, creditsChange);
+    }
+}
+
+async function updateCredits(userId, creditsChange) {
+    try {
+        const user = await User.findById(userId);
+        if (user) {
+            user.credits += creditsChange;
+            await user.save();
+            console.log(`Credits updated for user ${userId}: ${creditsChange} credits added`);
+        } else {
+            console.log(`User not found: ${userId}`);
+        }
+    } catch (error) {
+        console.error(`Failed to update credits for user ${userId}:`, error);
+    }
+}
+
+
+async function publishUserCreated(data) {
     const exchange = process.env.USER_CREATED_EXCHANGE;
     const routingKey = process.env.USER_CREATED_ROUTING_KEY;
     channel.publish(exchange, routingKey, Buffer.from(JSON.stringify(data)));
     console.log(`User created event published: ${JSON.stringify(data)}`);
-};
+}
 
-rabbitMQExports.publishCreditsAdded = async (data) => {
-    const exchange = process.env.CREDITS_EXCHANGE_NAME;
-    const routingKey = process.env.CREDITS_ADDED_ROUTING_KEY;
-    channel.publish(exchange, routingKey, Buffer.from(JSON.stringify(data)));
-    console.log(`Credits added event published: ${JSON.stringify(data)}`);
-};
 
-module.exports = { setupRabbitMQ, ...rabbitMQExports };
+module.exports = { setupRabbitMQ, publishUserCreated };
