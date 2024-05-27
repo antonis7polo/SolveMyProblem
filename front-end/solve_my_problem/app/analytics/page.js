@@ -1,6 +1,5 @@
 // app/analytics/page.js
 "use client";
-import withAuth from '../utils/withAuth';
 
 import { useEffect, useState } from 'react';
 import axios from 'axios';
@@ -14,7 +13,7 @@ const Analytics = () => {
     useEffect(() => {
         const fetchAnalytics = async () => {
             try {
-                const response = await axios.get('http://localhost:3000/analytics');
+                const response = await axios.get('http://localhost:3005/analytics');
                 const data = response.data;
 
                 data.totalCPUTimePerHour = rotateHourlyData(data.totalCPUTimePerHour);
@@ -353,4 +352,4 @@ const Analytics = () => {
     );
 };
 
-export default withAuth(Analytics);
+export default Analytics;

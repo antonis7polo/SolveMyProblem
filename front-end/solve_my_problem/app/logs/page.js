@@ -1,7 +1,5 @@
 // app/logs/page.js
 "use client";
-import withAuth from '../utils/withAuth';
-
 
 import { useEffect, useState } from 'react';
 import axios from 'axios';
@@ -19,7 +17,7 @@ const Logs = () => {
     useEffect(() => {
         const fetchLogs = async () => {
             try {
-                const response = await axios.get('http://localhost:3000/logs');
+                const response = await axios.get('http://localhost:3005/logs');
                 setLogs(response.data);
                 setFilteredLogs(response.data);
             } catch (error) {
@@ -84,12 +82,12 @@ const Logs = () => {
                     <thead>
                         <tr>
                             <th>Log ID</th>
-                            <th>Event Type</th>
+                            <th>Log Type</th>
                             <th>User ID</th>
                             <th>Execution Timestamp</th>
-                            <th>Results ID</th>
                             <th>Submission ID</th>
                             <th>Submission Name</th>
+                            <th>Results ID</th>
                             <th>Label</th>
                             <th>Resource Usage</th>
                             <th>CPU Time</th>
@@ -108,9 +106,9 @@ const Logs = () => {
                                 <td>{new Date(log.executionTimestamp).toLocaleString()}</td>
                                 {log.eventType === 'results' ? (
                                     <>
-                                        <td>{log.resultsId}</td>
                                         <td>{log.submissionId}</td>
-                                        <td>{log.submissionName}</td>
+                                        <td>{log.name}</td>
+                                        <td>{log.resultsId}</td>
                                         <td>{log.label}</td>
                                         <td>{log.resourceUsage}</td>
                                         <td>{log.cpuTime}</td>
@@ -133,4 +131,4 @@ const Logs = () => {
     );
 };
 
-export default withAuth(Logs);
+export default Logs;

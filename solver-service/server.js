@@ -60,17 +60,54 @@ async function solveProblem(problem) {
     fs.writeFileSync(solverPath, Buffer.from(solver, 'base64'));
     fs.writeFileSync(parametersPath, Buffer.from(parameters, 'base64'));
 
+    //const command = `python ${solverPath} ${parametersPath} ${numVehicles} ${depot} ${maxDistance}`;
     const command = `python3 ${solverPath} ${parametersPath} ${numVehicles} ${depot} ${maxDistance}`;
+    const startTime = process.hrtime();
+    const cpuStartTime = process.cpuUsage();
+    const executionTimestamp = new Date();
+    const submissionTimestamp = new Date(problem.submissionTimestamp);
+    const queueTime = executionTimestamp - submissionTimestamp; // in milliseconds
+
     try {
         const { stdout } = await execPromise(command, { timeout: EXECUTION_TIMEOUT });
+
+        const endTime = process.hrtime(startTime);
+        const cpuEndTime = process.cpuUsage(cpuStartTime);
+
+        const taskCompletionTime = endTime[0] * 1000 + endTime[1] / 1000000; // in milliseconds
+        const cpuTime = (cpuEndTime.user + cpuEndTime.system) / 1000; // in milliseconds
+
+        const logInfo = {
+            taskCompletionTime,
+            cpuTime,
+            executionTimestamp: executionTimestamp.toISOString(),
+            resourceUsage: problem.costOfSolution,
+            queueTime 
+        };
+
         if (stdout.includes("No solution found")) {
-            await publishResults(problem, "No solution found!", 'fail');
+            await publishResults(problem, "No solution found!", 'fail', logInfo);
         } else {
-            await publishResults(problem, stdout, 'success');
+            await publishResults(problem, stdout, 'success', logInfo);
         }
     } catch (error) {
         console.error(`Error executing VRP Solver:`, error);
-        await publishResults(problem, null, 'fail');
+
+        const endTime = process.hrtime(startTime);
+        const cpuEndTime = process.cpuUsage(cpuStartTime);
+
+        const taskCompletionTime = endTime[0] * 1000 + endTime[1] / 1000000; // in milliseconds
+        const cpuTime = (cpuEndTime.user + cpuEndTime.system) / 1000; // in milliseconds
+
+        const logInfo = {
+            taskCompletionTime,
+            cpuTime,
+            executionTimestamp: executionTimestamp.toISOString(),
+            resourceUsage: problem.costOfSolution,
+            queueTime
+        };
+
+        await publishResults(problem, null, 'fail', logInfo);
     } finally {
         // Cleanup files after execution
         fs.unlinkSync(solverPath);
@@ -79,7 +116,7 @@ async function solveProblem(problem) {
 }
 
 
-async function publishResults(problem, solution, label = 'success') {
+async function publishResults(problem, solution, label = 'success', logInfo) {
     console.log(problem);
     const message = JSON.stringify({
         submissionId: problem.submissionId,
@@ -89,8 +126,12 @@ async function publishResults(problem, solution, label = 'success') {
         label: label,
         createdAt: problem.createdAt,
         updatedAt: problem.updatedAt,
-        submissionTimestamp: problem.submissionTimestamp
-
+        submissionTimestamp: problem.submissionTimestamp,
+        taskCompletionTime: logInfo.taskCompletionTime,
+        cpuTime: logInfo.cpuTime,
+        executionTimestamp: logInfo.executionTimestamp,
+        resourceUsage: logInfo.resourceUsage,
+        queueTime: logInfo.queueTime
     });
     await channel.publish(RESULTS_EXCHANGE_NAME, RESULTS_ROUTING_KEY, Buffer.from(message));
     console.log(`Solution published to results queue with status ${label}`);

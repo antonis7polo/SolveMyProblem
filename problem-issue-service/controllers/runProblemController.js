@@ -45,7 +45,8 @@ exports.runProblem = async (req, res) => {
             inputData: problem.inputData,
             createdAt: problem.createdAt,
             updatedAt: problem.updatedAt,
-            submissionTimestamp: submissionTimestamp
+            submissionTimestamp: submissionTimestamp,
+            costOfSolution: costOfSolution
         });
 
         await Problem.deleteOne({ submissionId: problemId });

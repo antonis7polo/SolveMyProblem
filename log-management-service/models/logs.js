@@ -8,14 +8,9 @@ const logsSchema = new mongoose.Schema({
         required: true
     },
     userId: {
-        type: Number,
-        required: true
-    },
-    resultsId: {
+        //type: Number,
         type: mongoose.Schema.Types.ObjectId,
-        required: function() {
-            return this.eventType === 'results';
-        }
+        required: true
     },
     submissionId: {
         type: mongoose.Schema.Types.ObjectId,
@@ -23,7 +18,7 @@ const logsSchema = new mongoose.Schema({
             return this.eventType === 'results';
         }
     },
-    submissionName: {
+    name: {
         type: String,
         required: function() {
             return this.eventType === 'results';
@@ -34,6 +29,12 @@ const logsSchema = new mongoose.Schema({
         enum: ['success', 'fail'],
         required: function() {
             return this.eventType === 'results';
+        }
+    },
+    resultsId: {
+        type: mongoose.Schema.Types.ObjectId,
+        required: function() {
+            return this.eventType === 'results' && this.label === 'success';
         }
     },
     resourceUsage: {

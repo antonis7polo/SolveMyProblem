@@ -13,9 +13,12 @@ exports.createUser = async (req, res) => {
         const { username, email, password} = req.body;
         const newUser = new User({ username, email, password, isAdmin: false });
         await newUser.save();
-
         
-        await publishUserCreated({ username, email });
+        //await publishUserCreated({ username, email });
+
+        //for logs - not tested
+        const executionTimestamp = new Date();
+        await publishUserCreated({ userId: newUser._id, executionTimestamp: executionTimestamp.toISOString()}); 
 
         const token = jwt.sign(
             { user: { id: newUser._id, username: newUser.username, email: newUser.email, isAdmin: newUser.isAdmin } },

@@ -30,7 +30,7 @@ async function handleResultsStored(messageData) {
     console.log(`Processing results message with data: ${JSON.stringify(messageData)}`);
     try {
         const {
-            userId, resultsId, submissionId, submissionName, label, resourceUsage,
+            userId, resultsId, submissionId, name, label, resourceUsage,
             cpuTime, taskCompletionTime, queueTime, executionTimestamp
         } = messageData;
 
@@ -39,7 +39,7 @@ async function handleResultsStored(messageData) {
             userId,
             resultsId,
             submissionId,
-            submissionName,
+            name,
             label,
             resourceUsage,
             cpuTime,

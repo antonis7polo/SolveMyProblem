@@ -31,7 +31,13 @@ async function handleMessage(msg, channel) {
             }, channel);
 
             publishToLog({
-                ...data
+                ...data,
+                resultsId: newResult._id,
+                taskCompletionTime: data.taskCompletionTime,
+                cpuTime: data.cpuTime,
+                resourceUsage: data.resourceUsage,
+                queueTime: data.queueTime,
+                executionTimestamp: data.executionTimestamp
             }, channel);
         } catch (error) {
             console.error('Error saving result:', error);
@@ -44,6 +50,12 @@ async function handleMessage(msg, channel) {
 
         publishToLog({
             ...data,
+            resultsId: null,
+            taskCompletionTime: data.taskCompletionTime,
+            cpuTime: data.cpuTime,
+            resourceUsage: data.resourceUsage,
+            queueTime: data.queueTime,
+            executionTimestamp: data.executionTimestamp,
             label: 'fail'
         }, channel);
     } else if (data.action === 'delete') {
@@ -63,12 +75,22 @@ function publishToSubmissions(data, channel) {
     console.log("Published to submissions queue:", data);
 }
 
-function publishToLog(data, channel) {
-    const message = Buffer.from(JSON.stringify(data));
-    channel.publish(process.env.LOG_EXCHANGE, process.env.LOG_ROUTING_KEY, message, {persistent: true});
-    console.log("Published to log queue:", data);
-}
 
+function publishToLog(data, channel) {
+    const logData = {
+        ...data,
+        resultsId: data.resultsId,
+        taskCompletionTime: data.taskCompletionTime,
+        cpuTime: data.cpuTime,
+        resourceUsage: data.resourceUsage,
+        queueTime: data.queueTime,
+        executionTimestamp: data.executionTimestamp
+    };
+
+    const message = Buffer.from(JSON.stringify(logData));
+    channel.publish(process.env.LOG_EXCHANGE, process.env.LOG_ROUTING_KEY, message, { persistent: true });
+    console.log("Published to log queue:", logData);
+}
 
 
 module.exports = { handleMessage };
