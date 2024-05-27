@@ -4,7 +4,7 @@ import { useState } from 'react';
 import axios from 'axios';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import styles from './Login.module.css';
+import styles from '../styles/Login.module.css';
 
 const Login = () => {
   const [formData, setFormData] = useState({
@@ -27,12 +27,13 @@ const Login = () => {
     e.preventDefault();
     try {
       const response = await axios.post('http://localhost:3005/login', formData);
-      console.log('Response from server:', response.data); // Log the server response
+      console.log('Response from server:', response.data); 
       if (response.data.token) {
         localStorage.setItem('token', response.data.token);
         localStorage.setItem('userId', response.data.user.id);
         localStorage.setItem('username', response.data.user.username);
-        router.push('/submissions/' + response.data.user.id);
+        //router.push('/submissions/' + response.data.user.id);
+        router.push('/landing');
       } else if (response.data.errors) {
         setErrors(response.data.errors);
       } else if (response.data.message) {
@@ -50,36 +51,41 @@ const Login = () => {
 
   return (
     <div className={styles.container}>
-      <h1 className={styles.heading}>Login</h1>
-      <form onSubmit={handleSubmit} className={styles.form}>
-        <input
-          type="email"
-          name="email"
-          placeholder="Enter your email"
-          value={formData.email}
-          onChange={handleChange}
-          required
-          className={styles.input}
-        />
-        <input
-          type="password"
-          name="password"
-          placeholder="Enter your password"
-          value={formData.password}
-          onChange={handleChange}
-          required
-          className={styles.input}
-        />
-        <button type="submit" className={styles.button}>Login</button>
-      </form>
-      {errors.length > 0 && (
-        <ul className={styles.errorList}>
-          {errors.map((error, index) => (
-            <li key={index} className={styles.error}>{error.msg}</li>
-          ))}
-        </ul>
-      )}
-      <p>Don't have an account? <Link href="/signup" className={styles.link}>Signup</Link></p>
+      <div className={styles.imageContainer}>
+        <img src="/login.png" alt="Login illustration" className={styles.image} />
+      </div>
+      <div className={styles.formContainer}>
+        <h1 className={styles.heading}>Sign in</h1>
+        <form onSubmit={handleSubmit} className={styles.form}>
+          <input
+            type="email"
+            name="email"
+            placeholder="Your email"
+            value={formData.email}
+            onChange={handleChange}
+            required
+            className={styles.input}
+          />
+          <input
+            type="password"
+            name="password"
+            placeholder="Password"
+            value={formData.password}
+            onChange={handleChange}
+            required
+            className={styles.input}
+          />
+          <button type="submit" className={styles.button}>Log in</button>
+        </form>
+        {errors.length > 0 && (
+          <ul className={styles.errorList}>
+            {errors.map((error, index) => (
+              <li key={index} className={styles.error}>{error.msg}</li>
+            ))}
+          </ul>
+        )}
+        <p>Don't have an account? <Link href="/signup" className={styles.link}>Create an account</Link></p>
+      </div>
     </div>
   );
 };
