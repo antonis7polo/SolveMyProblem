@@ -14,6 +14,7 @@ const Signup = () => {
     email: '',
     password: '',
     repassword: '',
+    isAdmin: false,
   });
 
   const [errors, setErrors] = useState([]);
@@ -29,12 +30,20 @@ const Signup = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (formData.password !== formData.repassword) {
+      setErrors([{ msg: 'Passwords do not match' }]);
+      return;
+    }
+
     try {
       const response = await axios.post('http://localhost:3005/signup', formData);
       if (response.data.user) {
+        const expirationTime = new Date().getTime() + 60 * 60 * 1000; // 1 hour
         localStorage.setItem('token', response.data.token);
-        localStorage.setItem('userId', response.data.user._id);
-        router.push('/landing'); // Redirect to landing page
+        localStorage.setItem('tokenExpiration', expirationTime);
+        localStorage.setItem('userId', response.data.user.id);
+        localStorage.setItem('username', response.data.user.username);
+        router.push(`/submissions/${response.data.user.id}`);
       } else if (response.data.errors) {
         setErrors(response.data.errors);
       } else if (response.data.message) {
@@ -53,75 +62,75 @@ const Signup = () => {
   };
 
   return (
-    <div className={styles.container}>
-      <div className={styles.formContainer}>
-        <h1 className={styles.heading}>Sign up</h1>
-        <form onSubmit={handleSubmit} className={styles.form}>
-          <div className={styles.inputGroup}>
-            <FontAwesomeIcon icon={faUser} className={styles.icon} />
-            <input
-              type="text"
-              name="username"
-              placeholder="Your username"
-              value={formData.username}
-              onChange={handleChange}
-              required
-              className={styles.input}
-            />
-          </div>
-          <div className={styles.inputGroup}>
-            <FontAwesomeIcon icon={faEnvelope} className={styles.icon} />
-            <input
-              type="email"
-              name="email"
-              placeholder="Your Email"
-              value={formData.email}
-              onChange={handleChange}
-              required
-              className={styles.input}
-            />
-          </div>
-          <div className={styles.inputGroup}>
-            <FontAwesomeIcon icon={faLock} className={styles.icon} />
-            <input
-              type="password"
-              name="password"
-              placeholder="Password"
-              value={formData.password}
-              onChange={handleChange}
-              required
-              className={styles.input}
-            />
-          </div>
-          <div className={styles.inputGroup}>
-            <FontAwesomeIcon icon={faLock} className={styles.icon} />
-            <input
-              type="password"
-              name="repassword"
-              placeholder="Repeat your password"
-              value={formData.repassword}
-              onChange={handleChange}
-              required
-              className={styles.input}
-            />
-          </div>
-          <button type="submit" className={styles.button}>Register</button>
-        </form>
-        {errors.length > 0 && (
-          <ul className={styles.errorList}>
-            {errors.map((error, index) => (
-              <li key={index} className={styles.error}>{error.msg}</li>
-            ))}
-          </ul>
-        )}
+      <div className={styles.container}>
+        <div className={styles.formContainer}>
+          <h1 className={styles.heading}>Sign up</h1>
+          <form onSubmit={handleSubmit} className={styles.form}>
+            <div className={styles.inputGroup}>
+              <FontAwesomeIcon icon={faUser} className={styles.icon} />
+              <input
+                  type="text"
+                  name="username"
+                  placeholder="Your username"
+                  value={formData.username}
+                  onChange={handleChange}
+                  required
+                  className={styles.input}
+              />
+            </div>
+            <div className={styles.inputGroup}>
+              <FontAwesomeIcon icon={faEnvelope} className={styles.icon} />
+              <input
+                  type="email"
+                  name="email"
+                  placeholder="Your Email"
+                  value={formData.email}
+                  onChange={handleChange}
+                  required
+                  className={styles.input}
+              />
+            </div>
+            <div className={styles.inputGroup}>
+              <FontAwesomeIcon icon={faLock} className={styles.icon} />
+              <input
+                  type="password"
+                  name="password"
+                  placeholder="Password"
+                  value={formData.password}
+                  onChange={handleChange}
+                  required
+                  className={styles.input}
+              />
+            </div>
+            <div className={styles.inputGroup}>
+              <FontAwesomeIcon icon={faLock} className={styles.icon} />
+              <input
+                  type="password"
+                  name="repassword"
+                  placeholder="Repeat your password"
+                  value={formData.repassword}
+                  onChange={handleChange}
+                  required
+                  className={styles.input}
+              />
+            </div>
+            <button type="submit" className={styles.button}>Register</button>
+          </form>
+          {errors.length > 0 && (
+              <ul className={styles.errorList}>
+                {errors.map((error, index) => (
+                    <li key={index} className={styles.error}>{error.msg}</li>
+                ))}
+              </ul>
+          )}
+        </div>
+        <div className={styles.imageContainer}>
+          <img src="/signup.png" alt="Signup illustration" className={styles.image} />
+          <p className={styles.memberLink}>
+            <Link href="/login" className={styles.link}>I already have an account</Link>
+          </p>
+        </div>
       </div>
-      <div className={styles.imageContainer}>
-        <img src="/signup.png" alt="Signup illustration" className={styles.image} />
-        <p className={styles.memberLink}>
-          <Link href="/login" className={styles.link}>I already have an account</Link>
-        </p>
-      </div>
-    </div>
   );
 };
 

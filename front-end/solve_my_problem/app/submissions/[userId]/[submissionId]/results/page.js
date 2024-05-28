@@ -2,11 +2,10 @@
 
 import { useState, useEffect } from 'react';
 import axios from 'axios';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { Bar } from 'react-chartjs-2';
 import { Chart, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend } from 'chart.js';
 import withAuth from '../../../../utils/withAuth';
-
 
 Chart.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
@@ -16,6 +15,8 @@ const ViewResults = ({ params }) => {
     const [metadata, setMetadata] = useState({ numVehicles: 0, totalDistance: 0, distances: [] });
     const [loading, setLoading] = useState(true);
     const router = useRouter();
+    const searchParams = useSearchParams();
+    const isAdmin = searchParams.get('isAdmin') === 'true';
 
     useEffect(() => {
         const fetchResult = async () => {
@@ -66,7 +67,11 @@ const ViewResults = ({ params }) => {
     };
 
     const handleGoBack = () => {
-        router.push(`/submissions/${userId}`);
+        if (isAdmin) {
+            router.push(`/submissions`);
+        } else {
+            router.push(`/submissions/${userId}`);
+        }
     };
 
     const data = {

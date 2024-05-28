@@ -9,10 +9,11 @@ const UserSubmissions = ({ params }) => {
     const { userId } = params;
     const [submissions, setSubmissions] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
     const [showModal, setShowModal] = useState(false);
     const [currentSubmissionId, setCurrentSubmissionId] = useState(null);
     const [cost, setCost] = useState(null);
-    const [error, setError] = useState(null);
+    const [creditsError, setCreditsError] = useState(null);
 
     useEffect(() => {
         const fetchSubmissions = async () => {
@@ -22,7 +23,7 @@ const UserSubmissions = ({ params }) => {
                 });
                 setSubmissions(response.data);
             } catch (error) {
-                console.error('Error fetching submissions:', error);
+                setError(error.response ? error.response.data.message : 'Error fetching submissions');
             } finally {
                 setLoading(false);
             }
@@ -68,6 +69,7 @@ const UserSubmissions = ({ params }) => {
             const response = await axios.post(`http://localhost:3002/submission/run`, { problemId: currentSubmissionId });
             console.log(response.data.message);
             setShowModal(false);
+            setCreditsError(null);
             const updatedTimestamp = new Date().toISOString();
             setSubmissions(submissions.map(submission =>
                 submission._id === currentSubmissionId
@@ -76,12 +78,21 @@ const UserSubmissions = ({ params }) => {
             ));
         } catch (error) {
             console.error('Error running problem:', error);
-            setError('Failed to run the problem. Please try again.');
+            if (error.response && error.response.data && (error.response.data.message === 'Not enough credits')) {
+                setCreditsError('Not enough credits to run the problem.');
+            } else {
+                setError('Failed to run the problem. Please try again.');
+            }
         }
     };
 
     const handleCancel = () => {
         setShowModal(false);
+        setCreditsError(null);
+    };
+
+    const handleAddCredits = () => {
+        router.push(`/credits/${userId}`);
     };
 
     return (
@@ -90,46 +101,65 @@ const UserSubmissions = ({ params }) => {
             {loading ? (
                 <p>Loading...</p>
             ) : (
-                <div>
-                    <table>
-                        <thead>
-                        <tr>
-                            <th>Creator</th>
-                            <th>Submission Name</th>
-                            <th>Created At</th>
-                            <th>Status</th>
-                            <th>Submission Timestamp</th>
-                            <th>Actions</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        {submissions.map((submission) => (
-                            <tr key={submission._id}>
-                                <td>{submission.username}</td>
-                                <td>{submission.name}</td>
-                                <td>{new Date(submission.createdAt).toLocaleString()}</td>
-                                <td>{submission.status}</td>
-                                <td>{submission.submissionTimestamp ? new Date(submission.submissionTimestamp).toLocaleString() : 'N/A'}</td>
-                                <td>
-                                    <button onClick={() => handleViewSubmission(submission._id)}>View</button>
-                                    {submission.status === 'ready' && <button onClick={() => handleRun(submission._id)}>Run</button>}
-                                    {submission.status === 'completed' && <button onClick={() => handleViewResults(submission._id)}>View Results</button>}
-                                    <button onClick={() => handleDelete(submission._id)}>Delete</button>
-                                </td>
-                            </tr>
-                        ))}
-                        </tbody>
-                    </table>
+                <>
+                    {error ? (
+                        <p>{error}</p>
+                    ) : (
+                        <>
+                            {submissions.length === 0 ? (
+                                <p>No submissions found</p>
+                            ) : (
+                                <table>
+                                    <thead>
+                                    <tr>
+                                        <th>Creator</th>
+                                        <th>Submission Name</th>
+                                        <th>Created At</th>
+                                        <th>Status</th>
+                                        <th>Submission Timestamp</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    {submissions.map((submission) => (
+                                        <tr key={submission._id}>
+                                            <td>{submission.username}</td>
+                                            <td>{submission.name}</td>
+                                            <td>{new Date(submission.createdAt).toLocaleString()}</td>
+                                            <td>{submission.status}</td>
+                                            <td>{submission.submissionTimestamp ? new Date(submission.submissionTimestamp).toLocaleString() : 'N/A'}</td>
+                                            <td>
+                                                <button onClick={() => handleViewSubmission(submission._id)}>View</button>
+                                                {submission.status === 'ready' && <button onClick={() => handleRun(submission._id)}>Run</button>}
+                                                {submission.status === 'completed' && <button onClick={() => handleViewResults(submission._id)}>View Results</button>}
+                                                <button onClick={() => handleDelete(submission._id)}>Delete</button>
+                                            </td>
+                                        </tr>
+                                    ))}
+                                    </tbody>
+                                </table>
+                            )}
+                        </>
+                    )}
                     <button onClick={() => router.push(`/submissions/${userId}/create`)}>Create New Problem</button>
-                </div>
+                </>
             )}
             {showModal && (
                 <div className="modal">
                     <div className="modal-content">
                         <h2>Cost Calculation</h2>
                         <p>The cost for this submission is: {cost}</p>
-                        {error && <p style={{ color: 'red' }}>{error}</p>}
-                        <button onClick={handleContinue}>Continue</button>
+                        {creditsError ? (
+                            <>
+                                <p style={{ color: 'red' }}>{creditsError}</p>
+                                <button onClick={handleAddCredits}>Add Credits</button>
+                            </>
+                        ) : (
+                            <>
+                                {error && !creditsError && <p style={{ color: 'red' }}>{error}</p>}
+                                <button onClick={handleContinue}>Continue</button>
+                            </>
+                        )}
                         <button onClick={handleCancel}>Cancel</button>
                     </div>
                 </div>

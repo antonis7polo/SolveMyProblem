@@ -24,6 +24,9 @@ exports.getAllSubmissions = async (req, res) => {
     console.log('Getting all submissions');
     try {
         const submissions = await Submission.find({}).sort({ updatedAt: -1 });
+        if(submissions.length === 0) {
+            return res.status(404).json({ message: 'No submissions found' });
+        }
         res.json(submissions); // Send the fetched submissions as a JSON response
     } catch (error) {
         console.error('Error retrieving all submissions:', error);

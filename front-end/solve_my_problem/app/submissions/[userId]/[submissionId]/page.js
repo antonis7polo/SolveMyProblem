@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import withAuth from '../../../utils/withAuth';
 
 const ViewEditSubmission = ({ params }) => {
@@ -26,6 +26,8 @@ const ViewEditSubmission = ({ params }) => {
     const router = useRouter();
     const solverFileInputRef = useRef(null);
     const parametersFileInputRef = useRef(null);
+    const searchParams = useSearchParams();
+    const isAdmin = searchParams.get('isAdmin') === 'true';
 
     useEffect(() => {
         const fetchSubmissionData = async () => {
@@ -177,7 +179,11 @@ const ViewEditSubmission = ({ params }) => {
     };
 
     const handleGoBack = () => {
-        router.push(`/submissions/${userId}`);
+        if (isAdmin) {
+            router.push(`/submissions`);
+        } else {
+            router.push(`/submissions/${userId}`);
+        }
     };
 
     const downloadFile = (fileData, fileName, fileType) => {
@@ -197,11 +203,11 @@ const ViewEditSubmission = ({ params }) => {
         return <p>Submission not found</p>;
     }
 
-    const isUpdateEnabled = submission.status === 'ready' || submission.status === 'not_ready';
+    const isUpdateEnabled = !isAdmin && (submission.status === 'ready' || submission.status === 'not_ready');
 
     return (
         <div>
-            <h1>View/Edit Submission</h1>
+            <h1>{isAdmin ? 'View' : 'View/Edit'} Submission</h1>
             {error && <p style={{ color: 'red' }}>{error}</p>}
             <div>
                 <h2>Submission Info</h2>
@@ -294,7 +300,9 @@ const ViewEditSubmission = ({ params }) => {
                     disabled={!isUpdateEnabled}
                 />
             </div>
-            <button onClick={handleUpdate} disabled={!isUpdateEnabled}>Update Submission</button>
+            {!isAdmin && (
+                <button onClick={handleUpdate} disabled={!isUpdateEnabled}>Update Submission</button>
+            )}
             <button onClick={handleGoBack}>Back to Submissions</button>
         </div>
     );

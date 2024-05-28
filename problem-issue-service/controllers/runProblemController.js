@@ -16,7 +16,7 @@ exports.runProblem = async (req, res) => {
 
         const account = await Account.findOne({ userID: userId });
         if (!account) {
-            return res.status(404).json({ message: "Account not found" });
+            return res.status(400).json({ message: "Not enough credits" });
         }
 
         const decodedParameters = JSON.parse(Buffer.from(problem.inputData.parameters, 'base64').toString('utf-8'));
@@ -41,6 +41,7 @@ exports.runProblem = async (req, res) => {
         await publishToSolverQueue({
             submissionId: problem.submissionId,
             name: problem.name,
+            username: problem.username,
             userId: userId,
             inputData: problem.inputData,
             createdAt: problem.createdAt,

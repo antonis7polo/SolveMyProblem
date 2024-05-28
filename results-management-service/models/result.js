@@ -4,7 +4,7 @@ const Schema = mongoose.Schema;
 const resultSchema = new mongoose.Schema({
     submissionId: { type: mongoose.Schema.Types.ObjectId, required: true, unique: true },
     name: String,
-    userId: {type: Schema.Types.ObjectId, required: true, unique: true},
+    userId: {type: Schema.Types.ObjectId, required: true},
     results: String,
     creationTimestamp: { type: Date },
     updateTimestamp: { type: Date },

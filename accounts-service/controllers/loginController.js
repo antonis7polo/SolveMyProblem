@@ -33,7 +33,7 @@ exports.login = async (req, res) => {
             { expiresIn: '1h' }
         );
 
-        res.status(200).json({ token: token, user: { id: user._id, username: user.username } });
+        res.status(200).json({ token: token, user: { id: user._id, username: user.username, isAdmin: user.isAdmin } });
     } catch (err) {
         console.error(err);
         res.status(500).json({ message: 'Internal server error.', type: 'error' });

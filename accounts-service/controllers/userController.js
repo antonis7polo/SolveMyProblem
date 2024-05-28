@@ -10,24 +10,28 @@ exports.createUser = async (req, res) => {
     }
     
     try {
-        const { username, email, password} = req.body;
-        const newUser = new User({ username, email, password, isAdmin: false });
+        const { username, email, password, isAdmin } = req.body;
+        const newUser = new User({ username, email, password, isAdmin });
         await newUser.save();
         
-        //await publishUserCreated({ username, email });
 
-        //for logs - not tested
         const executionTimestamp = new Date();
-        await publishUserCreated({ userId: newUser._id, executionTimestamp: executionTimestamp.toISOString()}); 
+        await publishUserCreated({ userId: newUser._id, executionTimestamp: executionTimestamp.toISOString()});
 
         const token = jwt.sign(
-            { user: { id: newUser._id, username: newUser.username, email: newUser.email, isAdmin: newUser.isAdmin } },
+            {
+                user: {
+                    id: newUser._id,
+                    username: newUser.username,
+                    email: newUser.email,
+                    isAdmin: newUser.isAdmin
+                }
+            },
             process.env.SECRET_JWT,
             { expiresIn: '1h' }
         );
 
-
-        res.status(201).json({ message: 'User created successfully', user: newUser });
+        res.status(200).json({ token: token, user: { id: newUser._id, username: newUser.username, isAdmin: newUser.isAdmin } });
     } catch (error) {
         console.error(error);
         res.status(500).json({ message: 'Error creating user', error: error.message });
@@ -48,4 +52,19 @@ exports.getUserData = async (req, res) => {
         res.status(500).json({ message: 'Error fetching user data', error: error.message });
     }
 
+};
+
+
+exports.createAdminUser = async (req, res) => {
+
+    try {
+        const { username, email, password } = req.body;
+        const newUser = new User({ username, email, password, isAdmin: true});
+        await newUser.save();
+
+        res.status(200).json({ message: 'User created successfully'});
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Error creating user', error: error.message });
+    }
 };
