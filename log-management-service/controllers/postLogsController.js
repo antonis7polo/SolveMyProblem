@@ -7,7 +7,7 @@ const Logs = require('../models/logs');
 async function handleUserCreated(messageData) {
     console.log(`Processing user message with data: ${JSON.stringify(messageData)}`);
     try {
-        const { userId, username, executionTimestamp } = messageData;
+        const { userId, username, executionTimestamp } = messageData; 
 
         const logEntry = new Logs({
             eventType: 'user',
@@ -31,7 +31,7 @@ async function handleResultsStored(messageData) {
     console.log(`Processing results message with data: ${JSON.stringify(messageData)}`);
     try {
         const {
-            userId, resultsId, submissionId, name, label, resourceUsage,
+            userId, resultsId, submissionId, name, label, resourceUsage,    //username
             cpuTime, taskCompletionTime, queueTime, executionTimestamp
         } = messageData;
 
@@ -46,6 +46,7 @@ async function handleResultsStored(messageData) {
             eventType: 'results',
             userId,
             username: userLog.username,
+            //username,
             resultsId,
             submissionId,
             name,

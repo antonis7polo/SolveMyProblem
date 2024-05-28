@@ -5,18 +5,18 @@ const mongoose = require('mongoose');
 
 async function getLogs(req, res) {
 
-    const { eventType, userId, resultsId } = req.query;
+    const { eventType, username, submissionId } = req.query;
     const filter = {};
 
     if (eventType) {
         filter.eventType = eventType;
     }
-    if (userId) {
-        filter.userId = parseInt(userId);
+    if (username) {
+        filter.username = username;
     }
-    if (resultsId) {
-        if (mongoose.Types.ObjectId.isValid(resultsId)) {
-            filter.resultsId = resultsId; 
+    if (submissionId) {
+        if (mongoose.Types.ObjectId.isValid(submissionId)) {
+            filter.submissionId = submissionId; 
         }
     }
 
