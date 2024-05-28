@@ -21,9 +21,13 @@ const CreateProblem = ({ params }) => {
 
     const handleFileChange = (e) => {
         const file = e.target.files[0];
+        const fileName = file ? file.name : '';
+        const fileExtension = fileName.split('.').pop();
+
         if (e.target.name === 'pythonFile') {
-            if (file && file.type !== 'text/x-python-script') {
-                setError('Python file must be of type text/x-python-script');
+            const validPythonMimeTypes = ['text/x-python-script', 'application/x-python-code'];
+            if (file && (!validPythonMimeTypes.includes(file.type) || fileExtension !== 'py')) {
+                setError('Upload a valid Python file');
                 setPythonFile(null);
                 pythonFileInputRef.current.value = null;
             } else {
@@ -31,8 +35,8 @@ const CreateProblem = ({ params }) => {
                 setPythonFile(file);
             }
         } else if (e.target.name === 'jsonFile') {
-            if (file && file.type !== 'application/json') {
-                setError('JSON file must be of type application/json');
+            if (file && (file.type !== 'application/json' || fileExtension !== 'json')) {
+                setError('Upload a valid JSON file');
                 setJsonFile(null);
                 jsonFileInputRef.current.value = null;
             } else {

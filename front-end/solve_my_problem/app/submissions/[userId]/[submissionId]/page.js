@@ -66,10 +66,13 @@ const ViewEditSubmission = ({ params }) => {
         fetchSubmissionData();
     }, [submissionId]);
 
-    const handleFileChange = (e, setFile, setMetadata, expectedType, inputRef) => {
+    const handleFileChange = (e, setFile, setMetadata, validTypes, inputRef) => {
         const file = e.target.files[0];
-        if (file && file.type !== expectedType) {
-            setError(`File must be of type ${expectedType}`);
+        const fileName = file ? file.name : '';
+        const fileExtension = fileName.split('.').pop();
+
+        if (file && (!validTypes.includes(file.type) || (fileExtension !== 'py' && fileExtension !== 'json'))) {
+            setError(`Invalid file type for ${e.target.name === 'solverFile' ? 'Python' : 'JSON'} file`);
             setFile(null);
             setMetadata({
                 size: null,
@@ -77,7 +80,7 @@ const ViewEditSubmission = ({ params }) => {
                 locationsCount: 0,
                 bounds: { minLatitude: null, maxLatitude: null, minLongitude: null, maxLongitude: null }
             });
-            inputRef.current.value = null;  // Reset the file input
+            inputRef.current.value = null; // Reset the file input
         } else {
             setError('');
             setFile(file);
@@ -106,9 +109,8 @@ const ViewEditSubmission = ({ params }) => {
     };
 
     const calculateBounds = (locations) => {
-        if(!locations || locations.length === 0) {
+        if (!locations || locations.length === 0) {
             return { minLatitude: "N/A", maxLatitude: "N/A", minLongitude: "N/A", maxLongitude: "N/A" };
-
         }
         const latitudes = locations.map(loc => loc.Latitude);
         const longitudes = locations.map(loc => loc.Longitude);
@@ -211,7 +213,7 @@ const ViewEditSubmission = ({ params }) => {
                     <input
                         type="file"
                         ref={solverFileInputRef}
-                        onChange={(e) => handleFileChange(e, setSolverFile, setSolverMetadata, 'text/x-python-script', solverFileInputRef)}
+                        onChange={(e) => handleFileChange(e, setSolverFile, setSolverMetadata, ['text/x-python-script', 'application/x-python-code'], solverFileInputRef)}
                         disabled={!isUpdateEnabled}
                     />
                     {solverMetadata.size && (
@@ -229,7 +231,7 @@ const ViewEditSubmission = ({ params }) => {
                     <input
                         type="file"
                         ref={parametersFileInputRef}
-                        onChange={(e) => handleFileChange(e, setParametersFile, setParametersMetadata, 'application/json', parametersFileInputRef)}
+                        onChange={(e) => handleFileChange(e, setParametersFile, setParametersMetadata, ['application/json'], parametersFileInputRef)}
                         disabled={!isUpdateEnabled}
                     />
                     {parametersMetadata.size && (
