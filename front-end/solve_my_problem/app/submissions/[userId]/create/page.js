@@ -1,10 +1,9 @@
 "use client";
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 import { useRouter } from 'next/navigation';
 import withAuth from '../../../utils/withAuth';
-
 
 const CreateProblem = ({ params }) => {
     const { userId } = params;
@@ -13,20 +12,43 @@ const CreateProblem = ({ params }) => {
     const [depot, setDepot] = useState('');
     const [maxDistance, setMaxDistance] = useState('');
     const [pythonFile, setPythonFile] = useState(null);
-    const [jsonFile, setJsonFile] =useState(null);
+    const [jsonFile, setJsonFile] = useState(null);
     const [loading, setLoading] = useState(false);
+    const [error, setError] = useState(null);
     const router = useRouter();
+    const pythonFileInputRef = useRef(null);
+    const jsonFileInputRef = useRef(null);
 
     const handleFileChange = (e) => {
+        const file = e.target.files[0];
         if (e.target.name === 'pythonFile') {
-            setPythonFile(e.target.files[0]);
+            if (file && file.type !== 'text/x-python-script') {
+                setError('Python file must be of type text/x-python-script');
+                setPythonFile(null);
+                pythonFileInputRef.current.value = null;
+            } else {
+                setError(null);
+                setPythonFile(file);
+            }
         } else if (e.target.name === 'jsonFile') {
-            setJsonFile(e.target.files[0]);
+            if (file && file.type !== 'application/json') {
+                setError('JSON file must be of type application/json');
+                setJsonFile(null);
+                jsonFileInputRef.current.value = null;
+            } else {
+                setError(null);
+                setJsonFile(file);
+            }
         }
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        if (!pythonFile || !jsonFile) {
+            setError('Both Python and JSON files are required');
+            return;
+        }
+
         setLoading(true);
         const formData = new FormData();
         const username = localStorage.getItem('username');
@@ -40,7 +62,6 @@ const CreateProblem = ({ params }) => {
         formData.append('maxDistance', maxDistance);
 
         try {
-            console.log('Form data:', formData);
             await axios.post('http://localhost:3001/submission/create', formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
@@ -61,6 +82,7 @@ const CreateProblem = ({ params }) => {
     return (
         <div>
             <h1>Create New Problem</h1>
+            {error && <p style={{ color: 'red' }}>{error}</p>}
             <form onSubmit={handleSubmit}>
                 <div>
                     <label>Submission Name</label>
@@ -100,6 +122,7 @@ const CreateProblem = ({ params }) => {
                     <input
                         type="file"
                         name="pythonFile"
+                        ref={pythonFileInputRef}
                         onChange={handleFileChange}
                     />
                 </div>
@@ -108,6 +131,7 @@ const CreateProblem = ({ params }) => {
                     <input
                         type="file"
                         name="jsonFile"
+                        ref={jsonFileInputRef}
                         onChange={handleFileChange}
                     />
                 </div>

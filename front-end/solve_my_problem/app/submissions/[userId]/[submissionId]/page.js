@@ -1,10 +1,9 @@
 "use client";
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 import { useRouter } from 'next/navigation';
 import withAuth from '../../../utils/withAuth';
-
 
 const ViewEditSubmission = ({ params }) => {
     const { userId, submissionId } = params;
@@ -23,7 +22,10 @@ const ViewEditSubmission = ({ params }) => {
         locationsCount: 0,
         bounds: { minLatitude: null, maxLatitude: null, minLongitude: null, maxLongitude: null }
     });
+    const [error, setError] = useState('');
     const router = useRouter();
+    const solverFileInputRef = useRef(null);
+    const parametersFileInputRef = useRef(null);
 
     useEffect(() => {
         const fetchSubmissionData = async () => {
@@ -32,18 +34,18 @@ const ViewEditSubmission = ({ params }) => {
                 const submissionData = response.data;
                 setSubmission(submissionData);
                 setName(submissionData.name);
-                setNumVehicles(submissionData.inputData.numVehicles || '');
-                setDepot(submissionData.inputData.depot !== undefined ? submissionData.inputData.depot : '');
-                setMaxDistance(submissionData.inputData.maxDistance || '');
+                setNumVehicles(submissionData.inputData?.numVehicles || '');
+                setDepot(submissionData.inputData?.depot !== undefined ? submissionData.inputData.depot : '');
+                setMaxDistance(submissionData.inputData?.maxDistance || '');
                 setSolverFile(null);
                 setParametersFile(null);
-                setSolverMetadata(submissionData.inputData.solverMetadata || { size: null, type: null });
-                if (submissionData.inputData.parameters) {
+                setSolverMetadata(submissionData.inputData?.solverMetadata || { size: null, type: null });
+                if (submissionData.inputData?.parameters) {
                     const parameters = JSON.parse(atob(submissionData.inputData.parameters));
                     setParametersMetadata({
                         size: submissionData.inputData.parametersMetadata.size,
                         type: submissionData.inputData.parametersMetadata.type,
-                        locationsCount: parameters.Locations.length,
+                        locationsCount: parameters?.Locations?.length || 0,
                         bounds: calculateBounds(parameters.Locations)
                     });
                 } else {
@@ -64,33 +66,50 @@ const ViewEditSubmission = ({ params }) => {
         fetchSubmissionData();
     }, [submissionId]);
 
-    const handleFileChange = (e, setFile, setMetadata) => {
+    const handleFileChange = (e, setFile, setMetadata, expectedType, inputRef) => {
         const file = e.target.files[0];
-        setFile(file);
-        if (file) {
+        if (file && file.type !== expectedType) {
+            setError(`File must be of type ${expectedType}`);
+            setFile(null);
             setMetadata({
-                size: file.size,
-                type: file.type,
+                size: null,
+                type: null,
                 locationsCount: 0,
                 bounds: { minLatitude: null, maxLatitude: null, minLongitude: null, maxLongitude: null }
             });
-            if (file.type === 'application/json') {
-                const reader = new FileReader();
-                reader.onload = (e) => {
-                    const parameters = JSON.parse(e.target.result);
-                    setMetadata({
-                        size: file.size,
-                        type: file.type,
-                        locationsCount: parameters.Locations.length,
-                        bounds: calculateBounds(parameters.Locations)
-                    });
-                };
-                reader.readAsText(file);
+            inputRef.current.value = null;  // Reset the file input
+        } else {
+            setError('');
+            setFile(file);
+            if (file) {
+                setMetadata({
+                    size: file.size,
+                    type: file.type,
+                    locationsCount: 0,
+                    bounds: { minLatitude: null, maxLatitude: null, minLongitude: null, maxLongitude: null }
+                });
+                if (file.type === 'application/json') {
+                    const reader = new FileReader();
+                    reader.onload = (e) => {
+                        const parameters = JSON.parse(e.target.result);
+                        setMetadata({
+                            size: file.size,
+                            type: file.type,
+                            locationsCount: parameters?.Locations?.length || 0,
+                            bounds: calculateBounds(parameters.Locations)
+                        });
+                    };
+                    reader.readAsText(file);
+                }
             }
         }
     };
 
     const calculateBounds = (locations) => {
+        if(!locations || locations.length === 0) {
+            return { minLatitude: "N/A", maxLatitude: "N/A", minLongitude: "N/A", maxLongitude: "N/A" };
+
+        }
         const latitudes = locations.map(loc => loc.Latitude);
         const longitudes = locations.map(loc => loc.Longitude);
         return {
@@ -102,6 +121,10 @@ const ViewEditSubmission = ({ params }) => {
     };
 
     const handleUpdate = async () => {
+        if (error) {
+            return;
+        }
+
         try {
             const formData = new FormData();
             formData.append('id', submissionId);
@@ -156,6 +179,7 @@ const ViewEditSubmission = ({ params }) => {
     return (
         <div>
             <h1>View/Edit Submission</h1>
+            {error && <p style={{ color: 'red' }}>{error}</p>}
             <div>
                 <h2>Submission Info</h2>
                 <p><strong>ID:</strong> {submission._id}</p>
@@ -180,13 +204,14 @@ const ViewEditSubmission = ({ params }) => {
             <div>
                 <h2>Input Data</h2>
                 <div>
-                    <p><strong>Solver (Python File):</strong> {submission.inputData.solver ? 'Uploaded' : 'Not Uploaded'}</p>
-                    {submission.inputData.solver && (
+                    <p><strong>Solver (Python File):</strong> {submission.inputData?.solver ? 'Uploaded' : 'Not Uploaded'}</p>
+                    {submission.inputData?.solver && (
                         <button onClick={() => downloadFile(submission.inputData.solver, 'solver.py', solverMetadata.type)}>Download Solver File</button>
                     )}
                     <input
                         type="file"
-                        onChange={(e) => handleFileChange(e, setSolverFile, setSolverMetadata)}
+                        ref={solverFileInputRef}
+                        onChange={(e) => handleFileChange(e, setSolverFile, setSolverMetadata, 'text/x-python-script', solverFileInputRef)}
                         disabled={!isUpdateEnabled}
                     />
                     {solverMetadata.size && (
@@ -197,13 +222,14 @@ const ViewEditSubmission = ({ params }) => {
                     )}
                 </div>
                 <div>
-                    <p><strong>Parameters (JSON File):</strong> {submission.inputData.parameters ? 'Uploaded' : 'Not Uploaded'}</p>
-                    {submission.inputData.parameters && (
+                    <p><strong>Parameters (JSON File):</strong> {submission.inputData?.parameters ? 'Uploaded' : 'Not Uploaded'}</p>
+                    {submission.inputData?.parameters && (
                         <button onClick={() => downloadFile(submission.inputData.parameters, 'parameters.json', parametersMetadata.type)}>Download Parameters File</button>
                     )}
                     <input
                         type="file"
-                        onChange={(e) => handleFileChange(e, setParametersFile, setParametersMetadata)}
+                        ref={parametersFileInputRef}
+                        onChange={(e) => handleFileChange(e, setParametersFile, setParametersMetadata, 'application/json', parametersFileInputRef)}
                         disabled={!isUpdateEnabled}
                     />
                     {parametersMetadata.size && (
