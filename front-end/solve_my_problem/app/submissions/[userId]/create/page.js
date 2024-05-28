@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useRef } from 'react';
 import axios from 'axios';
 import { useRouter } from 'next/navigation';
 import withAuth from '../../../utils/withAuth';
@@ -25,8 +25,7 @@ const CreateProblem = ({ params }) => {
         const fileExtension = fileName.split('.').pop();
 
         if (e.target.name === 'pythonFile') {
-            const validPythonMimeTypes = ['text/x-python-script', 'application/x-python-code'];
-            if (file && (!validPythonMimeTypes.includes(file.type) || fileExtension !== 'py')) {
+            if (file && fileExtension !== 'py') {
                 setError('Upload a valid Python file');
                 setPythonFile(null);
                 pythonFileInputRef.current.value = null;
@@ -35,7 +34,7 @@ const CreateProblem = ({ params }) => {
                 setPythonFile(file);
             }
         } else if (e.target.name === 'jsonFile') {
-            if (file && (file.type !== 'application/json' || fileExtension !== 'json')) {
+            if (file &&  fileExtension !== 'json') {
                 setError('Upload a valid JSON file');
                 setJsonFile(null);
                 jsonFileInputRef.current.value = null;
@@ -48,10 +47,7 @@ const CreateProblem = ({ params }) => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        if (!pythonFile || !jsonFile) {
-            setError('Both Python and JSON files are required');
-            return;
-        }
+
 
         setLoading(true);
         const formData = new FormData();
