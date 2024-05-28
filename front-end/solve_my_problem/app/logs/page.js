@@ -1,4 +1,3 @@
-// app/logs/page.js
 "use client";
 
 import { useEffect, useState } from 'react';
@@ -10,8 +9,8 @@ const Logs = () => {
     const [loading, setLoading] = useState(true);
     const [filters, setFilters] = useState({
         eventType: '',
-        userId: '',
-        resultsId: ''
+        username: '',
+        submissionId: ''
     });
 
     useEffect(() => {
@@ -36,11 +35,11 @@ const Logs = () => {
         if (filters.eventType) {
             filtered = filtered.filter(log => log.eventType === filters.eventType);
         }
-        if (filters.userId) {
-            filtered = filtered.filter(log => log.userId.toString().startsWith(filters.userId));
+        if (filters.username) {
+            filtered = filtered.filter(log => log.username.toLowerCase().includes(filters.username.toLowerCase()));
         }
-        if (filters.resultsId) {
-            filtered = filtered.filter(log => log.resultsId && log.resultsId.toString().startsWith(filters.resultsId));
+        if (filters.submissionId) {
+            filtered = filtered.filter(log => log.submissionId && log.submissionId.toString().startsWith(filters.submissionId));
         }
 
         setFilteredLogs(filtered);
@@ -67,12 +66,12 @@ const Logs = () => {
                     </select>
                 </label>
                 <label>
-                    Filter by User ID:
-                    <input type="text" name="userId" onChange={handleFilterChange} value={filters.userId} />
+                    Filter by Username:
+                    <input type="text" name="username" onChange={handleFilterChange} value={filters.username} />
                 </label>
                 <label>
-                    Filter by Results ID:
-                    <input type="text" name="resultsId" onChange={handleFilterChange} value={filters.resultsId} />
+                    Filter by Submission ID:
+                    <input type="text" name="submissionId" onChange={handleFilterChange} value={filters.submissionId} />
                 </label>
             </div>
             {loading ? (
@@ -84,10 +83,10 @@ const Logs = () => {
                             <th>Log ID</th>
                             <th>Log Type</th>
                             <th>User ID</th>
+                            <th>Username</th>
                             <th>Execution Timestamp</th>
                             <th>Submission ID</th>
                             <th>Submission Name</th>
-                            <th>Results ID</th>
                             <th>Label</th>
                             <th>Resource Usage</th>
                             <th>CPU Time</th>
@@ -103,12 +102,12 @@ const Logs = () => {
                                 <td>{log._id}</td>
                                 <td>{log.eventType}</td>
                                 <td>{log.userId}</td>
+                                <td>{log.username}</td>
                                 <td>{new Date(log.executionTimestamp).toLocaleString()}</td>
                                 {log.eventType === 'results' ? (
                                     <>
                                         <td>{log.submissionId}</td>
                                         <td>{log.name}</td>
-                                        <td>{log.resultsId}</td>
                                         <td>{log.label}</td>
                                         <td>{log.resourceUsage}</td>
                                         <td>{log.cpuTime}</td>

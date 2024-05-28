@@ -1,5 +1,3 @@
-// controllers/getAnalyticsController.js
-
 const Logs = require('../models/logs');
 const mongoose = require('mongoose');
 const moment = require('moment');
@@ -21,8 +19,10 @@ async function getAnalytics(req, res) {
 
         let totalResourceUsagePerDay = {};
         let totalCPUTimePerDay = {};
+        let totalQueueTimePerDay = {};
         let totalResourceUsagePerHour = Array(24).fill(0);
         let totalCPUTimePerHour = Array(24).fill(0);
+        let totalQueueTimePerHour = Array(24).fill(0);
         let newUsersPerDay = {};
 
         const now = moment();
@@ -77,6 +77,14 @@ async function getAnalytics(req, res) {
                     }
                     queueTimePerUser[userId].totalQueueTime += queueTime;
                     queueTimePerUser[userId].count++;
+
+                    // Total queue time per day
+                    totalQueueTimePerDay[executionDate] = (totalQueueTimePerDay[executionDate] || 0) + queueTime;
+
+                    // Total queue time per hour for the last 24 hours
+                    if (executionTimestamp.isAfter(last24Hours)) {
+                        totalQueueTimePerHour[executionHour] += queueTime;
+                    }
                 }
 
                 // Success/Failure calculations
@@ -113,21 +121,32 @@ async function getAnalytics(req, res) {
             }
         });
 
-        // Calculate averages per user
+        // Fetch all usernames
+        const users = await Logs.find({ eventType: 'user' }).select('userId username');
+
+        const userMap = {};
+        users.forEach(user => {
+            userMap[user.userId.toString()] = user.username;
+        });
+
+        // Calculate averages per user and include username
         const averageCPUTimePerUser = Object.keys(cpuTimePerUser).map(userId => ({
             userId,
+            username: userMap[userId] || 'Unknown',
             averageCPUTime: cpuTimePerUser[userId].count ? (cpuTimePerUser[userId].totalCPUTime / cpuTimePerUser[userId].count) : 0,
             totalCPUTime: cpuTimePerUser[userId].totalCPUTime
         }));
 
         const averageQueueTimePerUser = Object.keys(queueTimePerUser).map(userId => ({
             userId,
+            username: userMap[userId] || 'Unknown',
             averageQueueTime: queueTimePerUser[userId].count ? (queueTimePerUser[userId].totalQueueTime / queueTimePerUser[userId].count) : 0,
             totalQueueTime: queueTimePerUser[userId].totalQueueTime
         }));
 
         const averageResourceUsagePerUser = Object.keys(resourceUsagePerUser).map(userId => ({
             userId,
+            username: userMap[userId] || 'Unknown',
             averageResourceUsage: resourceUsagePerUser[userId].count ? (resourceUsagePerUser[userId].totalResourceUsage / resourceUsagePerUser[userId].count) : 0,
             totalResourceUsage: resourceUsagePerUser[userId].totalResourceUsage
         }));
@@ -157,13 +176,15 @@ async function getAnalytics(req, res) {
             averageCPUTimePerUser,
             averageQueueTimePerUser,
             averageResourceUsagePerUser,
-            totalCPUTimePerUser: averageCPUTimePerUser.map(user => ({ userId: user.userId, totalCPUTime: user.totalCPUTime })),
-            totalQueueTimePerUser: averageQueueTimePerUser.map(user => ({ userId: user.userId, totalQueueTime: user.totalQueueTime })),
-            totalResourceUsagePerUser: averageResourceUsagePerUser.map(user => ({ userId: user.userId, totalResourceUsage: user.totalResourceUsage })),
+            totalCPUTimePerUser: averageCPUTimePerUser.map(user => ({ userId: user.userId, username: user.username, totalCPUTime: user.totalCPUTime })),
+            totalQueueTimePerUser: averageQueueTimePerUser.map(user => ({ userId: user.userId, username: user.username, totalQueueTime: user.totalQueueTime })),
+            totalResourceUsagePerUser: averageResourceUsagePerUser.map(user => ({ userId: user.userId, username: user.username, totalResourceUsage: user.totalResourceUsage })),
             totalResourceUsagePerDay,
             totalCPUTimePerDay,
+            totalQueueTimePerDay,
             totalResourceUsagePerHour,
             totalCPUTimePerHour,
+            totalQueueTimePerHour,
             newUsersPerDay
         };
 
