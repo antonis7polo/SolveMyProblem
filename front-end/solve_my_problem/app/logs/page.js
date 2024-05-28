@@ -17,7 +17,7 @@ const Logs = () => {
     useEffect(() => {
         const fetchLogs = async () => {
             try {
-                const response = await axios.get('http://localhost:3005/logs');
+                const response = await axios.get('http://localhost:3007/logs');
                 setLogs(response.data);
                 setFilteredLogs(response.data);
             } catch (error) {

@@ -7,11 +7,12 @@ const Logs = require('../models/logs');
 async function handleUserCreated(messageData) {
     console.log(`Processing user message with data: ${JSON.stringify(messageData)}`);
     try {
-        const { userId, executionTimestamp } = messageData;
+        const { userId, username, executionTimestamp } = messageData;
 
         const logEntry = new Logs({
             eventType: 'user',
             userId,
+            username,
             executionTimestamp
         });
 
@@ -34,9 +35,17 @@ async function handleResultsStored(messageData) {
             cpuTime, taskCompletionTime, queueTime, executionTimestamp
         } = messageData;
 
+        // Find the user creation log to get the username
+        const userLog = await Logs.findOne({ userId, eventType: 'user' });
+
+        if (!userLog) {
+            throw new Error(`User log not found for userId: ${userId}`);
+        }
+
         const logEntry = new Logs({
             eventType: 'results',
             userId,
+            username: userLog.username,
             resultsId,
             submissionId,
             name,

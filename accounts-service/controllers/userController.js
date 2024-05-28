@@ -16,7 +16,7 @@ exports.createUser = async (req, res) => {
         
 
         const executionTimestamp = new Date();
-        await publishUserCreated({ userId: newUser._id, executionTimestamp: executionTimestamp.toISOString()});
+        await publishUserCreated({ userId: newUser._id, username, executionTimestamp: executionTimestamp.toISOString()});
 
         const token = jwt.sign(
             {
