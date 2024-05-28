@@ -13,7 +13,10 @@ const Analytics = () => {
     useEffect(() => {
         const fetchAnalytics = async () => {
             try {
-                const response = await axios.get('http://localhost:3007/analytics');
+                const response = await axios.get('http://localhost:3007/analytics', {
+                    headers: { 'X-OBSERVATORY-AUTH': localStorage.getItem('token') }
+                });
+
                 const data = response.data;
 
                 data.totalCPUTimePerHour = rotateHourlyData(data.totalCPUTimePerHour);

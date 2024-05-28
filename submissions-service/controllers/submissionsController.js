@@ -11,7 +11,7 @@ exports.getSubmissionsByUserId = async (req, res) => {
         // Fetch submissions from the database where userId matches
         const submissions = await Submission.find({ userId: userId }).sort({ updatedAt: -1 });
         if (submissions.length === 0) {
-            return res.status(404).json({ message: 'No submissions found for this user.' });
+            return res.status(404).json({ message: 'No submissions yet.' });
         }
         res.json(submissions);
     } catch (error) {

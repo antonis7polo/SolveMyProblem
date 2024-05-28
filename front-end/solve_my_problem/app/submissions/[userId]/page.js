@@ -66,7 +66,9 @@ const UserSubmissions = ({ params }) => {
 
     const handleContinue = async () => {
         try {
-            const response = await axios.post(`http://localhost:3002/submission/run`, { problemId: currentSubmissionId });
+            const response = await axios.post(`http://localhost:3002/submission/run`, { problemId: currentSubmissionId }, {
+                headers: { 'X-OBSERVATORY-AUTH': localStorage.getItem('token') }
+            });
             console.log(response.data.message);
             setShowModal(false);
             setCreditsError(null);

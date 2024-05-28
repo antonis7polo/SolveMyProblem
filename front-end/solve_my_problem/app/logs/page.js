@@ -17,7 +17,11 @@ const Logs = () => {
     useEffect(() => {
         const fetchLogs = async () => {
             try {
-                const response = await axios.get('http://localhost:3007/logs');
+                const response = await axios.get('http://localhost:3007/logs' , {
+                    headers: {
+                        headers: { 'X-OBSERVATORY-AUTH': localStorage.getItem('token') }
+                    }
+                });
                 setLogs(response.data);
                 setFilteredLogs(response.data);
             } catch (error) {

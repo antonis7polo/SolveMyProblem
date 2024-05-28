@@ -5,7 +5,6 @@ const authMiddleware = require('../middlewares/authMiddleware');
 
 const router = express.Router();
 
-// router.get('/', authMiddleware, getAnalytics);
-router.get('/analytics', getAnalytics);
+router.get('/analytics',authMiddleware, getAnalytics);
 
 module.exports = router;

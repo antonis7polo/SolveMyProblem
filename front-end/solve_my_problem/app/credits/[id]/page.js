@@ -32,8 +32,6 @@ const Credits = ({ params }) => {
           headers: { 'X-OBSERVATORY-AUTH': token },
         });
         setCredits(response.data.userData.credits);
-        console.log('Credits: ', response.data.userData.credits);
-        console.log('User data:', response.data.userData);
       } catch (error) {
         console.error('Error fetching user data:', error);
         router.push('/login');

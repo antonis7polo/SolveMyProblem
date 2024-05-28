@@ -21,7 +21,10 @@ const ViewResults = ({ params }) => {
     useEffect(() => {
         const fetchResult = async () => {
             try {
-                const response = await axios.get(`http://localhost:3003/result/${submissionId}`);
+                const response = await axios.get(`http://localhost:3003/result/${submissionId}`, {
+                    headers: { 'X-OBSERVATORY-AUTH': localStorage.getItem('token')
+                    }
+                });
                 setResult(response.data);
                 const parsedMetadata = parseResults(response.data.results);
                 setMetadata(parsedMetadata);

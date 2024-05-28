@@ -17,7 +17,9 @@ const Submissions = () => {
     useEffect(() => {
         const fetchSubmissions = async () => {
             try {
-                const response = await axios.get('http://localhost:3000/submission');
+                const response = await axios.get('http://localhost:3000/submission', {
+                    headers: { 'X-OBSERVATORY-AUTH': localStorage.getItem('token') }
+                });
                 setSubmissions(response.data);
                 setFilteredSubmissions(response.data);
             } catch (error) {
@@ -41,7 +43,9 @@ const Submissions = () => {
 
     const handleDelete = async (submissionId) => {
         try {
-            await axios.delete(`http://localhost:3001/submission/delete/${submissionId}`);
+            await axios.delete(`http://localhost:3001/submission/delete/${submissionId}`, {
+                headers: { 'X-OBSERVATORY-AUTH': localStorage.getItem('token') }
+            });
             setSubmissions(submissions.filter(submission => submission._id !== submissionId));
             setFilteredSubmissions(filteredSubmissions.filter(submission => submission._id !== submissionId));
         } catch (error) {

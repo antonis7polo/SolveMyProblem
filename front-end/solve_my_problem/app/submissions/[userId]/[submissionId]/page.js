@@ -32,7 +32,9 @@ const ViewEditSubmission = ({ params }) => {
     useEffect(() => {
         const fetchSubmissionData = async () => {
             try {
-                const response = await axios.get(`http://localhost:3000/submission/data/${submissionId}`);
+                const response = await axios.get(`http://localhost:3000/submission/data/${submissionId}`, {
+                    headers: { 'X-OBSERVATORY-AUTH': localStorage.getItem('token') }
+                });
                 const submissionData = response.data;
                 setSubmission(submissionData);
                 setName(submissionData.name);
@@ -169,6 +171,7 @@ const ViewEditSubmission = ({ params }) => {
             await axios.post(`http://localhost:3001/submission/create`, formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
+                    'X-OBSERVATORY-AUTH': localStorage.getItem('token')
                 },
             });
 

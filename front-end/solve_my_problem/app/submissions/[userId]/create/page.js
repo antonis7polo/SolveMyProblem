@@ -65,6 +65,7 @@ const CreateProblem = ({ params }) => {
             await axios.post('http://localhost:3001/submission/create', formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
+                    'X-OBSERVATORY-AUTH': localStorage.getItem('token')
                 },
             });
             router.push(`/submissions/${userId}`);

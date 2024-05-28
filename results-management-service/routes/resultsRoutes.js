@@ -6,7 +6,6 @@ const originAuth = require('../middlewares/originAuthMiddleware');
 const auth = require('../middlewares/authMiddleware');
 
 
-// router.get('/result/:id',auth, resultsController.getResultById);
-router.get('/result/:id', resultsController.getResultById);
+router.get('/result/:id',auth, resultsController.getResultById);
 
 module.exports = router;
