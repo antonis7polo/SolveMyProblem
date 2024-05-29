@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import axios from 'axios';
+import { encrypt } from "../utils/encrypt";
 
 const Logs = () => {
     const [logs, setLogs] = useState([]);
@@ -17,9 +18,7 @@ const Logs = () => {
         const fetchLogs = async () => {
             try {
                 const response = await axios.get('http://localhost:3007/logs' , {
-                    headers: {
-                        headers: { 'X-OBSERVATORY-AUTH': localStorage.getItem('token') }
-                    }
+                    headers: { 'X-OBSERVATORY-AUTH': localStorage.getItem('token'), 'custom-services-header': JSON.stringify(encrypt(process.env.NEXT_PUBLIC_SECRET_STRING_SERVICES)) }
                 });
                 setLogs(response.data);
                 setFilteredLogs(response.data);

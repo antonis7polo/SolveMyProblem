@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useRouter } from 'next/navigation';
 import withAuth from '../utils/withAuth';
+import { encrypt } from "../utils/encrypt";
 
 const Submissions = () => {
     const [submissions, setSubmissions] = useState([]);
@@ -18,7 +19,7 @@ const Submissions = () => {
         const fetchSubmissions = async () => {
             try {
                 const response = await axios.get('http://localhost:3000/submission', {
-                    headers: { 'X-OBSERVATORY-AUTH': localStorage.getItem('token') }
+                    headers: { 'X-OBSERVATORY-AUTH': localStorage.getItem('token'), 'custom-services-header': JSON.stringify(encrypt(process.env.NEXT_PUBLIC_SECRET_STRING_SERVICES)) }
                 });
                 setSubmissions(response.data);
                 setFilteredSubmissions(response.data);
@@ -44,7 +45,7 @@ const Submissions = () => {
     const handleDelete = async (submissionId) => {
         try {
             await axios.delete(`http://localhost:3001/submission/delete/${submissionId}`, {
-                headers: { 'X-OBSERVATORY-AUTH': localStorage.getItem('token') }
+                headers: { 'X-OBSERVATORY-AUTH': localStorage.getItem('token'), 'custom-services-header': JSON.stringify(encrypt(process.env.NEXT_PUBLIC_SECRET_STRING_SERVICES)) }
             });
             setSubmissions(submissions.filter(submission => submission._id !== submissionId));
             setFilteredSubmissions(filteredSubmissions.filter(submission => submission._id !== submissionId));

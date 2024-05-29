@@ -1,6 +1,7 @@
 const jwt = require('jsonwebtoken');
+const Submission = require('../models/Submission');
 
-module.exports = async (req, res, next) => {
+const ensureCorrectUserOrAdminForSubmissionsByUserId = async (req, res, next) => {
     const authHeader = req.header('X-OBSERVATORY-AUTH');
     if (!authHeader) {
         return res.status(401).json({ message: 'Not authenticated', type: 'error' });
@@ -20,9 +21,16 @@ module.exports = async (req, res, next) => {
         return res.status(401).json({ message: 'Not authenticated', type: 'error' });
     }
 
+    const userIdFromToken = decodedToken.user.id;
+    const userIdFromParams = req.params.userId;
 
-    req.user = decodedToken.user;
-    console.log(req.user)
-    next();
+    if (userIdFromToken === userIdFromParams) {
+        req.user = decodedToken.user;
+        console.log(req.user);
+        return next();
+    }
 
+    return res.status(403).json({ message: 'Not authorized', type: 'error' });
 };
+
+module.exports = ensureCorrectUserOrAdminForSubmissionsByUserId;

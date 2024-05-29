@@ -35,19 +35,13 @@ exports.getAllSubmissions = async (req, res) => {
 };
 
 exports.getSubmissionDataById = async (req, res) => {
-    const id = req.params.id;
-    if (!mongoose.Types.ObjectId.isValid(id)) {
-        return res.status(400).json({ message: 'Invalid ID format' });
-    }
     try {
-        const submission = await Submission.findById(id);
-        if (!submission) {
-            return res.status(404).json({ message: 'Submission not found' });
-        }
+        const submission = req.submission;
         res.json(submission);
     } catch (error) {
         console.error('Error retrieving submission data:', error);
         res.status(500).json({ message: 'Error retrieving submission data' });
     }
 };
+
 

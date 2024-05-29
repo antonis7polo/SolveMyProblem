@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 import { useRouter, useSearchParams } from 'next/navigation';
 import withAuth from '../../../utils/withAuth';
+import { encrypt } from "../../../utils/encrypt";
 
 const ViewEditSubmission = ({ params }) => {
     const { userId, submissionId } = params;
@@ -33,7 +34,7 @@ const ViewEditSubmission = ({ params }) => {
         const fetchSubmissionData = async () => {
             try {
                 const response = await axios.get(`http://localhost:3000/submission/data/${submissionId}`, {
-                    headers: { 'X-OBSERVATORY-AUTH': localStorage.getItem('token') }
+                    headers: { 'X-OBSERVATORY-AUTH': localStorage.getItem('token'), 'custom-services-header': JSON.stringify(encrypt(process.env.NEXT_PUBLIC_SECRET_STRING_SERVICES)) }
                 });
                 const submissionData = response.data;
                 setSubmission(submissionData);
@@ -156,6 +157,7 @@ const ViewEditSubmission = ({ params }) => {
             const formData = new FormData();
             formData.append('id', submissionId);
             formData.append('name', name);
+            formData.append('userId', userId);
             formData.append('numVehicles', numVehicles);
             formData.append('depot', depot);
             formData.append('maxDistance', maxDistance);
@@ -171,8 +173,9 @@ const ViewEditSubmission = ({ params }) => {
             await axios.post(`http://localhost:3001/submission/create`, formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
-                    'X-OBSERVATORY-AUTH': localStorage.getItem('token')
-                },
+                    'X-OBSERVATORY-AUTH': localStorage.getItem('token'),
+                    'custom-services-header': JSON.stringify(encrypt(process.env.NEXT_PUBLIC_SECRET_STRING_SERVICES)),
+                }
             });
 
             router.push(`/submissions/${userId}`);

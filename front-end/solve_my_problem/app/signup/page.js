@@ -7,6 +7,9 @@ import Link from 'next/link';
 import styles from '../styles/Signup.module.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUser, faEnvelope, faLock } from '@fortawesome/free-solid-svg-icons';
+import { encrypt } from "../utils/encrypt";
+require('dotenv').config();
+
 
 const Signup = () => {
   const [formData, setFormData] = useState({
@@ -36,7 +39,11 @@ const Signup = () => {
     }
 
     try {
-      const response = await axios.post('http://localhost:3005/signup', formData);
+      const response = await axios.post('http://localhost:3005/signup', formData, {
+        headers: {
+          'custom-services-header': JSON.stringify(encrypt(process.env.NEXT_PUBLIC_SECRET_STRING_SERVICES)),
+        }
+      });
       if (response.data.user) {
         const expirationTime = new Date().getTime() + 60 * 60 * 1000; // 1 hour
         localStorage.setItem('token', response.data.token);

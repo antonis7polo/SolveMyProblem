@@ -1,6 +1,6 @@
 const jwt = require('jsonwebtoken');
 
-module.exports = async (req, res, next) => {
+const isAdmin = async (req, res, next) => {
     const authHeader = req.header('X-OBSERVATORY-AUTH');
     if (!authHeader) {
         return res.status(401).json({ message: 'Not authenticated', type: 'error' });
@@ -20,9 +20,13 @@ module.exports = async (req, res, next) => {
         return res.status(401).json({ message: 'Not authenticated', type: 'error' });
     }
 
+    if (!decodedToken.user.isAdmin) {
+        return res.status(403).json({ message: 'Not authorized', type: 'error' });
+    }
 
     req.user = decodedToken.user;
-    console.log(req.user)
+    console.log(req.user);
     next();
-
 };
+
+module.exports = isAdmin;

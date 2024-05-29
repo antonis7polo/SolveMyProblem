@@ -1,27 +1,20 @@
 const Account = require('../models/account');
-const Problem = require('../models/problem');
 const { publishToSolverQueue, publishCreditsUpdate, publishToSubmissionsQueue } = require('../config/rabbitMQ');
 const calculateCost = require('../config/calculateCost');
+const Problem = require('../models/problem');
 
 exports.runProblem = async (req, res) => {
     try {
-        const { problemId } = req.body;
-
-        const problem = await Problem.findOne({ submissionId: problemId });
-        if (!problem) {
-            return res.status(404).json({ message: "Problem not found" });
-        }
-
+        const problem = req.problem;
         const userId = problem.userId;
 
         const account = await Account.findOne({ userID: userId });
         if (!account) {
-            return res.status(400).json({ message: "Not enough credits" });
+            return res.status(404).json({ message: "Not enough credits", error: "Account not found"});
         }
 
         const decodedParameters = JSON.parse(Buffer.from(problem.inputData.parameters, 'base64').toString('utf-8'));
 
-        // Calculate cost dynamically
         let costOfSolution = calculateCost(decodedParameters);
 
         console.log(costOfSolution);
@@ -50,8 +43,8 @@ exports.runProblem = async (req, res) => {
             costOfSolution: costOfSolution
         });
 
-        await Problem.deleteOne({ submissionId: problemId });
-        console.log(`Problem with ID ${problemId} deleted successfully after issuing.`);
+        await Problem.deleteOne({ submissionId: problem.submissionId });
+        console.log(`Problem with ID ${problem.submissionId} deleted successfully after issuing.`);
 
         await publishToSubmissionsQueue({
             submissionId: problem.submissionId,

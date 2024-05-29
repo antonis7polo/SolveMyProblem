@@ -6,6 +6,7 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { Bar } from 'react-chartjs-2';
 import { Chart, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend } from 'chart.js';
 import withAuth from '../../../../utils/withAuth';
+import { encrypt } from "../../../../utils/encrypt";
 
 Chart.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
@@ -22,8 +23,7 @@ const ViewResults = ({ params }) => {
         const fetchResult = async () => {
             try {
                 const response = await axios.get(`http://localhost:3003/result/${submissionId}`, {
-                    headers: { 'X-OBSERVATORY-AUTH': localStorage.getItem('token')
-                    }
+                    headers: { 'X-OBSERVATORY-AUTH': localStorage.getItem('token'), 'custom-services-header': JSON.stringify(encrypt(process.env.NEXT_PUBLIC_SECRET_STRING_SERVICES)) },
                 });
                 setResult(response.data);
                 const parsedMetadata = parseResults(response.data.results);

@@ -1,6 +1,6 @@
 const jwt = require('jsonwebtoken');
 
-module.exports = async (req, res, next) => {
+const ensureCorrectUser = async (req, res, next) => {
     const authHeader = req.header('X-OBSERVATORY-AUTH');
     if (!authHeader) {
         return res.status(401).json({ message: 'Not authenticated', type: 'error' });
@@ -20,9 +20,24 @@ module.exports = async (req, res, next) => {
         return res.status(401).json({ message: 'Not authenticated', type: 'error' });
     }
 
+    const userIdFromToken = decodedToken.user.id;
+    const userIdFromParams = req.params.id;
+    const isAdmin = decodedToken.user.isAdmin;
+
+    if (isAdmin) {
+        req.user = decodedToken.user;
+        console.log(req.user);
+        return next();
+    }
+
+
+    if (userIdFromParams && userIdFromToken !== userIdFromParams) {
+        return res.status(403).json({ message: 'Not authorized', type: 'error' });
+    }
 
     req.user = decodedToken.user;
-    console.log(req.user)
+    console.log(req.user);
     next();
-
 };
+
+module.exports = ensureCorrectUser;

@@ -2,8 +2,9 @@
 const express = require('express');
 const router = express.Router();
 const creditController = require('../controllers/addCreditsController');
-const authMiddleware = require('../middlewares/authMiddleware');
+const ensureCorrectUser = require('../middlewares/correctUserMiddleware');
+const originAuthMiddleware = require('../middlewares/originAuthMiddleware');
 
-router.post('/add',authMiddleware, creditController.addCredits);
+router.post('/add',originAuthMiddleware, ensureCorrectUser, creditController.addCredits);
 
 module.exports = router;

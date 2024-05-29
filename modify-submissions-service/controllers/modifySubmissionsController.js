@@ -17,6 +17,14 @@ exports.uploadFiles = async (req, res) => {
     try {
         const { pythonFile, jsonFile } = req.files;
         const { id, name, username, userId, numVehicles, depot, maxDistance } = req.body;
+
+        console.log(req.user.id);
+        console.log(userId);
+
+        if (req.user.id !== userId) {
+            return res.status(403).json({ message: 'Not authorized to upload files for another user.' });
+        }
+
         const inputData = {};
 
         if (pythonFile && pythonFile.length > 0) {

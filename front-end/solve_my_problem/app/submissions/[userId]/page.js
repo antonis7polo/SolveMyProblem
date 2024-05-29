@@ -3,6 +3,7 @@ import axios from 'axios';
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import withAuth from '../../utils/withAuth';
+import { encrypt } from "../../utils/encrypt";
 
 const UserSubmissions = ({ params }) => {
     const router = useRouter();
@@ -19,7 +20,7 @@ const UserSubmissions = ({ params }) => {
         const fetchSubmissions = async () => {
             try {
                 const response = await axios.get(`http://localhost:3000/submission/${userId}`, {
-                    headers: { 'X-OBSERVATORY-AUTH': localStorage.getItem('token') }
+                    headers: { 'X-OBSERVATORY-AUTH': localStorage.getItem('token'), 'custom-services-header': JSON.stringify(encrypt(process.env.NEXT_PUBLIC_SECRET_STRING_SERVICES)) }
                 });
                 setSubmissions(response.data);
             } catch (error) {
@@ -39,7 +40,7 @@ const UserSubmissions = ({ params }) => {
     const handleDelete = async (submissionId) => {
         try {
             await axios.delete(`http://localhost:3001/submission/delete/${submissionId}`, {
-                headers: { 'X-OBSERVATORY-AUTH': localStorage.getItem('token') }
+                headers: { 'X-OBSERVATORY-AUTH': localStorage.getItem('token'), 'custom-services-header': JSON.stringify(encrypt(process.env.NEXT_PUBLIC_SECRET_STRING_SERVICES)) }
             });
             setSubmissions(submissions.filter(submission => submission._id !== submissionId));
         } catch (error) {
@@ -50,7 +51,7 @@ const UserSubmissions = ({ params }) => {
     const handleRun = async (submissionId) => {
         try {
             const response = await axios.get(`http://localhost:3002/submission/cost/${submissionId}`, {
-                headers: { 'X-OBSERVATORY-AUTH': localStorage.getItem('token') }
+                headers: { 'X-OBSERVATORY-AUTH': localStorage.getItem('token'), 'custom-services-header': JSON.stringify(encrypt(process.env.NEXT_PUBLIC_SECRET_STRING_SERVICES)) }
             });
             setCost(response.data.cost);
             setCurrentSubmissionId(submissionId);
@@ -67,7 +68,7 @@ const UserSubmissions = ({ params }) => {
     const handleContinue = async () => {
         try {
             const response = await axios.post(`http://localhost:3002/submission/run`, { problemId: currentSubmissionId }, {
-                headers: { 'X-OBSERVATORY-AUTH': localStorage.getItem('token') }
+                headers: { 'X-OBSERVATORY-AUTH': localStorage.getItem('token'), 'custom-services-header': JSON.stringify(encrypt(process.env.NEXT_PUBLIC_SECRET_STRING_SERVICES)) }
             });
             console.log(response.data.message);
             setShowModal(false);

@@ -7,6 +7,7 @@ import { loadStripe } from '@stripe/stripe-js';
 import { Elements, CardElement, useStripe, useElements } from '@stripe/react-stripe-js';
 import styles from './Credits.module.css';
 import withAuth from '../../utils/withAuth';
+import { encrypt } from "../../utils/encrypt";
 
 require('dotenv').config();
 
@@ -29,7 +30,7 @@ const Credits = ({ params }) => {
       try {
         console.log('Fetching user data:', id, token);
         const response = await axios.get(`http://localhost:3005/user/${id}`, {
-          headers: { 'X-OBSERVATORY-AUTH': token },
+            headers: { 'X-OBSERVATORY-AUTH': token, 'custom-services-header': JSON.stringify(encrypt(process.env.NEXT_PUBLIC_SECRET_STRING_SERVICES)) }
         });
         setCredits(response.data.userData.credits);
       } catch (error) {
@@ -109,7 +110,7 @@ const StripePaymentForm = ({ id, creditsChange }) => {
           'http://localhost:3004/credits/add',
           { id, amount: Number(creditsChange), paymentMethodId: paymentMethod.id },
           {
-            headers: { 'X-OBSERVATORY-AUTH': token },
+            headers: { 'X-OBSERVATORY-AUTH': token, 'custom-services-header': JSON.stringify(encrypt(process.env.NEXT_PUBLIC_SECRET_STRING_SERVICES)) }
           }
       );
 

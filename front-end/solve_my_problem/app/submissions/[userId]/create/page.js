@@ -4,6 +4,7 @@ import { useState, useRef } from 'react';
 import axios from 'axios';
 import { useRouter } from 'next/navigation';
 import withAuth from '../../../utils/withAuth';
+import { encrypt } from "../../../utils/encrypt";
 
 const CreateProblem = ({ params }) => {
     const { userId } = params;
@@ -65,8 +66,9 @@ const CreateProblem = ({ params }) => {
             await axios.post('http://localhost:3001/submission/create', formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
-                    'X-OBSERVATORY-AUTH': localStorage.getItem('token')
-                },
+                    'X-OBSERVATORY-AUTH': localStorage.getItem('token'),
+                    'custom-services-header': JSON.stringify(encrypt(process.env.NEXT_PUBLIC_SECRET_STRING_SERVICES))
+                }
             });
             router.push(`/submissions/${userId}`);
         } catch (error) {

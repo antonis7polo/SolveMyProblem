@@ -5,11 +5,18 @@ const creditRoutes = require('./routes/credits');
 const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-const corsOptions = {
-    origin: 'http://localhost:4000',
-    optionsSuccessStatus: 200,
-};
-app.use(cors(corsOptions));
+const allowedOrigins = ['http://localhost:4000']
+
+app.use(cors({
+    origin: function (origin, callback) {
+        if (!origin || allowedOrigins.indexOf(origin) !== -1) {
+            callback(null, true);
+        } else {
+            callback(new Error('Not allowed by CORS'));
+        }
+    },
+    credentials: true // Allow credentials (cookies, authorization headers, etc.)
+}));
 
 app.use('/credits', creditRoutes);
 

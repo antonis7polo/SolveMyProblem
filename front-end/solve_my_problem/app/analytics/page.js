@@ -5,6 +5,7 @@ import axios from 'axios';
 import { Bar } from 'react-chartjs-2';
 import Chart from 'chart.js/auto';
 import styles from '../styles/Analytics.module.css';
+import {encrypt} from "../utils/encrypt";
 
 const Analytics = () => {
     const [analytics, setAnalytics] = useState({});
@@ -21,7 +22,7 @@ const Analytics = () => {
         const fetchAnalytics = async () => {
             try {
                 const response = await axios.get('http://localhost:3007/analytics', {
-                    headers: { 'X-OBSERVATORY-AUTH': localStorage.getItem('token') }
+                    headers: { 'X-OBSERVATORY-AUTH': localStorage.getItem('token'), 'custom-services-header': JSON.stringify(encrypt(process.env.NEXT_PUBLIC_SECRET_STRING_SERVICES)) }
                 });
 
                 const data = response.data;

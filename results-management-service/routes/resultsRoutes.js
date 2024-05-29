@@ -3,9 +3,8 @@ const express = require('express');
 const router = express.Router();
 const resultsController = require('../controllers/resultsController');
 const originAuth = require('../middlewares/originAuthMiddleware');
-const auth = require('../middlewares/authMiddleware');
+const ensureCorrectUser = require('../middlewares/correctUserMiddleware');
 
-
-router.get('/result/:id',auth, resultsController.getResultById);
+router.get('/result/:id',originAuth, ensureCorrectUser,  resultsController.getResultById);
 
 module.exports = router;

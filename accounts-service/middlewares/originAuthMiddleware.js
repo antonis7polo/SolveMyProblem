@@ -6,8 +6,8 @@ module.exports = (req, res, next) => {
     if (customServicesHeader) {
         try {
             // Decrypt the header content
-            const decrypted = decrypt(JSON.parse(customServicesHeader), process.env.SECRET_ENCRYPT);
-            
+            const decrypted = decrypt(JSON.parse(customServicesHeader));
+
             if (decrypted === process.env.SECRET_STRING_SERVICES) {
                 return next();
             } else {

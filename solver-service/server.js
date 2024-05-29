@@ -61,7 +61,7 @@ async function solveProblem(problem) {
     fs.writeFileSync(parametersPath, Buffer.from(parameters, 'base64'));
 
     //const command = `python ${solverPath} ${parametersPath} ${numVehicles} ${depot} ${maxDistance}`;
-    const command = `python ${solverPath} ${parametersPath} ${numVehicles} ${depot} ${maxDistance}`;
+    const command = `python3 ${solverPath} ${parametersPath} ${numVehicles} ${depot} ${maxDistance}`;
     const startTime = process.hrtime();
     const cpuStartTime = process.cpuUsage();
     const executionTimestamp = new Date();

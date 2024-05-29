@@ -1,22 +1,12 @@
-// controllers/resultsController.js
-const Result = require('../models/Result');
-const mongoose = require('mongoose');
-
-exports.getResultById = async (req, res) => {
-    const submissionId = req.params.id;
-
-    if (!mongoose.Types.ObjectId.isValid(submissionId)) {
-        return res.status(400).json({ message: 'Invalid submission ID format' });
-    }
-
+const getResultById = async (req, res) => {
     try {
-        const result = await Result.findOne({ submissionId: submissionId });
-        if (!result) {
-            return res.status(404).json({ message: 'Result not found for the provided submission ID' });
-        }
+        const result = req.result;  // Get result from request object
+        console.log('Result:', result);
         res.json(result);
     } catch (error) {
         console.error('Error retrieving result by submission ID:', error);
         res.status(500).json({ message: 'Error retrieving result', error: error });
     }
 };
+
+module.exports = { getResultById };

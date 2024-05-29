@@ -3,10 +3,13 @@
 const express = require('express');
 const router = express.Router();
 const submissionsController = require('../controllers/submissionsController');
-const auth = require('../middlewares/authMiddleware');
+const isAdmin = require('../middlewares/adminMiddleware');
+const ensureCorrectUserOrAdminForSubmissionsByUserId = require('../middlewares/correctUserMiddlewareUserId');
+const ensureCorrectUserOrAdminForSubmissionById = require('../middlewares/correctUserMiddleware');
+const originAuthMiddleware = require('../middlewares/originAuthMiddleware');
 
-router.get('/submission/:userId',auth, submissionsController.getSubmissionsByUserId);
-router.get('/submission',auth, submissionsController.getAllSubmissions);
-router.get('/submission/data/:id',auth, submissionsController.getSubmissionDataById);
+router.get('/submission/:userId',originAuthMiddleware, ensureCorrectUserOrAdminForSubmissionsByUserId,submissionsController.getSubmissionsByUserId);
+router.get('/submission', originAuthMiddleware, isAdmin, submissionsController.getAllSubmissions);
+router.get('/submission/data/:id', originAuthMiddleware, ensureCorrectUserOrAdminForSubmissionById, submissionsController.getSubmissionDataById);
 
 module.exports = router;

@@ -5,6 +5,7 @@ import axios from 'axios';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import styles from '../styles/Login.module.css';
+import {encrypt} from "../utils/encrypt";
 
 const Login = () => {
   const [formData, setFormData] = useState({
@@ -26,7 +27,11 @@ const Login = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post('http://localhost:3005/login', formData);
+      const response = await axios.post('http://localhost:3005/login', formData, {
+        headers: {
+          'custom-services-header': JSON.stringify(encrypt(process.env.NEXT_PUBLIC_SECRET_STRING_SERVICES)),
+        }
+      });
       if (response.data.token) {
         const expirationTime = new Date().getTime() + 60 * 60 * 1000; // 1 hour
         localStorage.setItem('token', response.data.token);

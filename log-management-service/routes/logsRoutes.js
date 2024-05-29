@@ -1,10 +1,11 @@
 // routes/logsRoutes.js
 const express = require('express');
 const { getLogs } = require('../controllers/getLogsController');
-const authMiddleware = require('../middlewares/authMiddleware');
+const isAdmin = require('../middlewares/adminMiddleware');
+const originAuthMiddleware = require('../middlewares/originAuthMiddleware');
 
 const router = express.Router();
 
-router.get('/logs', authMiddleware, getLogs);
+router.get('/logs',originAuthMiddleware, isAdmin, getLogs);
 
 module.exports = router;
