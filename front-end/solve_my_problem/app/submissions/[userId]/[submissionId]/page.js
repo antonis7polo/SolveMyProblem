@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 import { useRouter, useSearchParams } from 'next/navigation';
 import withAuth from '../../../utils/withAuth';
+import styles from '../../../styles/ViewSubmission.module.css'
 
 const ViewEditSubmission = ({ params }) => {
     const { userId, submissionId } = params;
@@ -209,10 +210,10 @@ const ViewEditSubmission = ({ params }) => {
     const isUpdateEnabled = !isAdmin && (submission.status === 'ready' || submission.status === 'not_ready');
 
     return (
-        <div>
-            <h1>{isAdmin ? 'View' : 'View/Edit'} Submission</h1>
+        <div className={styles.container}>
+            <h1 className={styles.title}>{isAdmin ? 'View' : 'View/Edit'} Submission</h1>
             {error && <p style={{ color: 'red' }}>{error}</p>}
-            <div>
+            <div className={styles.section}>
                 <h2>Submission Info</h2>
                 <p><strong>ID:</strong> {submission._id}</p>
                 <div>
@@ -222,6 +223,7 @@ const ViewEditSubmission = ({ params }) => {
                         value={name}
                         onChange={(e) => setName(e.target.value)}
                         disabled={!isUpdateEnabled}
+                        className={styles.input}
                     />
                 </div>
                 <div>
@@ -233,18 +235,19 @@ const ViewEditSubmission = ({ params }) => {
                     <p><strong>Submitted At:</strong> {new Date(submission.submissionTimestamp).toLocaleString()}</p>
                 )}
             </div>
-            <div>
+            <div className={styles.section}>
                 <h2>Input Data</h2>
                 <div>
                     <p><strong>Solver (Python File):</strong> {submission.inputData?.solver ? 'Uploaded' : 'Not Uploaded'}</p>
                     {submission.inputData?.solver && (
-                        <button onClick={() => downloadFile(submission.inputData.solver, 'solver.py', solverMetadata.type)}>Download Solver File</button>
+                        <button onClick={() => downloadFile(submission.inputData.solver, 'solver.py', solverMetadata.type)} className={styles.button}>Download Solver File</button>
                     )}
                     <input
                         type="file"
                         ref={solverFileInputRef}
                         onChange={handleSolverFileChange}
                         disabled={!isUpdateEnabled}
+                        className={styles.inputFile}
                     />
                     {solverMetadata.size && (
                         <p>
@@ -256,13 +259,14 @@ const ViewEditSubmission = ({ params }) => {
                 <div>
                     <p><strong>Parameters (JSON File):</strong> {submission.inputData?.parameters ? 'Uploaded' : 'Not Uploaded'}</p>
                     {submission.inputData?.parameters && (
-                        <button onClick={() => downloadFile(submission.inputData.parameters, 'parameters.json', parametersMetadata.type)}>Download Parameters File</button>
+                        <button onClick={() => downloadFile(submission.inputData.parameters, 'parameters.json', parametersMetadata.type)} className={styles.button}>Download Parameters File</button>
                     )}
                     <input
                         type="file"
                         ref={parametersFileInputRef}
                         onChange={handleParametersFileChange}
                         disabled={!isUpdateEnabled}
+                        className={styles.inputFile}
                     />
                     {parametersMetadata.size && (
                         <p>
@@ -287,6 +291,7 @@ const ViewEditSubmission = ({ params }) => {
                     value={numVehicles}
                     onChange={(e) => setNumVehicles(e.target.value)}
                     disabled={!isUpdateEnabled}
+                    className={styles.input}
                 />
                 <p><strong>Depot:</strong></p>
                 <input
@@ -294,6 +299,7 @@ const ViewEditSubmission = ({ params }) => {
                     value={depot}
                     onChange={(e) => setDepot(e.target.value)}
                     disabled={!isUpdateEnabled}
+                    className={styles.input}
                 />
                 <p><strong>Max Distance:</strong></p>
                 <input
@@ -301,12 +307,15 @@ const ViewEditSubmission = ({ params }) => {
                     value={maxDistance}
                     onChange={(e) => setMaxDistance(e.target.value)}
                     disabled={!isUpdateEnabled}
+                    className={styles.input}
                 />
             </div>
-            {!isAdmin && (
-                <button onClick={handleUpdate} disabled={!isUpdateEnabled}>Update Submission</button>
-            )}
-            <button onClick={handleGoBack}>Back to Submissions</button>
+            <div className={styles.buttons}>
+                {!isAdmin && (
+                    <button onClick={handleUpdate} disabled={!isUpdateEnabled} className={styles.button}>Update Submission</button>
+                )}
+                <button onClick={handleGoBack} className={`${styles.button} ${styles.buttonRed}`}>Back to Submissions</button>
+            </div>
         </div>
     );
 };
