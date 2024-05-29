@@ -4,6 +4,9 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import withAuth from '../../utils/withAuth';
 import { encrypt } from "../../utils/encrypt";
+import Header from '../../components/Header';
+import Footer from '../../components/Footer'; 
+import styles from '../../styles/Submissions.module.css'
 
 const UserSubmissions = ({ params }) => {
     const router = useRouter();
@@ -100,95 +103,78 @@ const UserSubmissions = ({ params }) => {
 
     return (
         <div>
-            <h1>User Submissions</h1>
-            {loading ? (
-                <p>Loading...</p>
-            ) : (
-                <>
-                    {error ? (
-                        <p>{error}</p>
-                    ) : (
-                        <>
-                            {submissions.length === 0 ? (
-                                <p>No submissions found</p>
-                            ) : (
-                                <table>
-                                    <thead>
-                                    <tr>
-                                        <th>Creator</th>
-                                        <th>Submission Name</th>
-                                        <th>Created At</th>
-                                        <th>Status</th>
-                                        <th>Submission Timestamp</th>
-                                        <th>Actions</th>
-                                    </tr>
-                                    </thead>
-                                    <tbody>
-                                    {submissions.map((submission) => (
-                                        <tr key={submission._id}>
-                                            <td>{submission.username}</td>
-                                            <td>{submission.name}</td>
-                                            <td>{new Date(submission.createdAt).toLocaleString()}</td>
-                                            <td>{submission.status}</td>
-                                            <td>{submission.submissionTimestamp ? new Date(submission.submissionTimestamp).toLocaleString() : 'N/A'}</td>
-                                            <td>
-                                                <button onClick={() => handleViewSubmission(submission._id)}>View</button>
-                                                {submission.status === 'ready' && <button onClick={() => handleRun(submission._id)}>Run</button>}
-                                                {submission.status === 'completed' && <button onClick={() => handleViewResults(submission._id)}>View Results</button>}
-                                                <button onClick={() => handleDelete(submission._id)}>Delete</button>
-                                            </td>
-                                        </tr>
-                                    ))}
-                                    </tbody>
-                                </table>
-                            )}
-                        </>
-                    )}
-                    <button onClick={() => router.push(`/submissions/${userId}/create`)}>Create New Problem</button>
-                </>
-            )}
-            {showModal && (
-                <div className="modal">
-                    <div className="modal-content">
-                        <h2>Cost Calculation</h2>
-                        <p>The cost for this submission is: {cost}</p>
-                        {creditsError ? (
-                            <>
-                                <p style={{ color: 'red' }}>{creditsError}</p>
-                                <button onClick={handleAddCredits}>Add Credits</button>
-                            </>
+            <div className={styles.container}>
+                <h1 className={styles.title}>User Submissions</h1>
+                {loading ? (
+                    <p>Loading...</p>
+                ) : (
+                    <>
+                        {error ? (
+                            <p>{error}</p>
                         ) : (
                             <>
-                                {error && !creditsError && <p style={{ color: 'red' }}>{error}</p>}
-                                <button onClick={handleContinue}>Continue</button>
+                                {submissions.length === 0 ? (
+                                    <p>No submissions found</p>
+                                ) : (
+                                    <div className={styles.tableContainer}>
+                                        <table className={styles.table}>
+                                            <thead>
+                                            <tr>
+                                                <th>Creator</th>
+                                                <th>Submission Name</th>
+                                                <th>Created At</th>
+                                                <th>Status</th>
+                                                <th>Submission Timestamp</th>
+                                                <th>Actions</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            {submissions.map((submission) => (
+                                                <tr key={submission._id}>
+                                                    <td>{submission.username}</td>
+                                                    <td>{submission.name}</td>
+                                                    <td>{new Date(submission.createdAt).toLocaleString()}</td>
+                                                    <td>{submission.status}</td>
+                                                    <td>{submission.submissionTimestamp ? new Date(submission.submissionTimestamp).toLocaleString() : 'N/A'}</td>
+                                                    <td>
+    <button className={`${styles.button} ${styles.viewButton}`} onClick={() => handleViewSubmission(submission._id)}>View</button>
+    {submission.status === 'ready' && <button className={`${styles.button} ${styles.runButton}`} onClick={() => handleRun(submission._id)}>Run</button>}
+    {submission.status === 'completed' && <button className={`${styles.button} ${styles.resultsButton}`} onClick={() => handleViewResults(submission._id)}>View Results</button>}
+    <button className={`${styles.button} ${styles.deleteButton}`} onClick={() => handleDelete(submission._id)}>Delete</button>
+</td>
+
+                                                </tr>
+                                            ))}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                )}
                             </>
                         )}
-                        <button onClick={handleCancel}>Cancel</button>
+                        <button className={styles.createButton} onClick={() => router.push(`/submissions/${userId}/create`)}>Create New Problem</button>
+                    </>
+                )}
+                {showModal && (
+                    <div className={styles.modal}>
+                        <div className={styles.modalContent}>
+                            <h2>Cost Calculation</h2>
+                            <p>The cost for this submission is: {cost}</p>
+                            {creditsError ? (
+                                <>
+                                    <p style={{ color: 'red' }}>{creditsError}</p>
+                                    <button className={styles.button} onClick={handleAddCredits}>Add Credits</button>
+                                </>
+                            ) : (
+                                <>
+                                    {error && !creditsError && <p style={{ color: 'red' }}>{error}</p>}
+                                    <button className={styles.button} onClick={handleContinue}>Continue</button>
+                                </>
+                            )}
+                            <button className={styles.button} onClick={handleCancel}>Cancel</button>
+                        </div>
                     </div>
-                </div>
-            )}
-            <style jsx>{`
-                .modal {
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                    position: fixed;
-                    top: 0;
-                    left: 0;
-                    width: 100%;
-                    height: 100%;
-                    background: rgba(0, 0, 0, 0.5);
-                }
-                .modal-content {
-                    background: white;
-                    padding: 20px;
-                    border-radius: 5px;
-                    text-align: center;
-                }
-                .modal-content button {
-                    margin: 5px;
-                }
-            `}</style>
+                )}
+            </div>
         </div>
     );
 };

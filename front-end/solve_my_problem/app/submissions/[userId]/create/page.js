@@ -5,6 +5,7 @@ import axios from 'axios';
 import { useRouter } from 'next/navigation';
 import withAuth from '../../../utils/withAuth';
 import { encrypt } from "../../../utils/encrypt";
+import styles from '../../../styles/CreateSubmissions.module.css';
 
 const CreateProblem = ({ params }) => {
     const { userId } = params;
@@ -83,66 +84,72 @@ const CreateProblem = ({ params }) => {
     };
 
     return (
-        <div>
-            <h1>Create New Problem</h1>
-            {error && <p style={{ color: 'red' }}>{error}</p>}
-            <form onSubmit={handleSubmit}>
-                <div>
+        <div className={styles.container}>
+            <h1 className={styles.title}>Create New Problem</h1>
+            {error && <p className={styles.error}>{error}</p>}
+            <form onSubmit={handleSubmit} className={styles.form}>
+                <div className={styles.formGroup}>
                     <label>Submission Name</label>
                     <input
                         type="text"
                         value={name}
                         onChange={(e) => setName(e.target.value)}
                         required
+                        className={styles.input}
                     />
                 </div>
-                <div>
+                <div className={styles.formGroup}>
                     <label>Number of Vehicles</label>
                     <input
                         type="number"
                         value={numVehicles}
                         onChange={(e) => setNumVehicles(e.target.value)}
+                        className={styles.input}
                     />
                 </div>
-                <div>
+                <div className={styles.formGroup}>
                     <label>Depot</label>
                     <input
                         type="number"
                         value={depot}
                         onChange={(e) => setDepot(e.target.value)}
+                        className={styles.input}
                     />
                 </div>
-                <div>
+                <div className={styles.formGroup}>
                     <label>Max Distance</label>
                     <input
                         type="number"
                         value={maxDistance}
                         onChange={(e) => setMaxDistance(e.target.value)}
+                        className={styles.input}
                     />
                 </div>
-                <div>
+                <div className={styles.formGroup}>
                     <label>Python File</label>
                     <input
                         type="file"
                         name="pythonFile"
                         ref={pythonFileInputRef}
                         onChange={handleFileChange}
+                        className={styles.inputFile}
                     />
                 </div>
-                <div>
+                <div className={styles.formGroup}>
                     <label>JSON File</label>
                     <input
                         type="file"
                         name="jsonFile"
                         ref={jsonFileInputRef}
                         onChange={handleFileChange}
+                        className={styles.inputFile}
                     />
                 </div>
-                <div>
-                    <button type="submit" disabled={loading}>
+                <div className={styles.buttons}>
+                    <button type="submit" disabled={loading} className={styles.button}>
                         {loading ? 'Submitting...' : 'Submit'}
                     </button>
-                    <button type="button" onClick={handleCancel}>
+                    <button type="button" onClick={handleCancel} className={`${styles.button} ${styles.buttonRed}`}>
                         Cancel
                     </button>
                 </div>
