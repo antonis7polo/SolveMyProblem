@@ -5,6 +5,7 @@ const resultSchema = new mongoose.Schema({
     submissionId: { type: mongoose.Schema.Types.ObjectId, required: true, unique: true },
     name: String,
     userId: {type: Schema.Types.ObjectId, required: true},
+    username: { type: String },
     results: String,
     creationTimestamp: { type: Date },
     updateTimestamp: { type: Date },
