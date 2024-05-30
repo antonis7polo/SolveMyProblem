@@ -7,10 +7,11 @@ const mongoDBUrl = process.env.MONGODB_URL;
 async function connectDB() {
     try {
         
-        await mongoose.connect(mongoDBUrl, {
+        /*await mongoose.connect(mongoDBUrl, {
             useNewUrlParser: true,
             useUnifiedTopology: true,
-        });
+        });*/
+        await mongoose.connect(mongoDBUrl);
         console.log('Successfully connected to MongoDB');
     } catch (error) {
         console.error('Error connecting to MongoDB:', error);

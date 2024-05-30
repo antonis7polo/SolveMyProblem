@@ -31,23 +31,22 @@ async function handleResultsStored(messageData) {
     console.log(`Processing results message with data: ${JSON.stringify(messageData)}`);
     try {
         const {
-            userId, resultsId, submissionId, name, label, resourceUsage,    //username
+            userId, username, submissionId, name, label, resourceUsage,    
             cpuTime, taskCompletionTime, queueTime, executionTimestamp
         } = messageData;
 
         // Find the user creation log to get the username
-        const userLog = await Logs.findOne({ userId, eventType: 'user' });
+        /*const userLog = await Logs.findOne({ userId, eventType: 'user' });
 
         if (!userLog) {
             throw new Error(`User log not found for userId: ${userId}`);
-        }
+        }*/
 
         const logEntry = new Logs({
             eventType: 'results',
             userId,
-            username: userLog.username,
-            //username,
-            resultsId,
+            //username: userLog.username,
+            username,
             submissionId,
             name,
             label,

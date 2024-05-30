@@ -2,7 +2,7 @@
 const express = require('express');
 const cors = require('cors');
 const originAuth = require('./middlewares/originAuthMiddleware');
-const auth = require('./middlewares/authMiddleware');
+//const auth = require('./middlewares/authMiddleware');
 const logsRoutes = require('./routes/logsRoutes');
 const analyticsRoutes = require('./routes/analyticsRoutes');
 const { setupRabbitMQ } = require('./config/rabbitMQ');

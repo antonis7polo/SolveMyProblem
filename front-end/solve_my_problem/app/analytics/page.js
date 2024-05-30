@@ -1,8 +1,8 @@
 "use client";
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import axios from 'axios';
-import { Bar } from 'react-chartjs-2';
+import { Bar, Pie } from 'react-chartjs-2';
 import Chart from 'chart.js/auto';
 import styles from '../styles/Analytics.module.css';
 import {encrypt} from "../utils/encrypt";
@@ -10,13 +10,21 @@ import {encrypt} from "../utils/encrypt";
 const Analytics = () => {
     const [analytics, setAnalytics] = useState({});
     const [loading, setLoading] = useState(true);
+    const indicatorRef = useRef(null);
+    const menuBarRef = useRef(null);
     const [selectedCategory, setSelectedCategory] = useState('general');
-    //const [showLast24Hours, setShowLast24Hours] = useState(false);
-    //const [showLastMonth, setShowLastMonth] = useState(false);
-    //const [showGeneralAnalytics, setShowGeneralAnalytics] = useState(false);
-    //const [showUserAnalytics, setShowUserAnalytics] = useState(false);
     const [selectedUser, setSelectedUser] = useState(null);
     const [filteredUsers, setFilteredUsers] = useState([]);
+    const [isDropdownVisible, setIsDropdownVisible] = useState(false);
+    const [searchTerm, setSearchTerm] = useState('');
+    const [selectedDiagram, setSelectedDiagram] = useState('averageQueueTime');
+    const [selectedLastMonthDiagram, setSelectedLastMonthDiagram] = useState('totalResourceUsagePerDay');
+    const [selectedLast24HoursDiagram, setSelectedLast24HoursDiagram] = useState('totalResourceUsagePerHour');
+    const [selectedGeneralDiagram, setSelectedGeneralDiagram] = useState('table');
+
+
+
+
 
     useEffect(() => {
         const fetchAnalytics = async () => {
@@ -40,6 +48,16 @@ const Analytics = () => {
 
         fetchAnalytics();
     }, []);
+
+    useEffect(() => {
+        if (menuBarRef.current) {
+            const activeButton = menuBarRef.current.querySelector(`.${styles.active}`);
+            if (activeButton && indicatorRef.current) {
+                indicatorRef.current.style.left = `${activeButton.offsetLeft}px`;
+                indicatorRef.current.style.width = `${activeButton.offsetWidth}px`;
+            }
+        }
+    }, [selectedCategory]);
 
     const getLastNDays = (n) => {
         const today = new Date();
@@ -69,15 +87,28 @@ const Analytics = () => {
 
     const handleUserSearch = (e) => {
         const searchTerm = e.target.value.toLowerCase();
+        setSearchTerm(e.target.value); // Update the search term
         setFilteredUsers(
             analytics.totalCPUTimePerUser
                 ?.map(user => user.username)
                 ?.filter(username => username.toLowerCase().includes(searchTerm)) || []
         );
     };
-
+    
     const handleUserSelect = (username) => {
         setSelectedUser(username);
+        setSearchTerm(username); // Set the search term to the selected username
+        setIsDropdownVisible(false);
+    };
+    
+    const toggleDropdown = () => {
+        setIsDropdownVisible(true);
+    };
+    
+    const handleBlur = (e) => {
+        if (!e.currentTarget.contains(e.relatedTarget)) {
+            setIsDropdownVisible(false);
+        }
     };
 
     const last31Days = getLastNDays(31);
@@ -93,12 +124,25 @@ const Analytics = () => {
         'maxQueueTime',
         'throughput',
         'successRate',
-        'successCount',
-        'failureCount',
         'averageResourceUsage',
         'minResourceUsage',
         'maxResourceUsage',
     ];
+
+    const analyticsLabels = {
+        uniqueUsers: 'Total Users',
+        averageCPUTime: 'Average CPU Time',
+        minCPUTime: 'Minimum CPU Time',
+        maxCPUTime: 'Maximum CPU Time',
+        averageQueueTime: 'Average Queue Time',
+        minQueueTime: 'Minimum Queue Time',
+        maxQueueTime: 'Maximum Queue Time',
+        throughput: 'Throughput',
+        successRate: 'Success Rate',
+        averageResourceUsage: 'Average Resource Usage',
+        minResourceUsage: 'Minimum Resource Usage',
+        maxResourceUsage: 'Maximum Resource Usage',
+      };
 
     return (
         <div className={styles.container}>
@@ -107,7 +151,7 @@ const Analytics = () => {
                 <p>Loading...</p>
             ) : (
                 <>
-                    <div className={styles.menuBar}>
+                    <div className={styles.menuBar} ref={menuBarRef}>
                         <button
                             onClick={() => setSelectedCategory('general')}
                             className={`${styles.menuButton} ${selectedCategory === 'general' ? styles.active : ''}`}
@@ -132,351 +176,293 @@ const Analytics = () => {
                         >
                             User Analytics
                         </button>
+                        <div className={styles.indicator} ref={indicatorRef}></div>
                     </div>
-        
                     {selectedCategory === 'general' && (
-                        <div className={styles.chartContainer}>
-                            <table className={styles.table}>
-                                <thead>
-                                    <tr>
-                                        <th>Analytic</th>
-                                        <th>Value</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {analyticsForTable.map(key => (
-                                        <tr key={key}>
-                                            <td>{key}</td>
-                                            <td>{analytics[key]}</td>
-                                        </tr>
-                                    ))}
-                                </tbody>
-                            </table>
-                            <div className={styles.chart}>
-                                <h3>Success vs Failure</h3>
-                                <Bar
-                                    data={{
-                                        labels: ['Success', 'Failure'],
-                                        datasets: [
-                                            {
-                                                label: 'Count',
-                                                data: [analytics.successCount, analytics.failureCount],
-                                                backgroundColor: ['rgba(75, 192, 192, 0.4)', 'rgba(255, 99, 132, 0.4)'],
-                                                borderColor: ['rgba(75, 192, 192, 1)', 'rgba(255, 99, 132, 1)'],
-                                                borderWidth: 1,
-                                            },
-                                        ],
-                                    }}
-                                    width={600}
-                                    height={400}
-                                />
-                            </div>
-                            <div className={styles.chart}>
-                                <h3>New Users per Day (Last Month)</h3>
-                                <Bar
-                                    data={{
-                                        labels: last31Days,
-                                        datasets: [
-                                            {
-                                                label: 'New Users',
-                                                data: last31Days.map(day => analytics.newUsersPerDay?.[day] || 0),
-                                                backgroundColor: 'rgba(153, 102, 255, 0.4)',
-                                                borderColor: 'rgba(153, 102, 255, 1)',
-                                                borderWidth: 1,
-                                            },
-                                        ],
-                                    }}
-                                    width={600}
-                                    height={400}
-                                />
+                        <div className={styles.userAnalyticsContainer}>
+                            <div className={styles.userAnalyticsContent}>
+                                <div className={styles.diagramMenu}>
+                                    <button
+                                        className={`${styles.menuButton} ${selectedGeneralDiagram === 'table' ? styles.active : ''}`}
+                                        onClick={() => setSelectedGeneralDiagram('table')}
+                                    >
+                                        Analytics Table
+                                    </button>
+                                    <button
+                                        className={`${styles.menuButton} ${selectedGeneralDiagram === 'successFailure' ? styles.active : ''}`}
+                                        onClick={() => setSelectedGeneralDiagram('successFailure')}
+                                    >
+                                        Success vs Failure
+                                    </button>
+                                    <button
+                                        className={`${styles.menuButton} ${selectedGeneralDiagram === 'newUsers' ? styles.active : ''}`}
+                                        onClick={() => setSelectedGeneralDiagram('newUsers')}
+                                    >
+                                        New Users per Day (Last Month)
+                                    </button>
+                                </div>
+                                <div className={`${styles.chart} ${styles.fixedHeight}`}>
+                                    {selectedGeneralDiagram === 'table' && (
+                                        <table className={`${styles.table} ${styles.fixedHeight}`}>
+                                            <thead>
+                                                <tr>
+                                                    <th>Analytic</th>
+                                                    <th>Value</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {analyticsForTable.map(key => (
+                                                    <tr key={key}>
+                                                        <td>{analyticsLabels[key] || key}</td>
+                                                        <td>{analytics[key]}</td>
+                                                    </tr>
+                                                ))}
+                                            </tbody>
+                                        </table>
+                                    )}
+                                    {selectedGeneralDiagram === 'successFailure' && (
+                                        <div className={styles.pieChart}>
+                                            <h4>Success vs Failure</h4>
+                                            <Pie
+                                                data={{
+                                                    labels: ['Success', 'Failure'],
+                                                    datasets: [
+                                                        {
+                                                            label: 'Count',
+                                                            data: [analytics.successCount, analytics.failureCount],
+                                                            backgroundColor: ['rgba(0, 128, 128, 0.6)', 'rgba(154, 205, 50, 0.6)'],
+                                                            borderColor: ['rgba(0, 128, 128, 1)', 'rgba(154, 205, 50, 1)'],
+                                                            borderWidth: 1,
+                                                        },
+                                                    ],
+                                                }}
+                                                options={{
+                                                    responsive: true,
+                                                    maintainAspectRatio: false,  // This should be false to ensure proper scaling
+                                                }}
+                                            />
+                                        </div>
+                                    )}
+                                    {selectedGeneralDiagram === 'newUsers' && (
+                                        <div className={styles.chart}>
+                                            <h4>New Users per Day (Last Month)</h4>
+                                            <Bar
+                                                data={{
+                                                    labels: last31Days,
+                                                    datasets: [
+                                                        {
+                                                            label: 'New Users',
+                                                            data: last31Days.map(day => analytics.newUsersPerDay?.[day] || 0),
+                                                            backgroundColor: 'rgba(0, 128, 128, 0.6)', // Blue-Green
+                                                            borderColor: 'rgba(0, 128, 128, 1)',
+                                                            borderWidth: 1,
+                                                        },
+                                                    ],
+                                                }}
+                                                width={600}
+                                                height={400}
+                                            />
+                                        </div>
+                                    )}
+                                </div>
                             </div>
                         </div>
                     )}
-        
                     {selectedCategory === 'last24Hours' && (
-                        <div className={styles.chartContainer}>
-                            <div className={styles.chart}>
-                                <h3>Total Resource Usage per Hour (Last 24 Hours)</h3>
-                                <Bar
-                                    data={{
-                                        labels: last24Hours,
-                                        datasets: [
-                                            {
-                                                label: 'Total Resource Usage',
-                                                data: analytics.totalResourceUsagePerHour,
-                                                backgroundColor: 'rgba(255, 159, 64, 0.4)',
-                                                borderColor: 'rgba(255, 159, 64, 1)',
-                                                borderWidth: 1,
-                                            },
-                                        ],
-                                    }}
-                                    width={600}
-                                    height={400}
-                                />
-                            </div>
-                            <div className={styles.chart}>
-                                <h3>Total CPU Time per Hour (Last 24 Hours)</h3>
-                                <Bar
-                                    data={{
-                                        labels: last24Hours,
-                                        datasets: [
-                                            {
-                                                label: 'Total CPU Time',
-                                                data: analytics.totalCPUTimePerHour,
-                                                backgroundColor: 'rgba(54, 162, 235, 0.4)',
-                                                borderColor: 'rgba(54, 162, 235, 1)',
-                                                borderWidth: 1,
-                                            },
-                                        ],
-                                    }}
-                                    width={600}
-                                    height={400}
-                                />
-                            </div>
-                            <div className={styles.chart}>
-                                <h3>Total Queue Time per Hour (Last 24 Hours)</h3>
-                                <Bar
-                                    data={{
-                                        labels: last24Hours,
-                                        datasets: [
-                                            {
-                                                label: 'Total Queue Time',
-                                                data: analytics.totalQueueTimePerHour,
-                                                backgroundColor: 'rgba(255, 206, 86, 0.4)',
-                                                borderColor: 'rgba(255, 206, 86, 1)',
-                                                borderWidth: 1,
-                                            },
-                                        ],
-                                    }}
-                                    width={600}
-                                    height={400}
-                                />
+                        <div className={styles.userAnalyticsContainer}>
+                            <div className={styles.userAnalyticsContent}>
+                                <div className={styles.diagramMenu}>
+                                    <button
+                                        className={`${styles.menuButton} ${selectedLast24HoursDiagram === 'totalResourceUsagePerHour' ? styles.active : ''}`}
+                                        onClick={() => setSelectedLast24HoursDiagram('totalResourceUsagePerHour')}
+                                    >
+                                        Total Resource Usage per Hour
+                                    </button>
+                                    <button
+                                        className={`${styles.menuButton} ${selectedLast24HoursDiagram === 'totalCPUTimePerHour' ? styles.active : ''}`}
+                                        onClick={() => setSelectedLast24HoursDiagram('totalCPUTimePerHour')}
+                                    >
+                                        Total CPU Time per Hour
+                                    </button>
+                                    <button
+                                        className={`${styles.menuButton} ${selectedLast24HoursDiagram === 'totalQueueTimePerHour' ? styles.active : ''}`}
+                                        onClick={() => setSelectedLast24HoursDiagram('totalQueueTimePerHour')}
+                                    >
+                                        Total Queue Time per Hour
+                                    </button>
+                                </div>
+                                <div className={styles.chart}>
+                                    <h4>
+                                        {selectedLast24HoursDiagram.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase()).replace('C P U', 'CPU')}
+                                    </h4>
+                                    <Bar
+                                        data={{
+                                            labels: last24Hours,
+                                            datasets: [
+                                                {
+                                                    label: selectedLast24HoursDiagram.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase()).replace('C P U', 'CPU'),
+                                                    data: analytics[selectedLast24HoursDiagram],
+                                                    backgroundColor: 'rgba(0, 128, 128, 0.6)', // Blue-Green
+                                                    borderColor: 'rgba(0, 128, 128, 1)',
+                                                    borderWidth: 1,
+                                                },
+                                            ],
+                                        }}
+                                        width={600}
+                                        height={400}
+                                    />
+                                </div>
                             </div>
                         </div>
                     )}
-        
                     {selectedCategory === 'lastMonth' && (
-                        <div className={styles.chartContainer}>
-                            <div className={styles.chart}>
-                                <h3>Total Resource Usage per Day (Last Month)</h3>
-                                <Bar
-                                    data={{
-                                        labels: last31Days,
-                                        datasets: [
-                                            {
-                                                label: 'Total Resource Usage',
-                                                data: last31Days.map(day => analytics.totalResourceUsagePerDay?.[day] || 0),
-                                                backgroundColor: 'rgba(255, 159, 64, 0.4)',
-                                                borderColor: 'rgba(255, 159, 64, 1)',
-                                                borderWidth: 1,
-                                            },
-                                        ],
-                                    }}
-                                    width={600}
-                                    height={400}
-                                />
-                            </div>
-                            <div className={styles.chart}>
-                                <h3>Total CPU Time per Day (Last Month)</h3>
-                                <Bar
-                                    data={{
-                                        labels: last31Days,
-                                        datasets: [
-                                            {
-                                                label: 'Total CPU Time',
-                                                data: last31Days.map(day => analytics.totalCPUTimePerDay?.[day] || 0),
-                                                backgroundColor: 'rgba(54, 162, 235, 0.4)',
-                                                borderColor: 'rgba(54, 162, 235, 1)',
-                                                borderWidth: 1,
-                                            },
-                                        ],
-                                    }}
-                                    width={600}
-                                    height={400}
-                                />
-                            </div>
-                            <div className={styles.chart}>
-                                <h3>Total Queue Time per Day (Last Month)</h3>
-                                <Bar
-                                    data={{
-                                        labels: last31Days,
-                                        datasets: [
-                                            {
-                                                label: 'Total Queue Time',
-                                                data: last31Days.map(day => analytics.totalQueueTimePerDay?.[day] || 0),
-                                                backgroundColor: 'rgba(153, 102, 255, 0.4)',
-                                                borderColor: 'rgba(153, 102, 255, 1)',
-                                                borderWidth: 1,
-                                            },
-                                        ],
-                                    }}
-                                    width={600}
-                                    height={400}
-                                />
+                        <div className={styles.userAnalyticsContainer}>
+                            <div className={styles.userAnalyticsContent}>
+                                <div className={styles.diagramMenu}>
+                                    <button
+                                        className={`${styles.menuButton} ${selectedLastMonthDiagram === 'totalResourceUsagePerDay' ? styles.active : ''}`}
+                                        onClick={() => setSelectedLastMonthDiagram('totalResourceUsagePerDay')}
+                                    >
+                                        Total Resource Usage per Day
+                                    </button>
+                                    <button
+                                        className={`${styles.menuButton} ${selectedLastMonthDiagram === 'totalCPUTimePerDay' ? styles.active : ''}`}
+                                        onClick={() => setSelectedLastMonthDiagram('totalCPUTimePerDay')}
+                                    >
+                                        Total CPU Time per Day
+                                    </button>
+                                    <button
+                                        className={`${styles.menuButton} ${selectedLastMonthDiagram === 'totalQueueTimePerDay' ? styles.active : ''}`}
+                                        onClick={() => setSelectedLastMonthDiagram('totalQueueTimePerDay')}
+                                    >
+                                        Total Queue Time per Day
+                                    </button>
+                                </div>
+                                <div className={styles.chart}>
+                                    <h4>
+                                        {selectedLastMonthDiagram.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase()).replace('C P U', 'CPU')}
+                                    </h4>
+                                    <Bar
+                                        data={{
+                                            labels: last31Days,
+                                            datasets: [
+                                                {
+                                                    label: selectedLastMonthDiagram.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase()).replace('C P U', 'CPU'),
+                                                    data: last31Days.map(day => analytics[selectedLastMonthDiagram]?.[day] || 0),
+                                                    backgroundColor: 'rgba(0, 128, 128, 0.6)', // Blue-Green
+                                                    borderColor: 'rgba(0, 128, 128, 1)',
+                                                    borderWidth: 1,
+                                                },
+                                            ],
+                                        }}
+                                        width={600}
+                                        height={400}
+                                    />
+                                </div>
                             </div>
                         </div>
                     )}
-        
                     {selectedCategory === 'userAnalytics' && (
-                        <div style={{ marginBottom: '20px' }}>
-                            <h2>User Analytics</h2>
-                            <div style={{ marginBottom: '20px' }}>
+                        <div className={styles.userAnalyticsContainer}>
+                            <div className={styles.userSearchContainer} onBlur={handleBlur} tabIndex="0">
                                 <input
                                     type="text"
                                     placeholder="Search for a user..."
                                     onChange={handleUserSearch}
+                                    onFocus={toggleDropdown}
+                                    className={styles.userSearchInput}
+                                    value={searchTerm} // Bind the input value to the search term
                                 />
-                                <ul className={styles.userList}>
+                                <ul className={`${styles.userList} ${isDropdownVisible ? styles.visible : ''}`}>
                                     {filteredUsers.length > 0 ? filteredUsers.map((username, index) => (
-                                        <li key={index} onClick={() => handleUserSelect(username)}>
+                                        <li
+                                            key={index}
+                                            onClick={() => handleUserSelect(username)}
+                                            className={selectedUser === username ? styles.selected : ''}
+                                        >
                                             {username}
                                         </li>
                                     )) : analytics.totalCPUTimePerUser?.map((user, index) => (
-                                        <li key={index} onClick={() => handleUserSelect(user.username)}>
+                                        <li
+                                            key={index}
+                                            onClick={() => handleUserSelect(user.username)}
+                                            className={selectedUser === user.username ? styles.selected : ''}
+                                        >
                                             {user.username}
                                         </li>
                                     ))}
                                 </ul>
                             </div>
                             {selectedUser && (
-                                <div className={styles.chartContainer}>
-                                    <div className={styles.chart}>
-                                        <h4>Total Queue Time</h4>
-                                        <Bar
-                                            data={{
-                                                labels: ['User', 'Average'],
-                                                datasets: [
-                                                    {
-                                                        label: 'Total Queue Time',
-                                                        data: [
-                                                            analytics.totalQueueTimePerUser.find(user => user.username === selectedUser)?.totalQueueTime || 0,
-                                                            analytics.totalQueueTimePerUser.reduce((sum, user) => sum + user.totalQueueTime, 0) / analytics.totalQueueTimePerUser.length || 0,
-                                                        ],
-                                                        backgroundColor: ['rgba(75, 192, 192, 0.4)', 'rgba(153, 102, 255, 0.4)'],
-                                                        borderColor: ['rgba(75, 192, 192, 1)', 'rgba(153, 102, 255, 1)'],
-                                                        borderWidth: 1,
-                                                    },
-                                                ],
-                                            }}
-                                            width={600}
-                                            height={400}
-                                            options={{ indexAxis: 'y' }}
-                                        />
+                                <div className={styles.selectedUserText}>
+                                    Showing analytics for user: {selectedUser}
+                                </div>
+                            )}
+                            {selectedUser && (
+                                <div className={styles.userAnalyticsContent}>
+                                    <div className={styles.diagramMenu}>
+                                        <button
+                                            className={`${styles.menuButton} ${selectedDiagram === 'averageQueueTime' ? styles.active : ''}`}
+                                            onClick={() => setSelectedDiagram('averageQueueTime')}
+                                        >
+                                            Average Queue Time
+                                        </button>
+                                        <button
+                                            className={`${styles.menuButton} ${selectedDiagram === 'totalQueueTime' ? styles.active : ''}`}
+                                            onClick={() => setSelectedDiagram('totalQueueTime')}
+                                        >
+                                            Total Queue Time
+                                        </button>
+                                        <button
+                                            className={`${styles.menuButton} ${selectedDiagram === 'averageCPUTime' ? styles.active : ''}`}
+                                            onClick={() => setSelectedDiagram('averageCPUTime')}
+                                        >
+                                            Average CPU Time
+                                        </button>
+                                        <button
+                                            className={`${styles.menuButton} ${selectedDiagram === 'totalCPUTime' ? styles.active : ''}`}
+                                            onClick={() => setSelectedDiagram('totalCPUTime')}
+                                        >
+                                            Total CPU Time
+                                        </button>
+                                        <button
+                                            className={`${styles.menuButton} ${selectedDiagram === 'averageResourceUsage' ? styles.active : ''}`}
+                                            onClick={() => setSelectedDiagram('averageResourceUsage')}
+                                        >
+                                            Average Resource Usage
+                                        </button>
+                                        <button
+                                            className={`${styles.menuButton} ${selectedDiagram === 'totalResourceUsage' ? styles.active : ''}`}
+                                            onClick={() => setSelectedDiagram('totalResourceUsage')}
+                                        >
+                                            Total Resource Usage
+                                        </button>
                                     </div>
                                     <div className={styles.chart}>
-                                        <h4>Average Queue Time</h4>
+                                        <h4>
+                                            {selectedDiagram.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase()).replace('C P U', 'CPU')}
+                                        </h4>
                                         <Bar
                                             data={{
-                                                labels: ['User', 'Average'],
+                                                labels: [selectedUser, 'Average'],
                                                 datasets: [
                                                     {
-                                                        label: 'Average Queue Time',
+                                                        label: selectedDiagram.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase()).replace('C P U', 'CPU'),
                                                         data: [
-                                                            analytics.averageQueueTimePerUser.find(user => user.username === selectedUser)?.averageQueueTime || 0,
-                                                            analytics.averageQueueTimePerUser.reduce((sum, user) => sum + user.averageQueueTime, 0) / analytics.averageQueueTimePerUser.length || 0,
+                                                            analytics[`${selectedDiagram}PerUser`].find(user => user.username === selectedUser)[selectedDiagram] || 0,
+                                                            analytics[`${selectedDiagram}PerUser`].reduce((sum, user) => sum + user[selectedDiagram], 0) / analytics[`${selectedDiagram}PerUser`].length || 0,
                                                         ],
-                                                        backgroundColor: ['rgba(75, 192, 192, 0.4)', 'rgba(153, 102, 255, 0.4)'],
-                                                        borderColor: ['rgba(75, 192, 192, 1)', 'rgba(153, 102, 255, 1)'],
+                                                        backgroundColor: ['rgba(0, 128, 128, 0.6)', 'rgba(154, 205, 50, 0.6)'],
+                                                        borderColor: ['rgba(0, 128, 128, 1)', 'rgba(154, 205, 50, 1)'],
                                                         borderWidth: 1,
                                                     },
                                                 ],
                                             }}
-                                            width={600}
-                                            height={400}
+                                            width={300}
+                                            height={100}
                                             options={{ indexAxis: 'y' }}
                                         />
-                                    </div>
-                                    <div className={styles.chart}>
-                                        <h4>Total CPU Time</h4>
-                                        <Bar
-                                            data={{
-                                                labels: ['User', 'Average'],
-                                                datasets: [
-                                                    {
-                                                        label: 'Total CPU Time',
-                                                        data: [
-                                                            analytics.totalCPUTimePerUser.find(user => user.username === selectedUser)?.totalCPUTime || 0,
-                                                            analytics.totalCPUTimePerUser.reduce((sum, user) => sum + user.totalCPUTime, 0) / analytics.totalCPUTimePerUser.length || 0,
-                                                        ],
-                                                        backgroundColor: ['rgba(75, 192, 192, 0.4)', 'rgba(153, 102, 255, 0.4)'],
-                                                        borderColor: ['rgba(75, 192, 192, 1)', 'rgba(153, 102, 255, 1)'],
-                                                        borderWidth: 1,
-                                                    },
-                                                ],
-                                            }}
-                                            width={600}
-                                            height={400}
-                                            options={{ indexAxis: 'y' }}
-                                        />
-                                    </div>
-                                    <div className={styles.chart}>
-                                        <h4>Average CPU Time</h4>
-                                        <Bar
-                                            data={{
-                                                labels: ['User', 'Average'],
-                                                datasets: [
-                                                    {
-                                                        label: 'Average CPU Time',
-                                                        data: [
-                                                            analytics.averageCPUTimePerUser.find(user => user.username === selectedUser)?.averageCPUTime || 0,
-                                                            analytics.averageCPUTimePerUser.reduce((sum, user) => sum + user.averageCPUTime, 0) / analytics.averageCPUTimePerUser.length || 0,
-                                                        ],
-                                                        backgroundColor: ['rgba(75, 192, 192, 0.4)', 'rgba(153, 102, 255, 0.4)'],
-                                                        borderColor: ['rgba(75, 192, 192, 1)', 'rgba(153, 102, 255, 1)'],
-                                                        borderWidth: 1,
-                                                    },
-                                                ],
-                                            }}
-                                            width={600}
-                                            height={400}
-                                            options={{ indexAxis: 'y' }}
-                                        />
-                                    </div>
-                                    <div className={styles.chart}>
-                                        <h4>Total Resource Usage</h4>
-                                        <Bar
-                                            data={{
-                                                labels: ['User', 'Average'],
-                                                datasets: [
-                                                    {
-                                                        label: 'Total Resource Usage',
-                                                        data: [
-                                                            analytics.totalResourceUsagePerUser.find(user => user.username === selectedUser)?.totalResourceUsage || 0,
-                                                            analytics.totalResourceUsagePerUser.reduce((sum, user) => sum + user.totalResourceUsage, 0) / analytics.totalResourceUsagePerUser.length || 0,
-                                                        ],
-                                                        backgroundColor: ['rgba(75, 192, 192, 0.4)', 'rgba(153, 102, 255, 0.4)'],
-                                                        borderColor: ['rgba(75, 192, 192, 1)', 'rgba(153, 102, 255, 1)'],
-                                                        borderWidth: 1,
-                                                    },
-                                                ],
-                                            }}
-                                            width={600}
-                                            height={400}
-                                            options={{ indexAxis: 'y' }}
-                                        />
-                                    </div>
-                                    <div className={styles.chart}>
-                                        <h4>Average Resource Usage</h4>
-                                        <Bar
-                                            data={{
-                                                labels: ['User', 'Average'],
-                                                datasets: [
-                                                    {
-                                                        label: 'Average Resource Usage',
-                                                        data: [
-                                                            analytics.averageResourceUsagePerUser.find(user => user.username === selectedUser)?.averageResourceUsage || 0,
-                                                            analytics.averageResourceUsagePerUser.reduce((sum, user) => sum + user.averageResourceUsage, 0) / analytics.averageResourceUsagePerUser.length || 0,
-                                                        ],
-                                                        backgroundColor: ['rgba(75, 192, 192, 0.4)', 'rgba(153, 102, 255, 0.4)'],
-                                                        borderColor: ['rgba(75, 192, 192, 1)', 'rgba(153, 102, 255, 1)'],
-                                                        borderWidth: 1,
-                                                    },
-                                                ],
-                                            }}
-                                            width={600}
-                                            height={400}
-                                            options={{ indexAxis: 'y' }}
-                                        />
+
                                     </div>
                                 </div>
                             )}

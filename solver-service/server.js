@@ -122,6 +122,7 @@ async function publishResults(problem, solution, label = 'success', logInfo) {
         submissionId: problem.submissionId,
         name: problem.name,
         userId: problem.userId,
+        username: problem.username,
         results: solution,
         label: label,
         createdAt: problem.createdAt,

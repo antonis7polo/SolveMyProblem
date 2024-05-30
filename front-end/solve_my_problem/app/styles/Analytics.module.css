@@ -1,129 +1,292 @@
 .container {
-    padding: 2rem;
-  }
-  
-  .heading {
-    font-size: 2.5rem;
-    font-weight: bold;
-    text-align: center;
-    margin-bottom: 2rem;
-  }
-  
-  .table {
-    width: 100%;
-    margin-bottom: 2rem;
-    border-collapse: collapse;
-  }
-  
-  .table th, .table td {
-    border: 1px solid #ddd;
-    padding: 0.75rem;
-    text-align: left;
-  }
-  
-  .table th {
-    background-color: #f2f2f2;
-  }
-  
-  .subheading {
-    font-size: 2rem;
-    margin-top: 2rem;
-  }
-  
-  .buttonContainer {
-    margin-bottom: 1.5rem;
-  }
-  
-  .button {
-    background-color: #007bff;
-    color: white;
-    border: none;
-    border-radius: 8px;
-    padding: 0.75rem 1.5rem;
-    cursor: pointer;
-    font-size: 1rem;
-    transition: background-color 0.3s;
-    margin-bottom: 1rem;
-  }
-  
-  .button:hover {
-    background-color: #0056b3;
-  }
-  
-  .chartContainer {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-  }
-  
-  .chart {
-    margin-bottom: 2rem;
-    width: 100%;
-    max-width: 800px;
-  }
-  
-  .userList {
-    list-style-type: none;
-    padding: 0;
-    margin: 0;
-    max-height: 200px;
-    overflow-y: scroll;
-  }
-  
-  .userList li {
-    padding: 0.5rem;
-    border: 1px solid #ddd;
-    cursor: pointer;
-  }
-  
-  .userList li:hover {
-    background-color: #f2f2f2;
-  }
+  padding: 2rem;
+  background-color: #E8F5E9; /* Light green background */
+  min-height: 100vh;
+  font-family: Arial, sans-serif;
+}
 
-  /* Existing styles... */
+.heading {
+  font-size: 2.5rem;
+  font-weight: bold;
+  text-align: center;
+  margin-bottom: 2rem;
+  color: #2E8B57; /* Seafoam Green */
+}
+
+.table {
+  width: 100%;
+  margin-bottom: 2rem;
+  border-collapse: collapse;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.table th, .table td {
+  border: 1px solid #ddd;
+  padding: 0.75rem;
+  text-align: left;
+}
+
+.table th {
+  background-color: #2E8B57; /* Dark green */
+  color: white;
+}
+
+.table td {
+  background-color: rgb(250, 250, 250); /* Slightly darker green */
+  color: #000; /* Black text */
+}
+
+
+.subheading {
+  font-size: 2rem;
+  margin-top: 2rem;
+  color: #2E8B57; /* Seafoam Green */
+}
+
+.buttonContainer {
+  margin-bottom: 1.5rem;
+}
+
+.button {
+  background-color: #2E8B57; /* Seafoam Green */
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 0.75rem 1.5rem;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: background-color 0.3s;
+  margin-bottom: 1rem;
+}
+
+.button:hover {
+  background-color: #276f47;
+}
+
+.chartContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: #F1F8E9; /* Even lighter green */
+  padding: 2rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  margin-bottom: 2rem;
+}
+
+.chart {
+  margin-bottom: 2rem;
+  width: 100%;
+  max-width: 800px;
+}
+
+.userAnalyticsContainer {
+  background-color: #F1F8E9; /* Even lighter green */
+  padding: 2rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  margin-bottom: 2rem;
+}
+
+.userSearchContainer {
+  position: relative;
+  width: 100%;
+}
+
+.userSearchInput {
+  width: 100%;
+  padding: 0.75rem;
+  margin-bottom: 1rem;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: 1rem;
+  box-sizing: border-box; /* Ensure the width calculation includes padding and border */
+}
+
+.userList {
+  display: none; /* Hidden by default */
+  position: absolute;
+  top: calc(100% - 1rem); /* Position directly below the input, remove margin-bottom space */
+  left: 0;
+  right: 0;
+  max-height: 200px;
+  overflow-y: scroll;
+  background-color: white;
+  border: 1px solid #ddd;
+  border-radius: 0 0 8px 8px; /* Rounded corners on the bottom only */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  z-index: 10; /* Ensure it appears above other content */
+}
+
+.userList.visible {
+  display: block; /* Show when active */
+}
+
+.userList li {
+  padding: 0.5rem;
+  background-color: rgb(255, 255, 255);
+  cursor: pointer;
+  list-style-type: none; /* Remove the dots */
+}
+
+.userList li.selected, .userList li:hover {
+  background-color: #A5D6A7; /* Same as hover color */
+}
+
+.userList li:last-child {
+  border-bottom: none;
+}
+
+.selectedUserText {
+  margin-bottom: 1rem;
+  font-weight: bold;
+  color: #2E8B57; /* Seafoam Green */
+}
 
 .menuBar {
-    display: flex;
-    justify-content: center;
-    margin-bottom: 2rem;
-  }
-  
-  .menuButton {
-    background-color: #007bff;
-    color: white;
-    border: none;
-    border-radius: 8px;
-    padding: 0.75rem 1.5rem;
-    cursor: pointer;
-    font-size: 1rem;
-    transition: background-color 0.3s;
-    margin: 0 0.5rem;
-  }
-  
-  .menuButton:hover {
-    background-color: #0056b3;
-  }
-  
-  .menuButton.active {
-    background-color: #0056b3;
-  }
-  
-  .userList {
-    list-style-type: none;
-    padding: 0;
-    margin: 0;
-    max-height: 200px;
-    overflow-y: scroll;
-  }
-  
-  .userList li {
-    padding: 0.5rem;
-    border: 1px solid #ddd;
-    cursor: pointer;
-  }
-  
-  .userList li:hover {
-    background-color: #f2f2f2;
-  }
-  
-  
+  display: flex;
+  justify-content: center;
+  margin-bottom: 2rem;
+  position: relative;
+  background-color: #A5D6A7; /* Slightly darker green */
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.menuButton {
+  background-color: #2E8B57; /* Seafoam Green */
+  color: white;
+  border: none;
+  padding: 1rem 2rem;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: background-color 0.3s;
+  flex: 1;
+  text-align: center;
+}
+
+.menuButton:hover {
+  background-color: #276f47;
+}
+
+.menuButton.active {
+  background-color: #276f47;
+}
+
+.indicator {
+  position: absolute;
+  bottom: 0;
+  height: 4px;
+  background-color: #2E8B57; /* Seafoam Green */
+  transition: left 0.3s ease, width 0.3s ease;
+}
+
+.chartGrid {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem; /* Space between rows */
+}
+
+.chartRow {
+  display: flex;
+  flex-direction: row;
+  gap: 1rem; /* Space between charts */
+}
+
+/*.userAnalyticsContent {
+  display: flex;
+  flex-direction: row;
+  gap: 1rem;
+  margin-top: 2rem;
+}*/
+.userAnalyticsContent, .chartContainer {
+  display: flex;
+  justify-content: flex-start; /* Align items to the start horizontally */
+  align-items: center; /* Center items vertically */
+  min-height: 100%; /* Ensure it takes the full height of the container */
+}
+
+.diagramMenu {
+  display: grid;
+  grid-template-columns: 1fr; /* Single column layout */
+  row-gap: 1rem; /* Smaller gap between rows */
+  align-self: center; /* Center the diagram menu vertically */
+}
+
+.diagramMenu .menuButton {
+  background-color: #2E7D32;
+  color: white;
+  border: none;
+  padding: 0.75rem !important; /* Reduce padding to make the button shorter */
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: background-color 0.3s;
+  text-align: middle;
+  white-space: nowrap; /* Ensure text is in one line */
+  width: 100%; /* Make all buttons have the same width */
+  height: 50px !important; /* Ensure the height is set */
+  line-height: normal; /* Ensure line height does not affect the height */
+  display: block; /* Ensure block display respects height and width */
+}
+
+.diagramMenu .menuButton:hover {
+  background-color: #1B5E20;
+}
+
+.diagramMenu .menuButton.active {
+  background-color: #1B5E20;
+}
+
+.chart {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-left: auto; /* Align the chart to the right */
+  margin-right: auto; /* Center the chart */
+}
+
+.chart h4 {
+  margin-bottom: 1rem;
+}
+
+
+/* New styles for the Last Month Analytics menu buttons */
+.lastMonthMenu .menuButton {
+  background-color: #2E7D32;
+  color: white;
+  border: none;
+  padding: 0.25rem 1.5rem; /* Adjusted padding to make buttons shorter */
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: background-color 0.3s;
+  text-align: left;
+  white-space: nowrap;
+  width: 100%; /* Ensure all buttons have the same width */
+}
+
+.lastMonthMenu .menuButton:hover {
+  background-color: #1B5E20;
+}
+
+.lastMonthMenu .menuButton.active {
+  background-color: #1B5E20;
+}
+
+.fixedHeight {
+  height: 600px; /* Adjust the height as needed */
+}
+
+.pieChart {
+  width: 100%;
+  max-width: 400px;
+  margin-left: auto;
+  margin-right: auto;
+  position: relative;
+  height: 500px;
+}
+
+
