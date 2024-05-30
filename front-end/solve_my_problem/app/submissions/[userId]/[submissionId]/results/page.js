@@ -7,6 +7,7 @@ import { Bar } from 'react-chartjs-2';
 import { Chart, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend } from 'chart.js';
 import withAuth from '../../../../utils/withAuth';
 import { encrypt } from "../../../../utils/encrypt";
+import styles from '../../../../styles/Results.module.css';
 
 Chart.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
@@ -83,8 +84,8 @@ const ViewResults = ({ params }) => {
             {
                 label: 'Distance (m)',
                 data: metadata.distances,
-                backgroundColor: 'rgba(75, 192, 192, 0.6)',
-                borderColor: 'rgba(75, 192, 192, 1)',
+                backgroundColor: 'rgba(0, 128, 128, 0.6)',
+                borderColor: 'rgba(0, 128, 128, 1)',
                 borderWidth: 1,
             },
         ],
@@ -112,26 +113,31 @@ const ViewResults = ({ params }) => {
     }
 
     return (
-        <div>
-            <h1>Submission Results</h1>
-            <div>
-                <h2>Result Info</h2>
-                <p><strong>ID:</strong> {result._id}</p>
-                <p><strong>Name:</strong> {result.name}</p>
-                <p><strong>User ID:</strong> {result.userId}</p>
-                <p><strong>Submission ID:</strong> {result.submissionId}</p>
-                <p><strong>Created At:</strong> {new Date(result.createdAt).toLocaleString()}</p>
-                <p><strong>Submitted At:</strong> {new Date(result.submissionTimestamp).toLocaleString()}</p>
-                <p><strong>Completed At:</strong> {new Date(result.updatedAt).toLocaleString()}</p>
-                <h2>Metadata</h2>
-                <p><strong>Number of Vehicles:</strong> {metadata.numVehicles}</p>
-                <p><strong>Total Distance:</strong> {metadata.totalDistance}m</p>
-                <div>
-                    <Bar data={data} options={options} />
+        <div className={styles.container}>
+            <h1 className={styles.heading}>Submission Results</h1>
+            <div className={styles.resultInfo}>
+                <div className={styles.leftPanel}>
+                    <h2 className={styles.subheading}>Result Info</h2>
+                    <p><strong>ID:</strong> {result._id}</p>
+                    <p><strong>Name:</strong> {result.name}</p>
+                    <p><strong>Submission ID:</strong> {result.submissionId}</p>
+                    <p><strong>Username:</strong> {result.username}</p>
+                    <p><strong>User ID:</strong> {result.userId}</p>
+                    <p><strong>Created At:</strong> {new Date(result.createdAt).toLocaleString()}</p>
+                    <p><strong>Submitted At:</strong> {new Date(result.submissionTimestamp).toLocaleString()}</p>
+                    <p><strong>Completed At:</strong> {new Date(result.updatedAt).toLocaleString()}</p>
+                    <h2 className={styles.subheading}>Metadata</h2>
+                    <p><strong>Number of Vehicles:</strong> {metadata.numVehicles}</p>
+                    <p><strong>Total Distance:</strong> {metadata.totalDistance}m</p>
+                    <a href={generateDownloadLink()} download="results.txt" className={styles.downloadLink}>Download Results</a>
                 </div>
-                <a href={generateDownloadLink()} download="results.txt">Download Results</a>
+                <div className={styles.rightPanel}>
+                    <Bar data={data} options={options} width={600} height={400} />
+                </div>
             </div>
-            <button onClick={handleGoBack}>Back to Submissions</button>
+            <div className={styles.buttonContainer}>
+                <button onClick={handleGoBack} className={styles.button}>Back to Submissions</button>
+            </div>
         </div>
     );
 };

@@ -15,6 +15,7 @@ async function handleMessage(msg, channel) {
             submissionId: data.submissionId,
             name: data.name,
             userId: data.userId,
+            username: data.username,
             results: data.results,
             creationTimestamp: data.createdAt,
             updateTimestamp: data.updatedAt,
