@@ -1,0 +1,208 @@
+.container {
+  padding: 2rem;
+  background-color: #E8F5E9; /* Light green background */
+  min-height: 100vh;
+  font-family: Arial, sans-serif;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  margin: 0 auto;
+  position: relative; /* Added for popup positioning */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start; /* Align items to the top */
+}
+
+.heading {
+  font-size: 2.5rem;
+  font-weight: bold;
+  text-align: center;
+  margin-bottom: 2rem;
+  color: #2E8B57; /* Seafoam Green */
+}
+
+.paymentForm {
+  margin-top: 0; /* Remove top margin */
+  background-color: #F1F8E9; /* Even lighter green */
+  padding: 2rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  width: 800px; /* Set width to match balance info */
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start; /* Align items to the left */
+}
+
+.cardElementContainer {
+  width: 100%; /* Ensure the container takes the full width */
+  display: flex;
+  flex-direction: column;
+}
+
+.cardElement {
+  padding: 0.75rem;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: 1rem;
+  background-color: white;
+  width: 96%; /* Make the card element take the full width */
+}
+
+.button {
+  background-color: #2E8B57; /* Seafoam Green */
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 0.75rem 1.5rem;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: background-color 0.3s;
+  margin-top: 1rem;
+}
+
+.button:disabled {
+  background-color: #cccccc;
+}
+
+.button:hover {
+  background-color: #276f47;
+}
+
+.message {
+  margin-top: 1rem;
+  color: red;
+}
+
+.buttonContainer {
+  display: flex;
+  justify-content: space-between; /* Space buttons apart */
+  width: 100%;
+  margin-top: 1rem;
+}
+
+.dialogPaper {
+  background-color: #E8F5E9; /* Light green background */
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  padding: 2rem;
+  width: 600px; /* Adjust the width as needed */
+  border-radius: 8px;
+}
+
+.dialogTitle {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #2E8B57; /* Seafoam Green */
+  text-align: center;
+  font-family: Arial, sans-serif; /* Same font as the rest of the page */
+}
+
+.dialogContent {
+  color: #2E8B57; /* Seafoam Green */
+  text-align: center;
+  font-size: 1.2rem;
+  font-family: Arial, sans-serif; /* Same font as the rest of the page */
+}
+
+.dialogActions {
+  display: flex;
+  justify-content: flex-end; /* Align items to the end */
+  gap: 1rem; /* Add space between buttons */
+  padding: 1rem 2rem;
+}
+
+.dialogButton {
+  background-color: #2E8B57; /* Seafoam Green */
+  color: #2E8B57 !important;
+  border: none;
+  border-radius: 8px;
+  padding: 0.5rem 1rem; /* Adjusted padding for smaller buttons */
+  cursor: pointer;
+  font-size: 0.875rem; /* Smaller font size */
+  transition: background-color 0.3s;
+  font-family: Arial, sans-serif; /* Same font as the rest of the page */
+  text-transform: none; /* Ensure the button text is not all caps */
+}
+
+.dialogButton:hover {
+  background-color: #276f47;
+}
+
+.dialogButtonCancel {
+  background-color: #2E8B57; /* Seafoam Green */
+  color: #2E8B57 !important;
+  border: none;
+  border-radius: 8px;
+  padding: 0.5rem 1rem; /* Adjusted padding for smaller buttons */
+  cursor: pointer;
+  font-size: 0.875rem; /* Smaller font size */
+  transition: background-color 0.3s;
+  font-family: Arial, sans-serif; /* Same font as the rest of the page */
+  text-transform: none; /* Ensure the button text is not all caps */
+}
+
+.dialogButtonCancel:hover {
+  background-color: #276f47;
+}
+
+.balanceInfo {
+  background-color: #F1F8E9; /* Even lighter green */
+  padding: 2rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  margin-bottom: 2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start; /* Align items to the start (left) */
+  width: 800px;
+}
+
+.balanceText,
+.inputContainer,
+.cost {
+  font-size: 1.25rem;
+  color: #2E8B57; /* Seafoam Green */
+  margin-bottom: 1rem;
+}
+
+.inputContainer {
+  display: flex;
+  align-items: left;
+  gap: 1rem; /* Add space between label and input */
+}
+
+.label {
+  font-size: 1.25rem;
+  color: #2E8B57; /* Seafoam Green */
+  
+}
+
+.inputCredits {
+  width: 50%; /* Adjust width to make input smaller */
+  padding: 0.5rem; /* Adjust padding to make input smaller */
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: 1rem;
+  box-sizing: border-box;
+}
+
+.input {
+  width: 100%; /* Full width for card input */
+  padding: 0.5rem;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: 1rem;
+  box-sizing: border-box;
+}
+
+.table {
+  width: 560px;
+  border-collapse: collapse;
+}
+
+.value {
+  font-size: 1.25rem;
+  color: #2E8B57; /* Seafoam Green */
+  padding: 0.5rem;
+  text-align: left;
+}
