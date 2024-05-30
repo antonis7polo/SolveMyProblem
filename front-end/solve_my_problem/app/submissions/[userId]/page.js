@@ -102,23 +102,22 @@ const UserSubmissions = ({ params }) => {
     };
 
     return (
-        <div>
-            <div className={styles.container}>
-                <h1 className={styles.title}>User Submissions</h1>
-                {loading ? (
-                    <p>Loading...</p>
-                ) : (
-                    <>
-                        {error ? (
-                            <p>{error}</p>
-                        ) : (
-                            <>
-                                {submissions.length === 0 ? (
-                                    <p>No submissions found</p>
-                                ) : (
-                                    <div className={styles.tableContainer}>
-                                        <table className={styles.table}>
-                                            <thead>
+        <div className={styles.container}>
+            <h1 className={styles.title}>User Submissions</h1>
+            {loading ? (
+                <p>Loading...</p>
+            ) : (
+                <>
+                    {error ? (
+                        <p>{error}</p>
+                    ) : (
+                        <>
+                            {submissions.length === 0 ? (
+                                <p>No submissions found</p>
+                            ) : (
+                                <div className={styles.tableContainer}>
+                                    <table className={styles.table}>
+                                        <thead>
                                             <tr>
                                                 <th>Creator</th>
                                                 <th>Submission Name</th>
@@ -127,8 +126,8 @@ const UserSubmissions = ({ params }) => {
                                                 <th>Submission Timestamp</th>
                                                 <th>Actions</th>
                                             </tr>
-                                            </thead>
-                                            <tbody>
+                                        </thead>
+                                        <tbody>
                                             {submissions.map((submission) => (
                                                 <tr key={submission._id}>
                                                     <td>{submission.username}</td>
@@ -137,44 +136,42 @@ const UserSubmissions = ({ params }) => {
                                                     <td>{submission.status}</td>
                                                     <td>{submission.submissionTimestamp ? new Date(submission.submissionTimestamp).toLocaleString() : 'N/A'}</td>
                                                     <td>
-    <button className={`${styles.button} ${styles.viewButton}`} onClick={() => handleViewSubmission(submission._id)}>View</button>
-    {submission.status === 'ready' && <button className={`${styles.button} ${styles.runButton}`} onClick={() => handleRun(submission._id)}>Run</button>}
-    {submission.status === 'completed' && <button className={`${styles.button} ${styles.resultsButton}`} onClick={() => handleViewResults(submission._id)}>View Results</button>}
-    <button className={`${styles.button} ${styles.deleteButton}`} onClick={() => handleDelete(submission._id)}>Delete</button>
-</td>
-
+                                                        <button className={`${styles.button} ${styles.viewButton}`} onClick={() => handleViewSubmission(submission._id)}>View</button>
+                                                        {submission.status === 'ready' && <button className={`${styles.button} ${styles.runButton}`} onClick={() => handleRun(submission._id)}>Run</button>}
+                                                        {submission.status === 'completed' && <button className={`${styles.button} ${styles.resultsButton}`} onClick={() => handleViewResults(submission._id)}>View Results</button>}
+                                                        <button className={`${styles.button} ${styles.deleteButton}`} onClick={() => handleDelete(submission._id)}>Delete</button>
+                                                    </td>
                                                 </tr>
                                             ))}
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                )}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            )}
+                        </>
+                    )}
+                    <button className={styles.createButton} onClick={() => router.push(`/submissions/${userId}/create`)}>Create New Problem</button>
+                </>
+            )}
+            {showModal && (
+                <div className={styles.modal}>
+                    <div className={styles.modalContent}>
+                        <h2>Cost Calculation</h2>
+                        <p>The cost for this submission is: {cost}</p>
+                        {creditsError ? (
+                            <>
+                                <p style={{ color: 'red' }}>{creditsError}</p>
+                                <button className={styles.button} onClick={handleAddCredits}>Add Credits</button>
+                            </>
+                        ) : (
+                            <>
+                                {error && !creditsError && <p style={{ color: 'red' }}>{error}</p>}
+                                <button className={styles.button} onClick={handleContinue}>Continue</button>
                             </>
                         )}
-                        <button className={styles.createButton} onClick={() => router.push(`/submissions/${userId}/create`)}>Create New Problem</button>
-                    </>
-                )}
-                {showModal && (
-                    <div className={styles.modal}>
-                        <div className={styles.modalContent}>
-                            <h2>Cost Calculation</h2>
-                            <p>The cost for this submission is: {cost}</p>
-                            {creditsError ? (
-                                <>
-                                    <p style={{ color: 'red' }}>{creditsError}</p>
-                                    <button className={styles.button} onClick={handleAddCredits}>Add Credits</button>
-                                </>
-                            ) : (
-                                <>
-                                    {error && !creditsError && <p style={{ color: 'red' }}>{error}</p>}
-                                    <button className={styles.button} onClick={handleContinue}>Continue</button>
-                                </>
-                            )}
-                            <button className={styles.button} onClick={handleCancel}>Cancel</button>
-                        </div>
+                        <button className={styles.button} onClick={handleCancel}>Cancel</button>
                     </div>
-                )}
-            </div>
+                </div>
+            )}
         </div>
     );
 };
