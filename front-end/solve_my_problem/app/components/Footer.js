@@ -1,83 +1,36 @@
 import React from 'react';
-import Head from 'next/head';
-import styles from '../styles/Footer.module.css';
+import { Box, Typography, Link, Divider } from '@mui/material';
 
 const Footer = () => {
     return (
-        <>
-            <Head>
-                <link
-                    rel="stylesheet"
-                    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"
-                />
-            </Head>
-            <footer className={styles.footer}>
-                <div className={styles.footerContainer}>
-                    <div className={styles.footerColumn}>
-                        <h3>Platform</h3>
-                        <ul>
-                            <li>Finetune</li>
-                            <li>Explore</li>
-                            <li>Orchestrate</li>
-                            <li>WForce</li>
-                            <li>Project Management</li>
-                            <li>Integrations & Security</li>
-                            <li>LLM Annotation Tool</li>
-                            <li>Image Annotation Tool</li>
-                            <li>Video Annotation Tool</li>
-                            <li>Text Annotation Tool</li>
-                            <li>Audio Annotation Tool</li>
-                            <li>Classification Tool</li>
-                        </ul>
-                    </div>
-                    <div className={styles.footerColumn}>
-                        <h3>Solutions</h3>
-                        <ul>
-                            <li>Agriculture</li>
-                            <li>Healthcare</li>
-                            <li>Insurance</li>
-                            <li>Sports</li>
-                            <li>Autonomous Driving</li>
-                            <li>Robotics</li>
-                            <li>Aerial Imagery</li>
-                            <li>NLP and Document Processing</li>
-                            <li>Security and Surveillance</li>
-                        </ul>
-                    </div>
-                    <div className={styles.footerColumn}>
-                        <h3>Resources</h3>
-                        <ul>
-                            <li>Blog</li>
-                            <li>Podcast</li>
-                            <li>Webinar</li>
-                            <li>Documentation</li>
-                            <li>What's New</li>
-                            <li>Python SDK</li>
-                            <li>Support</li>
-                        </ul>
-                    </div>
-                    <div className={styles.footerColumn}>
-                        <h3>Company</h3>
-                        <ul>
-                            <li>Pricing</li>
-                            <li>About Us</li>
-                            <li>Careers</li>
-                            <li>Press</li>
-                            <li>Privacy Policy</li>
-                            <li>Cookie Policy</li>
-                        </ul>
-                    </div>
-                    <div className={`${styles.footerColumn} ${styles.followUs}`}>
-                        <h3>Follow us</h3>
-                        <ul className={styles.socialMedia}>
-                            <li><a href="#"><i className="fab fa-facebook-f"></i></a></li>
-                            <li><a href="#"><i className="fab fa-twitter"></i></a></li>
-                            <li><a href="#"><i className="fab fa-linkedin-in"></i></a></li>
-                        </ul>
-                    </div>
-                </div>
-            </footer>
-        </>
+        <Box sx={{ backgroundColor: '#2E8B57', color: 'white', padding: '10px' }}>
+            <Divider sx={{ backgroundColor: 'white', marginBottom: '10px' }} />
+            <Box sx={{ display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap' }}>
+                <Box sx={{ marginBottom: '10px' }}>
+                    <Typography variant="h6" sx={{ marginBottom: '5px' }}>SolveMyProblem</Typography>
+                    <Typography variant="body2">
+                        &copy; {new Date().getFullYear()} SolveMyProblem. All rights reserved.
+                    </Typography>
+                    <Typography variant="body2">
+                        <Link href="/privacy-policy" sx={{ color: 'white', textDecoration: 'none', '&:hover': { textDecoration: 'underline' } }}>Privacy Policy</Link> |
+                        <Link href="/terms-of-service" sx={{ color: 'white', textDecoration: 'none', '&:hover': { textDecoration: 'underline' } }}> Terms of Service</Link>
+                    </Typography>
+                </Box>
+                <Box sx={{ marginBottom: '10px' }}>
+                    <Typography variant="h6" sx={{ marginBottom: '5px' }}>Staff</Typography>
+                    <Typography variant="body2">John Doe - CEO</Typography>
+                    <Typography variant="body2">Jane Smith - CTO</Typography>
+                    <Typography variant="body2">Emily Johnson - Legal Counsel</Typography>
+                    <Typography variant="body2">Michael Brown - CFO</Typography>
+                </Box>
+                <Box sx={{ marginBottom: '10px' }}>
+                    <Typography variant="h6" sx={{ marginBottom: '5px' }}>Contact Us</Typography>
+                    <Typography variant="body2">Email: <Link href="mailto:support@solvemyproblem.com" sx={{ color: 'white', textDecoration: 'none', '&:hover': { textDecoration: 'underline' } }}>support@solvemyproblem.com</Link></Typography>
+                    <Typography variant="body2">Phone: (123) 456-7890</Typography>
+                    <Typography variant="body2">Address: 123 SolveMyProblem St, Tech City, USA</Typography>
+                </Box>
+            </Box>
+        </Box>
     );
 };
 

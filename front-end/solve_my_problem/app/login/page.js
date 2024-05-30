@@ -4,6 +4,7 @@ import { useState } from 'react';
 import axios from 'axios';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import Footer from '../components/Footer';
 import styles from '../styles/Login.module.css';
 import {encrypt} from "../utils/encrypt";
 
@@ -96,6 +97,7 @@ const Login = () => {
           )}
           <p>Don't have an account? <Link href="/signup" className={styles.link}>Create an account</Link></p>
         </div>
+        <Footer/>
       </div>
   );
 };

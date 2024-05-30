@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import styles from '../styles/LandingPage.module.css';
+import Footer from '../components/Footer';
 
 const LandingPage = () => {
   const [sessionExpired, setSessionExpired] = useState(false);
@@ -39,6 +40,7 @@ const LandingPage = () => {
             <img src="/landing.png" alt="Landing illustration" />
           </div>
         </div>
+        <Footer/>
       </div>
   );
 };

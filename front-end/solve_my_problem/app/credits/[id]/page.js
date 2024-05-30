@@ -7,6 +7,8 @@ import { loadStripe } from '@stripe/stripe-js';
 import { Elements, CardElement, useStripe, useElements } from '@stripe/react-stripe-js';
 import styles from './Credits.module.css';
 import withAuth from '../../utils/withAuth';
+import Header from '../../components/Header';
+import Footer from '../../components/Footer';
 import { encrypt } from "../../utils/encrypt";
 
 require('dotenv').config();
@@ -51,6 +53,8 @@ const Credits = ({ params }) => {
   }
 
   return (
+      <div>
+        <Header isAdmin={false} />
       <Elements stripe={stripePromise}>
         <div className={styles.container}>
           <h1>Add Credits</h1>
@@ -69,6 +73,8 @@ const Credits = ({ params }) => {
           </div>
         </div>
       </Elements>
+        <Footer />
+        </div>
   );
 };
 
@@ -137,6 +143,7 @@ const StripePaymentForm = ({ id, creditsChange }) => {
   };
 
   return (
+
       <form onSubmit={handleConfirm} className={styles.paymentForm}>
         <div className={styles.input}>
           <label htmlFor="card">Card Details</label>
@@ -147,6 +154,7 @@ const StripePaymentForm = ({ id, creditsChange }) => {
         </button>
         {message && <div className={styles.message}>{message}</div>}
       </form>
+
   );
 };
 

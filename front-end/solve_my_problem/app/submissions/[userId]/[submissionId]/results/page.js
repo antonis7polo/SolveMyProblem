@@ -8,6 +8,8 @@ import { Chart, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend }
 import withAuth from '../../../../utils/withAuth';
 import { encrypt } from "../../../../utils/encrypt";
 import styles from '../../../../styles/Results.module.css';
+import Header from '../../../../components/Header';
+import Footer from '../../../../components/Footer';
 
 Chart.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
@@ -113,6 +115,8 @@ const ViewResults = ({ params }) => {
     }
 
     return (
+        <div>
+            <Header isAdmin={isAdmin} />
         <div className={styles.container}>
             <h1 className={styles.heading}>Submission Results</h1>
             <div className={styles.resultInfo}>
@@ -138,6 +142,8 @@ const ViewResults = ({ params }) => {
             <div className={styles.buttonContainer}>
                 <button onClick={handleGoBack} className={styles.button}>Back to Submissions</button>
             </div>
+        </div>
+            <Footer/>
         </div>
     );
 };

@@ -1,17 +1,18 @@
 import React, { useEffect, useState } from 'react';
-import { AppBar, Toolbar, Typography, Button, IconButton, Menu, MenuItem, Box, Divider } from '@mui/material';
-import MenuIcon from '@mui/icons-material/Menu';
+import { AppBar, Toolbar, Typography, Button, Box, Divider, IconButton } from '@mui/material';
 import LogoutIcon from '@mui/icons-material/Logout';
+import axios from 'axios';
 import { useRouter } from 'next/navigation';
-import styles from '../styles/Header.module.css';
+import { encrypt } from '../utils/encrypt';
 
 const Header = ({ isAdmin }) => {
     const router = useRouter();
-    const [anchorEl, setAnchorEl] = useState(null);
     const [dateTime, setDateTime] = useState(new Date());
     const [clientSide, setClientSide] = useState(false);
-    const userId = typeof window !== 'undefined' ? localStorage.getItem('userId') : null;
-    const username = typeof window !== 'undefined' ? localStorage.getItem('username') : null;
+    const [systemHealth, setSystemHealth] = useState('Checking...');
+    const [userId, setUserId] = useState(null);
+    const [username, setUsername] = useState(null);
+    const [credits, setCredits] = useState(null);
 
     useEffect(() => {
         setClientSide(true);
@@ -19,16 +20,34 @@ const Header = ({ isAdmin }) => {
             setDateTime(new Date());
         }, 1000);
 
+        // Simulate health check
+        setTimeout(() => {
+            setSystemHealth('Good'); // Replace with real health check logic
+        }, 2000);
+
+        if (typeof window !== 'undefined') {
+            const userId = localStorage.getItem('userId');
+            const username = localStorage.getItem('username');
+            setUserId(userId);
+            setUsername(username);
+
+            if (!isAdmin && userId) {
+                const token = localStorage.getItem('token');
+                axios.get(`http://localhost:3005/user/${userId}`, {
+                    headers: {
+                        'X-OBSERVATORY-AUTH': token,
+                        'custom-services-header': JSON.stringify(encrypt(process.env.NEXT_PUBLIC_SECRET_STRING_SERVICES))
+                    }
+                }).then(response => {
+                    setCredits(response.data.userData.credits);
+                }).catch(error => {
+                    console.error('Error fetching user credits:', error);
+                });
+            }
+        }
+
         return () => clearInterval(timer);
-    }, []);
-
-    const handleMenuOpen = (event) => {
-        setAnchorEl(event.currentTarget);
-    };
-
-    const handleMenuClose = () => {
-        setAnchorEl(null);
-    };
+    }, [isAdmin]);
 
     const handleLogout = () => {
         localStorage.removeItem('token');
@@ -40,59 +59,73 @@ const Header = ({ isAdmin }) => {
     };
 
     const adminMenuItems = [
-        <MenuItem key="submissions" onClick={() => router.push('/submissions')} className={styles.menuItem}>Submissions</MenuItem>,
-        <MenuItem key="logs" onClick={() => router.push('/logs')} className={styles.menuItem}>Logs</MenuItem>,
-        <MenuItem key="analytics" onClick={() => router.push('/analytics')} className={styles.menuItem}>Analytics</MenuItem>,
+        { key: 'submissions', label: 'Submissions', link: '/submissions' },
+        { key: 'logs', label: 'Logs', link: '/logs' },
+        { key: 'analytics', label: 'Analytics', link: '/analytics' },
     ];
 
     const customerMenuItems = [
-        <MenuItem key="submissions" onClick={() => router.push(`/submissions/${userId}`)} className={styles.menuItem}>My Submissions</MenuItem>,
-        <MenuItem key="create-submission" onClick={() => router.push(`/submissions/${userId}/create`)} className={styles.menuItem}>Create Submission</MenuItem>,
-        <MenuItem key="add-credits" onClick={() => router.push(`/credits/${userId}`)} className={styles.menuItem}>Add Credits</MenuItem>,
+        { key: 'submissions', label: 'My Submissions', link: `/submissions/${userId}` },
+        { key: 'create-submission', label: 'Create Submission', link: `/submissions/${userId}/create` },
+        { key: 'add-credits', label: 'Add Credits', link: `/credits/${userId}` },
     ];
 
+    const menuItems = isAdmin ? adminMenuItems : customerMenuItems;
+
     return (
-        <AppBar position="static" className={styles.appBar}>
-            <Toolbar className={styles.toolbar}>
-                <Box className={styles.topSection}>
-                    <IconButton edge="start" className={styles.menuIcon} aria-label="menu" onClick={handleMenuOpen}>
-                        <MenuIcon />
-                    </IconButton>
-                    <Box className={styles.logoSection}>
-                        <img src="/logo.png" alt="SolveMe Logo" className={styles.logoImage} />
+        <AppBar position="static" sx={{ backgroundColor: '#2E8B57', height: 'auto' }}>
+            <Toolbar sx={{ display: 'flex', flexDirection: 'column', alignItems: 'stretch', height: '100%', padding: '10px' }}>
+                <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', paddingBottom: '10px' }}>
+                    <Box sx={{ display: 'flex', alignItems: 'center', flex: 1 }}>
+                        <img src="/logo.png" alt="SolveMe Logo" style={{ height: '100px', width: '150px', marginRight: '30px' }} />
+                        <Box sx={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap' }}>
+                            {menuItems.map((item) => (
+                                <Typography
+                                    key={item.key}
+                                    variant="body2"
+                                    sx={{
+                                        color: 'white',
+                                        marginRight: '20px',
+                                        cursor: 'pointer',
+                                        fontSize: '1.2rem',
+                                        padding: '10px 15px',
+                                        borderRadius: '5px',
+                                        transition: 'background-color 0.3s',
+                                        backgroundColor: 'rgba(255, 255, 255, 0.1)', // Slightly different background color
+                                        '&:hover': {
+                                            backgroundColor: 'rgba(255, 255, 255, 0.2)', // Change background color on hover
+                                        },
+                                    }}
+                                    onClick={() => router.push(item.link)}
+                                >
+                                    {item.label}
+                                </Typography>
+                            ))}
+                        </Box>
                     </Box>
-                    <IconButton className={styles.logoutButton} onClick={handleLogout}>
+                    <IconButton sx={{ color: 'white' }} onClick={handleLogout}>
                         <LogoutIcon />
                     </IconButton>
                 </Box>
-                <Menu
-                    id="menu-appbar"
-                    anchorEl={anchorEl}
-                    anchorOrigin={{ vertical: 'top', horizontal: 'left' }}
-                    keepMounted
-                    transformOrigin={{ vertical: 'top', horizontal: 'left' }}
-                    open={Boolean(anchorEl)}
-                    onClose={handleMenuClose}
-                    className={styles.menu}
-                >
-                    {isAdmin ? adminMenuItems : customerMenuItems}
-                </Menu>
-                <Divider className={styles.divider} />
-                <Box className={styles.bottomSection}>
-                    <Box className={styles.usernameSection}>
-                        {clientSide && username ? (
-                            <Typography variant="body2" className={styles.username}>{username}</Typography>
-                        ) : (
-                            <Button className={styles.loginButton} onClick={() => router.push('/login')}>Login</Button>
+                <Divider sx={{ backgroundColor: 'white', margin: '10px 0' }} />
+                <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <Box sx={{ display: 'flex', alignItems: 'center', flex: 1 }}>
+                        {clientSide && (
+                            <Typography variant="body2" sx={{ color: 'white', fontSize: '1.2rem' }}>{username}</Typography>
+                        )}
+                        {!isAdmin && clientSide && (
+                            <Typography variant="body2" sx={{ color: 'white', fontSize: '1.2rem', marginLeft: '20px' }}>
+                                Credits: {credits !== null ? credits : 'Loading...'}
+                            </Typography>
                         )}
                     </Box>
-                    <Box className={styles.systemInfoSection}>
-                        {clientSide && dateTime && (
+                    <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', flex: 1 }}>
+                        {clientSide && (
                             <>
-                                <Typography variant="body2" className={styles.systemInfo}>
+                                <Typography variant="body2" sx={{ color: 'white', textAlign: 'right' }}>
                                     {dateTime.toLocaleDateString('en-US')} {dateTime.toLocaleTimeString()}
                                 </Typography>
-                                <Typography variant="body2" className={styles.systemInfoHealth}>Health: Good</Typography>
+                                <Typography variant="body2" sx={{ color: 'white', textAlign: 'right', fontWeight: 'bold' }}>Health: {systemHealth}</Typography>
                             </>
                         )}
                     </Box>

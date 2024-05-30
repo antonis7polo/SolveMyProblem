@@ -4,6 +4,8 @@ import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { encrypt } from "../utils/encrypt";
 import styles from '../styles/Logs.module.css';
+import Header from '../components/Header';
+import Footer from '../components/Footer';
 
 const Logs = () => {
     const [logs, setLogs] = useState([]);
@@ -69,6 +71,8 @@ const Logs = () => {
     };
 
     return (
+        <div>
+            <Header isAdmin={localStorage.getItem('isAdmin') === 'true'} />
         <div className={styles.container}>
             <h1 className={styles.heading}>Logs</h1>
             <div className={styles.filterContainer}>
@@ -156,6 +160,8 @@ const Logs = () => {
                 )
             )}
         </div>
+            <Footer/>
+    </div>
     );
 };
 

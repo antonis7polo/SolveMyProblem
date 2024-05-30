@@ -7,6 +7,8 @@ import withAuth from '../../../utils/withAuth';
 import { encrypt } from "../../../utils/encrypt";
 import styles from '../../../styles/CreateSubmissions.module.css';
 import Alert from '@mui/material/Alert';
+import Header from '../../../components/Header';
+import Footer from '../../../components/Footer';
 
 const CreateProblem = ({ params }) => {
     const { userId } = params;
@@ -85,6 +87,8 @@ const CreateProblem = ({ params }) => {
     };
 
     return (
+        <div>
+            <Header isAdmin={false}/>
         <div className={styles.container}>
             <h1 className={styles.title}>Create New Problem</h1>
             {error && <Alert severity="error" onClose={() => setError(null)}>{error}</Alert>}
@@ -156,6 +160,8 @@ const CreateProblem = ({ params }) => {
                 </div>
             </form>
         </div>
+            <Footer/>
+            </div>
     );
 };
 

@@ -5,6 +5,8 @@ import axios from 'axios';
 import { Bar, Pie } from 'react-chartjs-2';
 import Chart from 'chart.js/auto';
 import styles from '../styles/Analytics.module.css';
+import Header from '../components/Header';
+import Footer from '../components/Footer';
 import {encrypt} from "../utils/encrypt";
 
 const Analytics = () => {
@@ -145,6 +147,8 @@ const Analytics = () => {
       };
 
     return (
+        <div>
+            <Header isAdmin={localStorage.getItem('isAdmin') === 'true'} />
         <div className={styles.container}>
             <h1 className={styles.heading}>Analytics</h1>
             {loading ? (
@@ -470,7 +474,9 @@ const Analytics = () => {
                     )}
                 </>
             )}
-        </div>    
+        </div>
+            <Footer/>
+        </div>
     );
 };
 

@@ -75,7 +75,7 @@ const Submissions = () => {
         <div>
             <Header isAdmin={isAdmin}/>
             <div className={styles.container}>
-                <h1 className={styles.title}>All Submissions</h1>
+                <h1 className={styles.title}>Submissions</h1>
                 <div className={styles.searchContainer}>
                     <input
                         type="text"
@@ -132,6 +132,7 @@ const Submissions = () => {
                     </div>
                 )}
             </div>
+            <Footer/>
         </div>
     );
 };

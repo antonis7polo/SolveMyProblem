@@ -1,10 +1,10 @@
 .container {
   padding: 2rem;
   background-color: #E8F5E9; 
-  min-height: 100vh;
+  min-height: 80vh;
   font-family: Arial, sans-serif;
   max-width: 600px;
-  margin: 0 auto;
+  margin: 2rem auto 2rem auto; /* Add margin at the top */
   border-radius: 10px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }

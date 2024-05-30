@@ -8,6 +8,7 @@ import styles from '../styles/Signup.module.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUser, faEnvelope, faLock } from '@fortawesome/free-solid-svg-icons';
 import { encrypt } from "../utils/encrypt";
+import Footer from '../components/Footer';
 require('dotenv').config();
 
 
@@ -137,6 +138,7 @@ const Signup = () => {
             <Link href="/login" className={styles.link}>I already have an account</Link>
           </p>
         </div>
+        <Footer/>
       </div>
   );
 };

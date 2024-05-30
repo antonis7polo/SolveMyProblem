@@ -7,7 +7,7 @@
     background: linear-gradient(135deg, #d0e1f9 50%, #ffffff 50%);
     background-size: cover;
   }
-  
+
   .navbar {
     width: 100%;
     padding: 1rem 2rem;
@@ -16,19 +16,19 @@
     align-items: center;
     background-color: transparent;
   }
-  
+
   .logo {
     font-size: 2rem;
     font-weight: bold;
     color: #333;
     font-family: 'Poppins', sans-serif;
   }
-  
+
   .authLinks {
     display: flex;
     align-items: center;
   }
-  
+
   .loginButton, .signupButton {
     margin-left: 1rem;
     padding: 0.5rem 1rem;
@@ -37,27 +37,27 @@
     font-weight: bold;
     transition: all 0.3s ease;
   }
-  
+
   .loginButton {
     background-color: transparent;
     color: #007bff;
     border: 2px solid #007bff;
   }
-  
+
   .signupButton {
     background-color: #007bff;
     color: white;
   }
-  
+
   .loginButton:hover {
     background-color: #007bff;
     color: white;
   }
-  
+
   .signupButton:hover {
     background-color: #0056b3;
   }
-  
+
   .mainContent {
     display: flex;
     align-items: center;
@@ -67,28 +67,28 @@
     width: 100%;
     margin-top: 5rem;
   }
-  
+
   .textContent {
     max-width: 600px;
   }
-  
+
   .textContent h1 {
     font-size: 3rem;
     margin-bottom: 1rem;
     color: #333;
   }
-  
+
   .textContent p {
     font-size: 1.2rem;
     margin-bottom: 2rem;
     color: #666;
   }
-  
+
   .buttons {
     display: flex;
     align-items: center;
   }
-  
+
   .primaryButton {
     background-color: #ff6f61;
     color: white;
@@ -99,11 +99,11 @@
     cursor: pointer;
     transition: background-color 0.3s;
   }
-  
+
   .primaryButton:hover {
     background-color: #e85c50;
   }
-  
+
   .secondaryButton {
     background-color: transparent;
     color: #007bff;
@@ -113,22 +113,21 @@
     cursor: pointer;
     transition: background-color 0.3s, color 0.3s;
   }
-  
+
   .secondaryButton:hover {
     background-color: #007bff;
     color: white;
   }
-  
+
   .imageContent {
-    flex: 1; 
+    flex: 1;
     display: flex;
-    justify-content: flex-end; 
+    justify-content: flex-end;
     align-items: center;
     margin-left: 2rem;
   }
-  
+
   .imageContent img {
     max-width: 100%;
     height: auto;
   }
-  

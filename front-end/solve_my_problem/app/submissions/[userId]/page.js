@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import withAuth from '../../utils/withAuth';
 import { encrypt } from "../../utils/encrypt";
 import Header from '../../components/Header';
-import Footer from '../../components/Footer'; 
+import Footer from '../../components/Footer';
 import styles from '../../styles/Submissions.module.css'
 
 const UserSubmissions = ({ params }) => {
@@ -102,28 +102,10 @@ const UserSubmissions = ({ params }) => {
     };
 
     return (
-<<<<<<< HEAD
         <div>
-            <Header/>
-            <div className={styles.container}>
-                <h1 className={styles.title}>User Submissions</h1>
-                {loading ? (
-                    <p>Loading...</p>
-                ) : (
-                    <>
-                        {error ? (
-                            <p>{error}</p>
-                        ) : (
-                            <>
-                                {submissions.length === 0 ? (
-                                    <p>No submissions found</p>
-                                ) : (
-                                    <div className={styles.tableContainer}>
-                                        <table className={styles.table}>
-                                            <thead>
-=======
+            <Header isAdmin={false} />
         <div className={styles.container}>
-            <h1 className={styles.title}>User Submissions</h1>
+            <h1 className={styles.title}>My Submissions</h1>
             {loading ? (
                 <p>Loading...</p>
             ) : (
@@ -138,7 +120,6 @@ const UserSubmissions = ({ params }) => {
                                 <div className={styles.tableContainer}>
                                     <table className={styles.table}>
                                         <thead>
->>>>>>> 9fbb11321ab22bdd906e3c408cdd35a43d115c93
                                             <tr>
                                                 <th>Creator</th>
                                                 <th>Submission Name</th>
@@ -193,6 +174,8 @@ const UserSubmissions = ({ params }) => {
                     </div>
                 </div>
             )}
+        </div>
+            <Footer/>
         </div>
     );
 };

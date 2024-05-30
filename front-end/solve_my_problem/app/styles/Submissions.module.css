@@ -1,16 +1,16 @@
 .container {
     padding: 2rem;
     background-color: #E8F5E9; /* Light green background */
-    min-height: 100vh;
+    min-height: 70vh;
     font-family: Arial, sans-serif;
 }
 
 /*.container {
     background-image: url('../../public/olympiacos');
-    background-size: cover; 
-    background-repeat: no-repeat; 
-    background-position: center center; 
-    min-height: 100vh; 
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center center;
+    min-height: 100vh;
 }
 */
 

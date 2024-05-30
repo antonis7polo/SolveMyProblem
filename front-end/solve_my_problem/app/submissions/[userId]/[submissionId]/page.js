@@ -7,6 +7,9 @@ import withAuth from '../../../utils/withAuth';
 import { encrypt } from "../../../utils/encrypt";
 import styles from '../../../styles/ViewSubmission.module.css';
 import Alert from '@mui/material/Alert';
+import Header from '../../../components/Header';
+import Footer from '../../../components/Footer';
+
 
 const ViewEditSubmission = ({ params }) => {
     const { userId, submissionId } = params;
@@ -219,6 +222,8 @@ const ViewEditSubmission = ({ params }) => {
     const isUpdateEnabled = !isAdmin && (submission.status === 'ready' || submission.status === 'not_ready');
 
     return (
+        <div>
+            <Header isAdmin={isAdmin} />
         <div className={styles.container}>
             <h1 className={styles.title}>{isAdmin ? 'View' : 'View/Edit'} Submission</h1>
             {showErrorAlert && (
@@ -327,6 +332,8 @@ const ViewEditSubmission = ({ params }) => {
                 )}
                 <button onClick={handleGoBack} className={`${styles.button} ${styles.buttonRed}`}>Back to Submissions</button>
             </div>
+        </div>
+            <Footer/>
         </div>
     );
 };

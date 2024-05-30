@@ -1,10 +1,22 @@
+/* ViewSubmission.module.css */
+
+.wrapper {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+.content {
+    flex: 1;
+}
+
 .container {
     padding: 2rem;
     background-color: #E8F5E9; /* Light green background */
     min-height: 100vh;
     font-family: Arial, sans-serif;
     max-width: 800px;
-    margin: 0 auto;
+    margin: 2rem auto 2rem auto; /* Add margin at the top and bottom */
     border-radius: 10px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
@@ -103,7 +115,7 @@
 }
 
 .errorModalContent p {
-    color: #dc3545; 
+    color: #dc3545;
     margin-bottom: 20px;
 }
 
