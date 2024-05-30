@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation';
 import withAuth from '../../../utils/withAuth';
 import { encrypt } from "../../../utils/encrypt";
 import styles from '../../../styles/CreateSubmissions.module.css';
+import Alert from '@mui/material/Alert';
 
 const CreateProblem = ({ params }) => {
     const { userId } = params;
@@ -50,7 +51,6 @@ const CreateProblem = ({ params }) => {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-
         setLoading(true);
         const formData = new FormData();
         const username = localStorage.getItem('username');
@@ -73,6 +73,7 @@ const CreateProblem = ({ params }) => {
             });
             router.push(`/submissions/${userId}`);
         } catch (error) {
+            setError('Error creating problem submission');
             console.error('Error creating problem submission:', error);
         } finally {
             setLoading(false);
@@ -86,7 +87,7 @@ const CreateProblem = ({ params }) => {
     return (
         <div className={styles.container}>
             <h1 className={styles.title}>Create New Problem</h1>
-            {error && <p className={styles.error}>{error}</p>}
+            {error && <Alert severity="error" onClose={() => setError(null)}>{error}</Alert>}
             <form onSubmit={handleSubmit} className={styles.form}>
                 <div className={styles.formGroup}>
                     <label>Submission Name</label>

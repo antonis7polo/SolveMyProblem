@@ -5,7 +5,8 @@ import axios from 'axios';
 import { useRouter, useSearchParams } from 'next/navigation';
 import withAuth from '../../../utils/withAuth';
 import { encrypt } from "../../../utils/encrypt";
-import styles from '../../../styles/ViewSubmission.module.css'
+import styles from '../../../styles/ViewSubmission.module.css';
+import Alert from '@mui/material/Alert';
 
 const ViewEditSubmission = ({ params }) => {
     const { userId, submissionId } = params;
@@ -25,6 +26,7 @@ const ViewEditSubmission = ({ params }) => {
         bounds: { minLatitude: null, maxLatitude: null, minLongitude: null, maxLongitude: null }
     });
     const [error, setError] = useState('');
+    const [showErrorAlert, setShowErrorAlert] = useState(false);
     const router = useRouter();
     const solverFileInputRef = useRef(null);
     const parametersFileInputRef = useRef(null);
@@ -79,6 +81,7 @@ const ViewEditSubmission = ({ params }) => {
 
         if (file && (fileExtension !== 'py')) {
             setError('Upload a valid Python file');
+            setShowErrorAlert(true);
             setSolverFile(null);
             setSolverMetadata({
                 size: null,
@@ -89,6 +92,7 @@ const ViewEditSubmission = ({ params }) => {
             solverFileInputRef.current.value = null; // Reset the file input
         } else {
             setError('');
+            setShowErrorAlert(false);
             setSolverFile(file);
             if (file) {
                 setSolverMetadata({
@@ -108,6 +112,7 @@ const ViewEditSubmission = ({ params }) => {
 
         if (file && (fileExtension !== 'json')) {
             setError('Upload a valid JSON file');
+            setShowErrorAlert(true);
             setParametersFile(null);
             setParametersMetadata({
                 size: null,
@@ -118,6 +123,7 @@ const ViewEditSubmission = ({ params }) => {
             parametersFileInputRef.current.value = null; // Reset the file input
         } else {
             setError('');
+            setShowErrorAlert(false);
             setParametersFile(file);
             if (file) {
                 const reader = new FileReader();
@@ -215,7 +221,9 @@ const ViewEditSubmission = ({ params }) => {
     return (
         <div className={styles.container}>
             <h1 className={styles.title}>{isAdmin ? 'View' : 'View/Edit'} Submission</h1>
-            {error && <p style={{ color: 'red' }}>{error}</p>}
+            {showErrorAlert && (
+                <Alert severity="error" onClose={() => setShowErrorAlert(false)}>{error}</Alert>
+            )}
             <div className={styles.section}>
                 <h2>Submission Info</h2>
                 <p><strong>ID:</strong> {submission._id}</p>
