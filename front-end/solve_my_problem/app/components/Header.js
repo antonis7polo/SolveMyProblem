@@ -14,16 +14,42 @@ const Header = ({ isAdmin }) => {
     const [username, setUsername] = useState(null);
     const [credits, setCredits] = useState(null);
 
+    const healthCheckUrls = [
+        { url: 'http://localhost:3000/health', name: 'Submissions Microservice' },
+        { url: 'http://localhost:3001/submission/health', name: 'Modify Submissions Microservice' },
+        { url: 'http://localhost:3002/submission/health', name: 'Problem Issue Microservice' },
+        { url: 'http://localhost:3003/health', name: 'Results Management Microservice' },
+        { url: 'http://localhost:3004/credits/health', name: 'Add Credits Microservice' },
+        { url: 'http://localhost:3005/health', name: 'Accounts Microservice' },
+        { url: 'http://localhost:3006/health', name: 'Solver Microservice' },
+        { url: 'http://localhost:3007/health', name: 'Log Management Microservice' }
+    ];
+
     useEffect(() => {
         setClientSide(true);
         const timer = setInterval(() => {
             setDateTime(new Date());
         }, 1000);
 
-        // Simulate health check
-        setTimeout(() => {
-            setSystemHealth('Good'); // Replace with real health check logic
-        }, 2000);
+        const checkHealth = async () => {
+            try {
+                const headers = {
+                    'custom-services-header': JSON.stringify(encrypt(process.env.NEXT_PUBLIC_SECRET_STRING_SERVICES))
+                };
+                const healthChecks = await Promise.all(healthCheckUrls.map(item => axios.get(item.url, { headers }).catch(() => null)));
+                const unhealthyServices = healthChecks
+                    .map((response, index) => (!response || response.status !== 200 ? healthCheckUrls[index].name : null))
+                    .filter(service => service !== null);
+
+                setSystemHealth(unhealthyServices.length === 0 ? 'All services are healthy' : `Unhealthy: ${unhealthyServices.join(', ')}`);
+            } catch (error) {
+                setSystemHealth('Error checking health');
+            }
+        };
+
+
+        checkHealth();
+        const healthCheckInterval = setInterval(checkHealth, 30000); // Repeat health check every 30 seconds
 
         if (typeof window !== 'undefined') {
             const userId = localStorage.getItem('userId');
@@ -46,8 +72,12 @@ const Header = ({ isAdmin }) => {
             }
         }
 
-        return () => clearInterval(timer);
+        return () => {
+            clearInterval(timer);
+            clearInterval(healthCheckInterval);
+        };
     }, [isAdmin]);
+
 
     const handleLogout = () => {
         localStorage.removeItem('token');
@@ -125,7 +155,7 @@ const Header = ({ isAdmin }) => {
                                 <Typography variant="body2" sx={{ color: 'white', textAlign: 'right' }}>
                                     {dateTime.toLocaleDateString('en-US')} {dateTime.toLocaleTimeString()}
                                 </Typography>
-                                <Typography variant="body2" sx={{ color: 'white', textAlign: 'right', fontWeight: 'bold' }}>Health: {systemHealth}</Typography>
+                                <Typography variant="body2" sx={{ color: 'white', textAlign: 'right', fontWeight: 'bold' }}>System Health: {systemHealth}</Typography>
                             </>
                         )}
                     </Box>

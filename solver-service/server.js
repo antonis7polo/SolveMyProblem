@@ -4,9 +4,14 @@ const fs = require('fs');
 const os = require('os');
 const path = require('path');
 const util = require('util');
+const app = require('./app');
+const http = require("http");
 const execPromise = util.promisify(exec);
 
 require('dotenv').config();
+
+const port = process.env.PORT || 3006;
+const server = http.createServer(app);
 
 let connection, channel;
 
@@ -139,3 +144,5 @@ async function publishResults(problem, solution, label = 'success', logInfo) {
 }
 
 connectRabbitMQ().then(r => console.log('Connected to RabbitMQ')).catch(console.error);
+
+server.listen(port, () => console.log(`Server running on port ${port}`));
