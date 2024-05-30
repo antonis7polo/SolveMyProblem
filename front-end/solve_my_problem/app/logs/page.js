@@ -3,13 +3,14 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { encrypt } from "../utils/encrypt";
+import styles from '../styles/Logs.module.css';
 
 const Logs = () => {
     const [logs, setLogs] = useState([]);
     const [filteredLogs, setFilteredLogs] = useState([]);
     const [loading, setLoading] = useState(true);
     const [filters, setFilters] = useState({
-        eventType: '',
+        eventType: 'results',
         username: '',
         submissionId: ''
     });
@@ -17,7 +18,7 @@ const Logs = () => {
     useEffect(() => {
         const fetchLogs = async () => {
             try {
-                const response = await axios.get('http://localhost:3007/logs' , {
+                const response = await axios.get('http://localhost:3007/logs', {
                     headers: { 'X-OBSERVATORY-AUTH': localStorage.getItem('token'), 'custom-services-header': JSON.stringify(encrypt(process.env.NEXT_PUBLIC_SECRET_STRING_SERVICES)) }
                 });
                 setLogs(response.data);
@@ -56,78 +57,103 @@ const Logs = () => {
         }));
     };
 
+    const getEventTypeLabel = (eventType) => {
+        switch (eventType) {
+            case 'user':
+                return 'User Created';
+            case 'results':
+                return 'Problem Executed';
+            default:
+                return eventType;
+        }
+    };
+
     return (
-        <div>
-            <h1>Logs</h1>
-            <div>
-                <label>
-                    Filter by Event Type:
-                    <select name="eventType" onChange={handleFilterChange} value={filters.eventType}>
-                        <option value="">All</option>
-                        <option value="user">User</option>
-                        <option value="results">Results</option>
+        <div className={styles.container}>
+            <h1 className={styles.heading}>Logs</h1>
+            <div className={styles.filterContainer}>
+                <label className={styles.filterLabel}>
+                    Filter by Log Type:
+                    <select name="eventType" onChange={handleFilterChange} value={filters.eventType} className={styles.filterInput}>
+                        <option value="user">User Created</option>
+                        <option value="results">Problem Executed</option>
                     </select>
                 </label>
-                <label>
+                <label className={styles.filterLabel}>
                     Filter by Username:
-                    <input type="text" name="username" onChange={handleFilterChange} value={filters.username} />
+                    <input type="text" name="username" onChange={handleFilterChange} value={filters.username} className={styles.filterInput} />
                 </label>
-                <label>
-                    Filter by Submission ID:
-                    <input type="text" name="submissionId" onChange={handleFilterChange} value={filters.submissionId} />
-                </label>
+                {filters.eventType === 'results' && (
+                    <label className={styles.filterLabel}>
+                        Filter by Submission ID:
+                        <input type="text" name="submissionId" onChange={handleFilterChange} value={filters.submissionId} className={styles.filterInput} />
+                    </label>
+                )}
             </div>
             {loading ? (
                 <p>Loading...</p>
             ) : (
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Log ID</th>
-                            <th>Log Type</th>
-                            <th>User ID</th>
-                            <th>Username</th>
-                            <th>Execution Timestamp</th>
-                            <th>Submission ID</th>
-                            <th>Submission Name</th>
-                            <th>Label</th>
-                            <th>Resource Usage</th>
-                            <th>CPU Time</th>
-                            <th>Task Completion Time</th>
-                            <th>Queue Time</th>
-                            <th>Created At</th>
-                            <th>Updated At</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {filteredLogs.map((log) => (
-                            <tr key={log._id}>
-                                <td>{log._id}</td>
-                                <td>{log.eventType}</td>
-                                <td>{log.userId}</td>
-                                <td>{log.username}</td>
-                                <td>{new Date(log.executionTimestamp).toLocaleString()}</td>
-                                {log.eventType === 'results' ? (
-                                    <>
-                                        <td>{log.submissionId}</td>
-                                        <td>{log.name}</td>
-                                        <td>{log.label}</td>
-                                        <td>{log.resourceUsage}</td>
-                                        <td>{log.cpuTime}</td>
-                                        <td>{log.taskCompletionTime}</td>
-                                        <td>{log.queueTime}</td>
-                                    </>
-                                ) : (
-                                    <>
-                                        <td colSpan="8">N/A</td>
-                                    </>
-                                )}
-                                <td>{new Date(log.createdAt).toLocaleString()}</td>
-                                <td>{new Date(log.updatedAt).toLocaleString()}</td>
+                filters.eventType === 'results' ? (
+                    <table className={styles.table}>
+                        <thead>
+                            <tr>
+                                <th>Log ID</th>
+                                <th>Log Type</th>
+                                <th>User ID</th>
+                                <th>Username</th>
+                                <th>Submission ID</th>
+                                <th>Submission Name</th>
+                                <th>Label</th>
+                                <th>Resource Usage</th>
+                                <th>CPU Time (ms)</th>
+                                <th>Task Completion Time (ms)</th>
+                                <th>Queue Time (ms)</th>
+                                <th>Execution Timestamp</th>
                             </tr>
-                        ))}
-                    </tbody>
-                </table>
+                        </thead>
+                        <tbody>
+                            {filteredLogs.map((log) => (
+                                <tr key={log._id}>
+                                    <td>{log._id}</td>
+                                    <td>{getEventTypeLabel(log.eventType)}</td>
+                                    <td>{log.userId}</td>
+                                    <td>{log.username}</td>
+                                    <td>{log.submissionId || ''}</td>
+                                    <td>{log.name || ''}</td>
+                                    <td>{log.label || ''}</td>
+                                    <td>{log.resourceUsage || ''}</td>
+                                    <td>{log.cpuTime || 0}</td>
+                                    <td>{log.taskCompletionTime || 0}</td>
+                                    <td>{log.queueTime || 0}</td>
+                                    <td>{new Date(log.executionTimestamp).toLocaleString()}</td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                ) : (
+                    <table className={styles.table}>
+                        <thead>
+                            <tr>
+                                <th>Log ID</th>
+                                <th>Log Type</th>
+                                <th>User ID</th>
+                                <th>Username</th>
+                                <th>Execution Timestamp</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {filteredLogs.map((log) => (
+                                <tr key={log._id}>
+                                    <td>{log._id}</td>
+                                    <td>{getEventTypeLabel(log.eventType)}</td>
+                                    <td>{log.userId}</td>
+                                    <td>{log.username}</td>
+                                    <td>{new Date(log.executionTimestamp).toLocaleString()}</td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                )
             )}
         </div>
     );
