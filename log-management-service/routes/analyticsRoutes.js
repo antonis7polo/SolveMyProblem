@@ -6,7 +6,6 @@ const originAuthMiddleware = require('../middlewares/originAuthMiddleware');
 
 const router = express.Router();
 
-//router.get('/analytics',originAuthMiddleware, isAdmin, getAnalytics);
-router.get('/analytics', getAnalytics);
+router.get('/analytics',originAuthMiddleware, isAdmin, getAnalytics);
 
 module.exports = router;

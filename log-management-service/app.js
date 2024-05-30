@@ -2,7 +2,6 @@
 const express = require('express');
 const cors = require('cors');
 const originAuth = require('./middlewares/originAuthMiddleware');
-//const auth = require('./middlewares/authMiddleware');
 const logsRoutes = require('./routes/logsRoutes');
 const analyticsRoutes = require('./routes/analyticsRoutes');
 const { setupRabbitMQ } = require('./config/rabbitMQ');
@@ -23,9 +22,6 @@ app.use(cors({
     },
     credentials: true // Allow credentials (cookies, authorization headers, etc.)
 }));
-// Apply middleware for request authentication
-// app.use(auth);
-// app.use(originAuth); // Uncomment if you have the origin middleware
 
 // Setup RabbitMQ (asynchronously)
 setupRabbitMQ().then(() => {

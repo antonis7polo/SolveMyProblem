@@ -66,7 +66,7 @@ const Submissions = () => {
 
     return (
         <div>
-            <Header />
+            <Header isAdmin={isAdmin} />
             <div className="container">
                 <h1>All Submissions</h1>
                 <input

@@ -6,7 +6,6 @@ const originAuthMiddleware = require('../middlewares/originAuthMiddleware');
 
 const router = express.Router();
 
-//router.get('/logs',originAuthMiddleware, isAdmin, getLogs);
-router.get('/logs', getLogs);
+router.get('/logs',originAuthMiddleware, isAdmin, getLogs);
 
 module.exports = router;

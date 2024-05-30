@@ -1,35 +1,108 @@
-.header {
+.appBar {
+    background-color: #2E8B57; /* Seafoam Green */
+    height: auto;
+}
+
+.toolbar {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    height: 100%;
+    padding: 10px;
+}
+
+.topSection {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 20px;
-    background: linear-gradient(135deg, #5DA7A3 0%, #CAD1D1 100%);
+    padding-bottom: 10px;
+}
+
+.logoSection {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex: 1;
+}
+
+.logoImage {
+    height: 100px; /* Adjust size as needed */
+    width: auto;
+}
+
+.menuIcon {
     color: white;
-    font-family: 'Arial', sans-serif;
-  }
-  
-  .logo {
-    font-size: 24px;
-    font-weight: bold;
-  }
-  
-  .actions {
+}
+
+.logoutButton {
+    color: white;
+}
+
+.divider {
+    background-color: white;
+    margin: 10px 0;
+}
+
+.bottomSection {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.usernameSection {
     display: flex;
     align-items: center;
-  }
-  
-  .creditsButton {
-    background-color: #FF6B6B;
-    border: none;
+    flex: 1;
+}
+
+.username {
     color: white;
-    padding: 10px 20px;
+}
+
+.loginButton {
+    background-color: #2E8B57; /* Seafoam Green */
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 0.5rem 1rem;
     cursor: pointer;
-    border-radius: 5px;
+    font-size: 1rem;
+    transition: background-color 0.3s;
+}
+
+.loginButton:hover {
+    background-color: #276f47;
+}
+
+.systemInfoSection {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    flex: 1;
+}
+
+.systemInfo {
+    color: white;
+    text-align: right;
+}
+
+.systemInfoHealth {
+    color: white;
+    text-align: right;
     font-weight: bold;
-    transition: background-color 0.3s ease;
-  }
-  
-  .creditsButton:hover {
-    background-color: #FF3B3B;
-  }
-  
+}
+
+.menu {
+    .MuiPaper-root {
+        background-color: #3A3B3C; /* Different background color for menu */
+        color: white;
+    }
+}
+
+.menuItem {
+    color: white;
+    background-color: #3A3B3C; /* Different background color */
+    &:hover {
+        background-color: #555555 ; /* Slightly lighter color on hover */
+    }
+}

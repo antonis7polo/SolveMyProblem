@@ -103,6 +103,7 @@ const UserSubmissions = ({ params }) => {
 
     return (
         <div>
+            <Header/>
             <div className={styles.container}>
                 <h1 className={styles.title}>User Submissions</h1>
                 {loading ? (
