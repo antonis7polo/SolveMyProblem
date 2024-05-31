@@ -1,6 +1,6 @@
 //problemController.js
 
-const Problem = require('../models/Problem');
+const Problem = require('../models/problem');
 
 exports.createProblem = async (problemData) => {
     const newProblem = new Problem(problemData);

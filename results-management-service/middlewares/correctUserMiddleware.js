@@ -1,5 +1,5 @@
 const jwt = require('jsonwebtoken');
-const Result = require('../models/Result');
+const Result = require('../models/result');
 
 const ensureCorrectUser = async (req, res, next) => {
     const authHeader = req.header('X-OBSERVATORY-AUTH');

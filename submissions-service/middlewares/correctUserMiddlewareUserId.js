@@ -1,5 +1,5 @@
 const jwt = require('jsonwebtoken');
-const Submission = require('../models/Submission');
+const Submission = require('../models/submission');
 
 const ensureCorrectUserOrAdminForSubmissionsByUserId = async (req, res, next) => {
     const authHeader = req.header('X-OBSERVATORY-AUTH');

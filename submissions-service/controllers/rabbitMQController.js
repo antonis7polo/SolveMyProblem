@@ -1,5 +1,5 @@
 // rabbitMQController.js
-const Submission = require('../models/Submission');
+const Submission = require('../models/submission');
 const { publishStatusChange, publishDeletionToResultsService } = require('./publishStatusChange');
 
 async function createOrUpdateSubmission(messageData, channel) {
