@@ -1,20 +1,19 @@
-FROM node:14
+FROM node:18
 
-LABEL maintainer="alexiadisanton@gmail.com"
-LABEL version="1.0"
-LABEL description="This service handles credit additions for users."
+LABEL maintainer="alexiadisanton@gmail.com harrypapadakis02@gmail.com nikolasbv10@gmail.com"
 
-WORKDIR /app
+WORKDIR /usr/src/app
 
 COPY package*.json ./
 
-RUN npm install
+RUN npm install --production
 
 COPY . .
 
-EXPOSE 3000
+RUN apt-get update && apt-get install -y curl
 
-HEALTHCHECK --interval=5m --timeout=3s \
-  CMD curl -f http://localhost:3000/ || exit 1
+EXPOSE 3004
 
-CMD ["node", "app.js"]
+HEALTHCHECK --interval=60s --timeout=10s --retries=3 CMD curl -f http://localhost:3004/health || exit 1
+
+CMD [ "node", "server.js" ]

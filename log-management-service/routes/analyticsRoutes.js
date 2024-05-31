@@ -1,6 +1,7 @@
 // routes/analyticsRoutes.js
-const router = express.Router();
 const express = require('express');
+const router = express.Router();
+
 const { getAnalytics } = require('../controllers/getAnalyticsController');
 const isAdmin = require('../middlewares/adminMiddleware');
 const originAuthMiddleware = require('../middlewares/originAuthMiddleware');

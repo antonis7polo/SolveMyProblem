@@ -10,10 +10,10 @@ RUN npm install --production
 
 COPY . .
 
-RUN apt-get update && apt-get install -y python3
+RUN apt-get update && apt-get install -y curl
 
-EXPOSE 3006
+EXPOSE 3007
 
-HEALTHCHECK --interval=60s --timeout=10s --retries=3 CMD curl -f http://localhost:3006/health || exit 1
+HEALTHCHECK --interval=60s --timeout=10s --retries=3 CMD curl -f http://localhost:3007/health || exit 1
 
 CMD [ "node", "server.js" ]
