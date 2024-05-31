@@ -89,79 +89,85 @@ const CreateProblem = ({ params }) => {
     return (
         <div>
             <Header isAdmin={false}/>
-        <div className={styles.container}>
-            <h1 className={styles.title}>Create New Problem</h1>
-            {error && <Alert severity="error" onClose={() => setError(null)}>{error}</Alert>}
-            <form onSubmit={handleSubmit} className={styles.form}>
-                <div className={styles.formGroup}>
-                    <label>Submission Name</label>
-                    <input
-                        type="text"
-                        value={name}
-                        onChange={(e) => setName(e.target.value)}
-                        required
-                        className={styles.input}
-                    />
+            <div className={styles.container}>
+                <div className={styles.createSubmissionsInfo}>
+                    <h1 className={styles.title}>Create New Problem</h1>
+                    {error && <Alert severity="error" onClose={() => setError(null)}>{error}</Alert>}
+                    <form onSubmit={handleSubmit} className={styles.form}>
+                        <div className={styles.formGroup}>
+                            <label>Submission Name</label>
+                            <input
+                                type="text"
+                                value={name}
+                                onChange={(e) => setName(e.target.value)}
+                                placeholder="Enter submission name"
+                                required
+                                className={styles.input}
+                            />
+                        </div>
+                        <div className={styles.formGroup}>
+                            <label>Number of Vehicles</label>
+                            <input
+                                type="number"
+                                value={numVehicles}
+                                onChange={(e) => setNumVehicles(e.target.value)}
+                                placeholder="Enter number of vehicles"
+                                className={styles.input}
+                            />
+                        </div>
+                        <div className={styles.formGroup}>
+                            <label>Depot</label>
+                            <input
+                                type="number"
+                                value={depot}
+                                onChange={(e) => setDepot(e.target.value)}
+                                placeholder="Enter depot"
+                                className={styles.input}
+                            />
+                        </div>
+                        <div className={styles.formGroup}>
+                            <label>Max Distance</label>
+                            <input
+                                type="number"
+                                value={maxDistance}
+                                onChange={(e) => setMaxDistance(e.target.value)}
+                                placeholder="Enter max distance"
+                                className={styles.input}
+                            />
+                        </div>
+                        <div className={styles.formGroup}>
+                            <label>Python File</label>
+                            <input
+                                type="file"
+                                name="pythonFile"
+                                ref={pythonFileInputRef}
+                                onChange={handleFileChange}
+                                className={styles.inputFile}
+                            />
+                        </div>
+                        <div className={styles.formGroup}>
+                            <label>JSON File</label>
+                            <input
+                                type="file"
+                                name="jsonFile"
+                                ref={jsonFileInputRef}
+                                onChange={handleFileChange}
+                                className={styles.inputFile}
+                            />
+                        </div>
+                        <div className={styles.buttons}>
+                            <button type="submit" disabled={loading} className={styles.button}>
+                                {loading ? 'Submitting...' : 'Submit'}
+                            </button>
+                            <button type="button" onClick={handleCancel} className={`${styles.button} ${styles.buttonRed}`}>
+                                Cancel
+                            </button>
+                        </div>
+                    </form>
                 </div>
-                <div className={styles.formGroup}>
-                    <label>Number of Vehicles</label>
-                    <input
-                        type="number"
-                        value={numVehicles}
-                        onChange={(e) => setNumVehicles(e.target.value)}
-                        className={styles.input}
-                    />
-                </div>
-                <div className={styles.formGroup}>
-                    <label>Depot</label>
-                    <input
-                        type="number"
-                        value={depot}
-                        onChange={(e) => setDepot(e.target.value)}
-                        className={styles.input}
-                    />
-                </div>
-                <div className={styles.formGroup}>
-                    <label>Max Distance</label>
-                    <input
-                        type="number"
-                        value={maxDistance}
-                        onChange={(e) => setMaxDistance(e.target.value)}
-                        className={styles.input}
-                    />
-                </div>
-                <div className={styles.formGroup}>
-                    <label>Python File</label>
-                    <input
-                        type="file"
-                        name="pythonFile"
-                        ref={pythonFileInputRef}
-                        onChange={handleFileChange}
-                        className={styles.inputFile}
-                    />
-                </div>
-                <div className={styles.formGroup}>
-                    <label>JSON File</label>
-                    <input
-                        type="file"
-                        name="jsonFile"
-                        ref={jsonFileInputRef}
-                        onChange={handleFileChange}
-                        className={styles.inputFile}
-                    />
-                </div>
-                <div className={styles.buttons}>
-                    <button type="submit" disabled={loading} className={styles.button}>
-                        {loading ? 'Submitting...' : 'Submit'}
-                    </button>
-                    <button type="button" onClick={handleCancel} className={`${styles.button} ${styles.buttonRed}`}>
-                        Cancel
-                    </button>
-                </div>
-            </form>
-        </div>
-            <Footer/>
             </div>
+            <Footer/>
+        </div>
     );
 };
 

@@ -14,11 +14,20 @@
     padding: 2rem;
     background-color: #E8F5E9; /* Light green background */
     min-height: 100vh;
-    font-family: Arial, sans-serif;
-    max-width: 800px;
-    margin: 2rem auto 2rem auto; /* Add margin at the top and bottom */
-    border-radius: 10px;
+    font-family: Arial, sans-serif; 
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.submissionsInfo {
+    background-color: #F1F8E9; /* Even lighter green */
+    padding: 2rem;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin: 2rem;
+    width: 800px;
 }
 
 .title {
@@ -68,7 +77,7 @@
     padding: 0.75rem 1.5rem;
     font-size: 1rem;
     color: #fff;
-    background-color: #28a745;
+    background-color: #2E8B57;
     border: none;
     border-radius: 8px;
     cursor: pointer;
@@ -77,7 +86,7 @@
 }
 
 .button:hover {
-    background-color: #218838;
+    background-color: #276f47;
 }
 
 .button[disabled] {
@@ -86,11 +95,11 @@
 }
 
 .buttonRed {
-    background-color: #28a745;
+    background-color: #2E8B57;
 }
 
 .buttonRed:hover {
-    background-color: #218838;
+    background-color: #276f47;
 }
 
 .errorModal {

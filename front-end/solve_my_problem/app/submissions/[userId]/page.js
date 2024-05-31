@@ -1,12 +1,67 @@
 "use client";
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import withAuth from '../../utils/withAuth';
 import { encrypt } from "../../utils/encrypt";
 import Header from '../../components/Header';
 import Footer from '../../components/Footer';
 import styles from '../../styles/Submissions.module.css'
+import { styled } from '@mui/material/styles';
+import { Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Button, Slide } from '@mui/material';
+
+const Transition = React.forwardRef(function Transition(props, ref) {
+  return <Slide direction="up" ref={ref} {...props} />;
+});
+
+const CustomDialog = styled(Dialog)(({ theme }) => ({
+  '& .MuiPaper-root': {
+    backgroundColor: '#E8F5E9', /* Light green background */
+    borderRadius: '8px',
+    boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
+    padding: '2rem',
+    width: '500px', /* Adjust the width as needed */
+    borderRadius: '8px',
+  }
+}));
+
+const CustomDialogTitle = styled(DialogTitle)(({ theme }) => ({
+  fontSize: '1.5rem',
+  fontWeight: 'bold',
+  color: '#2E8B57', /* Seafoam Green */
+  textAlign: 'center',
+  fontFamily: 'Arial, sans-serif', /* Same font as the rest of the page */
+}));
+
+const CustomDialogContent = styled(DialogContent)(({ theme }) => ({
+  color: '#2E8B57', /* Seafoam Green */
+  textAlign: 'center',
+  fontSize: '1.2rem',
+  fontFamily: 'Arial, sans-serif', /* Same font as the rest of the page */
+}));
+
+const CustomDialogActions = styled(DialogActions)(({ theme }) => ({
+  display: 'flex',
+  justifyContent: 'flex-end', /* Align items to the end */
+  gap: '1rem', /* Add space between buttons */
+  padding: '1rem 2rem',
+}));
+
+const CustomButton = styled(Button)(({ theme }) => ({
+  backgroundColor: '#2E8B57', /* Seafoam Green */
+  color: 'white',
+  border: 'none',
+  borderRadius: '8px',
+  padding: '0.5rem 1rem', /* Adjusted padding for smaller buttons */
+  cursor: 'pointer',
+  fontSize: '0.875rem', /* Smaller font size */
+  transition: 'background-color 0.3s',
+  fontFamily: 'Arial, sans-serif', /* Same font as the rest of the page */
+  textTransform: 'none', /* Ensure the button text is not all caps */
+  '&:hover': {
+    backgroundColor: '#276f47',
+  },
+}));
 
 const UserSubmissions = ({ params }) => {
     const router = useRouter();
@@ -104,78 +159,95 @@ const UserSubmissions = ({ params }) => {
     return (
         <div>
             <Header isAdmin={false} />
-        <div className={styles.container}>
-            <h1 className={styles.title}>My Submissions</h1>
-            {loading ? (
-                <p>Loading...</p>
-            ) : (
-                <>
-                    {error ? (
-                        <p>{error}</p>
-                    ) : (
-                        <>
-                            {submissions.length === 0 ? (
-                                <p>No submissions found</p>
-                            ) : (
-                                <div className={styles.tableContainer}>
-                                    <table className={styles.table}>
-                                        <thead>
-                                            <tr>
-                                                <th>Creator</th>
-                                                <th>Submission Name</th>
-                                                <th>Created At</th>
-                                                <th>Status</th>
-                                                <th>Submission Timestamp</th>
-                                                <th>Actions</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            {submissions.map((submission) => (
-                                                <tr key={submission._id}>
-                                                    <td>{submission.username}</td>
-                                                    <td>{submission.name}</td>
-                                                    <td>{new Date(submission.createdAt).toLocaleString()}</td>
-                                                    <td>{submission.status}</td>
-                                                    <td>{submission.submissionTimestamp ? new Date(submission.submissionTimestamp).toLocaleString() : 'N/A'}</td>
-                                                    <td>
-                                                        <button className={`${styles.button} ${styles.viewButton}`} onClick={() => handleViewSubmission(submission._id)}>View</button>
-                                                        {submission.status === 'ready' && <button className={`${styles.button} ${styles.runButton}`} onClick={() => handleRun(submission._id)}>Run</button>}
-                                                        {submission.status === 'completed' && <button className={`${styles.button} ${styles.resultsButton}`} onClick={() => handleViewResults(submission._id)}>View Results</button>}
-                                                        <button className={`${styles.button} ${styles.deleteButton}`} onClick={() => handleDelete(submission._id)}>Delete</button>
-                                                    </td>
+            <div className={styles.container}>
+                <h1 className={styles.title}>My Submissions</h1>
+                {loading ? (
+                    <p>Loading...</p>
+                ) : (
+                    <>
+                        {error ? (
+                            <p>{error}</p>
+                        ) : (
+                            <>
+                                {submissions.length === 0 ? (
+                                    <p>No submissions found</p>
+                                ) : (
+                                    <div className={styles.tableContainer}>
+                                        <table className={styles.table}>
+                                            <thead>
+                                                <tr>
+                                                    <th>Creator</th>
+                                                    <th>Submission Name</th>
+                                                    <th>Created At</th>
+                                                    <th>Status</th>
+                                                    <th>Submission Timestamp</th>
+                                                    <th>Actions</th>
                                                 </tr>
-                                            ))}
-                                        </tbody>
-                                    </table>
-                                </div>
-                            )}
-                        </>
-                    )}
-                    <button className={styles.createButton} onClick={() => router.push(`/submissions/${userId}/create`)}>Create New Problem</button>
-                </>
-            )}
-            {showModal && (
-                <div className={styles.modal}>
-                    <div className={styles.modalContent}>
-                        <h2>Cost Calculation</h2>
-                        <p>The cost for this submission is: {cost}</p>
+                                            </thead>
+                                            <tbody>
+                                                {submissions.map((submission) => (
+                                                    <tr key={submission._id}>
+                                                        <td>{submission.username}</td>
+                                                        <td>{submission.name}</td>
+                                                        <td>{new Date(submission.createdAt).toLocaleString()}</td>
+                                                        <td>
+                                                            {submission.status === 'completed' && 'Problem executed successfully'}
+                                                            {submission.status === 'failed' && 'Problem execution failed'}
+                                                            {submission.status === 'ready' && 'Ready to execute problem'}
+                                                            {submission.status === 'in_progress' && 'Problem execution in progress'}
+                                                        </td>
+                                                        <td>{submission.submissionTimestamp ? new Date(submission.submissionTimestamp).toLocaleString() : 'N/A'}</td>
+                                                        <td>
+                                                            <button className={`${styles.button} ${styles.viewButton}`} onClick={() => handleViewSubmission(submission._id)}>View</button>
+                                                            {submission.status === 'ready' && <button className={`${styles.button} ${styles.runButton}`} onClick={() => handleRun(submission._id)}>Run</button>}
+                                                            {submission.status === 'completed' && <button className={`${styles.button} ${styles.resultsButton}`} onClick={() => handleViewResults(submission._id)}>View Results</button>}
+                                                            <button className={`${styles.button} ${styles.deleteButton}`} onClick={() => handleDelete(submission._id)}>Delete</button>
+                                                        </td>
+                                                    </tr>
+                                                ))}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                )}
+                            </>
+                        )}
+                        <button className={`${styles.button} ${styles.createProblemButton}`} onClick={() => router.push(`/submissions/${userId}/create`)}>Create New Problem</button>
+                    </>
+                )}
+                <CustomDialog
+                    open={showModal}
+                    TransitionComponent={Transition}
+                    keepMounted
+                    onClose={handleCancel}
+                    classes={{ paper: styles.dialogPaper }}
+                    aria-describedby="alert-dialog-slide-description"
+                >
+                    <CustomDialogTitle className={styles.dialogTitle}>{"Problem Execution Cost"}</CustomDialogTitle>
+                    <CustomDialogContent className={styles.dialogContent}>
+                        <DialogContentText id="alert-dialog-slide-description">
+                            The cost to execute this problem is {cost} credits.
+                        </DialogContentText>
+                        <DialogContentText id="alert-dialog-slide-description">
+                            Do you want to continue?
+                        </DialogContentText>
                         {creditsError ? (
                             <>
                                 <p style={{ color: 'red' }}>{creditsError}</p>
-                                <button className={styles.button} onClick={handleAddCredits}>Add Credits</button>
+                                <CustomButton onClick={handleAddCredits} className={styles.dialogButton}>Add Credits</CustomButton>
                             </>
                         ) : (
                             <>
                                 {error && !creditsError && <p style={{ color: 'red' }}>{error}</p>}
-                                <button className={styles.button} onClick={handleContinue}>Continue</button>
                             </>
                         )}
-                        <button className={styles.button} onClick={handleCancel}>Cancel</button>
-                    </div>
-                </div>
-            )}
-        </div>
-            <Footer/>
+                    </CustomDialogContent>
+                    <CustomDialogActions className={styles.dialogActions}>
+                        <CustomButton onClick={handleCancel} className={styles.dialogButtonCancel}>Cancel</CustomButton>
+                        {!creditsError && <CustomButton onClick={handleContinue} className={styles.dialogButton}>Continue</CustomButton>}
+                    </CustomDialogActions>
+                </CustomDialog>
+            </div>
+            <Footer />
         </div>
     );
 };

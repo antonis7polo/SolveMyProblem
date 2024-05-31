@@ -61,5 +61,6 @@
     border-radius: 8px;
     font-size: 1rem;
     margin-top: 0.5rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   }
   

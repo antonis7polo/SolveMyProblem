@@ -104,8 +104,8 @@ const Header = ({ isAdmin, isNoUser }) => {
 
     const noUserMenuItems = [
         { key: 'home', label: 'Home', link: '/' },
-        { key: 'signin', label: 'Sign in', link: '/login' },
-        { key: 'signup', label: 'Sign up', link: '/signup' },
+        { key: 'signin', label: 'Sign In', link: '/login' },
+        { key: 'signup', label: 'Sign Up', link: '/signup' },
     ];
 
     const menuItems = isNoUser ? noUserMenuItems : (isAdmin ? adminMenuItems : customerMenuItems);

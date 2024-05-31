@@ -84,27 +84,27 @@
 }
 
 .viewButton {
-    background-color: #28a745;
+    background-color: #2E8B57;
 }
 
 .viewButton:hover {
-    background-color: #218838;
+    background-color: #276f47;
 }
 
 .runButton {
-    background-color: #28a745;
+    background-color: #2E8B57;
 }
 
 .runButton:hover {
-    background-color: #218838;
+    background-color: #276f47;
 }
 
 .resultsButton {
-    background-color: #28a745;
+    background-color: #2E8B57;
 }
 
 .resultsButton:hover {
-    background-color: #218838;
+    background-color: #276f47;
 }
 
 .deleteButton {

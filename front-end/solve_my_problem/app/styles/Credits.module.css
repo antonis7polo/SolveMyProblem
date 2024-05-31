@@ -85,7 +85,7 @@
   border-radius: 8px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   padding: 2rem;
-  width: 600px; /* Adjust the width as needed */
+  width: 500px; /* Adjust the width as needed */
   border-radius: 8px;
 }
 
@@ -113,7 +113,7 @@
 
 .dialogButton {
   background-color: #2E8B57; /* Seafoam Green */
-  color: #2E8B57 !important;
+  color: white !important;
   border: none;
   border-radius: 8px;
   padding: 0.5rem 1rem; /* Adjusted padding for smaller buttons */
@@ -130,7 +130,7 @@
 
 .dialogButtonCancel {
   background-color: #2E8B57; /* Seafoam Green */
-  color: #2E8B57 !important;
+  color: white !important;
   border: none;
   border-radius: 8px;
   padding: 0.5rem 1rem; /* Adjusted padding for smaller buttons */

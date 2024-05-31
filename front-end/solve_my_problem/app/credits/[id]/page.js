@@ -7,6 +7,7 @@ import { loadStripe } from '@stripe/stripe-js';
 import { Elements, useStripe, useElements, CardElement } from '@stripe/react-stripe-js';
 import Alert from '@mui/material/Alert';
 import { Snackbar, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Button, Slide } from '@mui/material';
+import { styled } from '@mui/material/styles';
 import styles from '../../styles/Credits.module.css';
 import withAuth from '../../utils/withAuth';
 import Header from '../../components/Header';
@@ -20,6 +21,55 @@ const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLIC_KEY);
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
+
+const CustomDialog = styled(Dialog)(({ theme }) => ({
+  '& .MuiPaper-root': {
+    backgroundColor: '#E8F5E9', /* Light green background */
+    borderRadius: '8px',
+    boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
+    padding: '2rem',
+    width: '500px', /* Adjust the width as needed */
+    borderRadius: '8px',
+  }
+}));
+
+const CustomDialogTitle = styled(DialogTitle)(({ theme }) => ({
+  fontSize: '1.5rem',
+  fontWeight: 'bold',
+  color: '#2E8B57', /* Seafoam Green */
+  textAlign: 'center',
+  fontFamily: 'Arial, sans-serif', /* Same font as the rest of the page */
+}));
+
+const CustomDialogContent = styled(DialogContent)(({ theme }) => ({
+  color: '#2E8B57', /* Seafoam Green */
+  textAlign: 'center',
+  fontSize: '1.2rem',
+  fontFamily: 'Arial, sans-serif', /* Same font as the rest of the page */
+}));
+
+const CustomDialogActions = styled(DialogActions)(({ theme }) => ({
+  display: 'flex',
+  justifyContent: 'flex-end', /* Align items to the end */
+  gap: '1rem', /* Add space between buttons */
+  padding: '1rem 2rem',
+}));
+
+const CustomButton = styled(Button)(({ theme }) => ({
+  backgroundColor: '#2E8B57', /* Seafoam Green */
+  color: 'white',
+  border: 'none',
+  borderRadius: '8px',
+  padding: '0.5rem 1rem', /* Adjusted padding for smaller buttons */
+  cursor: 'pointer',
+  fontSize: '0.875rem', /* Smaller font size */
+  transition: 'background-color 0.3s',
+  fontFamily: 'Arial, sans-serif', /* Same font as the rest of the page */
+  textTransform: 'none', /* Ensure the button text is not all caps */
+  '&:hover': {
+    backgroundColor: '#276f47',
+  },
+}));
 
 const Credits = ({ params }) => {
   const [credits, setCredits] = useState(null);
@@ -69,7 +119,7 @@ const Credits = ({ params }) => {
   };
 
   const handleCloseMaxCreditsWarning = () => {
-  setShowMaxCreditsWarning(false);
+    setShowMaxCreditsWarning(false);
   };
 
   const handleClose = () => {
@@ -212,25 +262,24 @@ const Credits = ({ params }) => {
             setPaymentMethod={setPaymentMethod}
             setShowInvalidCardMessage={setShowInvalidCardMessage} // Pass this function
           />
-          <Dialog
+          <CustomDialog
             open={openDialog}
             TransitionComponent={Transition}
             keepMounted
             onClose={handleCloseDialog}
             aria-describedby="alert-dialog-slide-description"
-            classes={{ paper: styles.dialogPaper }} // Apply custom dialog paper styles
           >
-            <DialogTitle className={styles.dialogTitle}>{"Confirm Payment"}</DialogTitle>
-            <DialogContent className={styles.dialogContent}>
+            <CustomDialogTitle>{"Confirm Payment"}</CustomDialogTitle>
+            <CustomDialogContent>
               <DialogContentText id="alert-dialog-slide-description">
                 Are you sure you want to proceed with this payment?
               </DialogContentText>
-            </DialogContent>
-            <DialogActions className={styles.dialogActions}>
-              <Button onClick={handleCloseDialog} className={styles.dialogButtonCancel}>Cancel</Button>
-              <Button onClick={handleConfirmPayment} className={styles.dialogButton}>Confirm</Button>
-            </DialogActions>
-          </Dialog>
+            </CustomDialogContent>
+            <CustomDialogActions>
+              <CustomButton onClick={handleCloseDialog}>Cancel</CustomButton>
+              <CustomButton onClick={handleConfirmPayment}>Confirm</CustomButton>
+            </CustomDialogActions>
+          </CustomDialog>
         </div>
       </Elements>
       <Footer />

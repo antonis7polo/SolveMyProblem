@@ -10,7 +10,6 @@ import Alert from '@mui/material/Alert';
 import Header from '../../../components/Header';
 import Footer from '../../../components/Footer';
 
-
 const ViewEditSubmission = ({ params }) => {
     const { userId, submissionId } = params;
     const [submission, setSubmission] = useState(null);
@@ -224,116 +223,118 @@ const ViewEditSubmission = ({ params }) => {
     return (
         <div>
             <Header isAdmin={isAdmin} />
-        <div className={styles.container}>
-            <h1 className={styles.title}>{isAdmin ? 'View' : 'View/Edit'} Submission</h1>
-            {showErrorAlert && (
-                <Alert severity="error" onClose={() => setShowErrorAlert(false)}>{error}</Alert>
-            )}
-            <div className={styles.section}>
-                <h2>Submission Info</h2>
-                <p><strong>ID:</strong> {submission._id}</p>
-                <div>
-                    <label><strong>Submission Name: </strong></label>
-                    <input
-                        type="text"
-                        value={name}
-                        onChange={(e) => setName(e.target.value)}
-                        disabled={!isUpdateEnabled}
-                        className={styles.input}
-                    />
-                </div>
-                <div>
-                    <p><strong>Status: </strong>{submission.status}</p>
-                </div>
-                <p><strong>Creator:</strong> {submission.username}</p>
-                <p><strong>Created At:</strong> {new Date(submission.createdAt).toLocaleString()}</p>
-                {submission.submissionTimestamp && (
-                    <p><strong>Submitted At:</strong> {new Date(submission.submissionTimestamp).toLocaleString()}</p>
-                )}
-            </div>
-            <div className={styles.section}>
-                <h2>Input Data</h2>
-                <div>
-                    <p><strong>Solver (Python File):</strong> {submission.inputData?.solver ? 'Uploaded' : 'Not Uploaded'}</p>
-                    {submission.inputData?.solver && (
-                        <button onClick={() => downloadFile(submission.inputData.solver, 'solver.py', solverMetadata.type)} className={styles.button}>Download Solver File</button>
+            <div className={styles.container}>
+                <div className={styles.submissionsInfo}>
+                    <h1 className={styles.title}>{isAdmin ? 'View' : 'View/Edit'} Submission</h1>
+                    {showErrorAlert && (
+                        <Alert severity="error" onClose={() => setShowErrorAlert(false)}>{error}</Alert>
                     )}
-                    <input
-                        type="file"
-                        ref={solverFileInputRef}
-                        onChange={handleSolverFileChange}
-                        disabled={!isUpdateEnabled}
-                        className={styles.inputFile}
-                    />
-                    {solverMetadata.size && (
-                        <p>
-                            <strong>File Size:</strong> {solverMetadata.size} bytes<br />
-                            <strong>File Type:</strong> {solverMetadata.type}
-                        </p>
-                    )}
-                </div>
-                <div>
-                    <p><strong>Parameters (JSON File):</strong> {submission.inputData?.parameters ? 'Uploaded' : 'Not Uploaded'}</p>
-                    {submission.inputData?.parameters && (
-                        <button onClick={() => downloadFile(submission.inputData.parameters, 'parameters.json', parametersMetadata.type)} className={styles.button}>Download Parameters File</button>
-                    )}
-                    <input
-                        type="file"
-                        ref={parametersFileInputRef}
-                        onChange={handleParametersFileChange}
-                        disabled={!isUpdateEnabled}
-                        className={styles.inputFile}
-                    />
-                    {parametersMetadata.size && (
-                        <p>
-                            <strong>File Size:</strong> {parametersMetadata.size} bytes<br />
-                            <strong>File Type:</strong> {parametersMetadata.type}<br />
-                            <strong>Number of Locations:</strong> {parametersMetadata.locationsCount}<br />
-                            {parametersMetadata.bounds && (
-                                <>
-                                    <strong>Bounds:</strong> <br />
-                                    - Min Latitude: {parametersMetadata.bounds.minLatitude}<br />
-                                    - Max Latitude: {parametersMetadata.bounds.maxLatitude}<br />
-                                    - Min Longitude: {parametersMetadata.bounds.minLongitude}<br />
-                                    - Max Longitude: {parametersMetadata.bounds.maxLongitude}
-                                </>
+                    <div className={styles.section}>
+                        <h2>Submission Info</h2>
+                        <p><strong>ID:</strong> {submission._id}</p>
+                        <div>
+                            <label><strong>Submission Name: </strong></label>
+                            <input
+                                type="text"
+                                value={name}
+                                onChange={(e) => setName(e.target.value)}
+                                disabled={!isUpdateEnabled}
+                                className={styles.input}
+                            />
+                        </div>
+                        <div>
+                            <p><strong>Status: </strong>{submission.status}</p>
+                        </div>
+                        <p><strong>Creator:</strong> {submission.username}</p>
+                        <p><strong>Created At:</strong> {new Date(submission.createdAt).toLocaleString()}</p>
+                        {submission.submissionTimestamp && (
+                            <p><strong>Submitted At:</strong> {new Date(submission.submissionTimestamp).toLocaleString()}</p>
+                        )}
+                    </div>
+                    <div className={styles.section}>
+                        <h2>Input Data</h2>
+                        <div>
+                            <p><strong>Solver (Python File):</strong> {submission.inputData?.solver ? 'Uploaded' : 'Not Uploaded'}</p>
+                            {submission.inputData?.solver && (
+                                <button onClick={() => downloadFile(submission.inputData.solver, 'solver.py', solverMetadata.type)} className={styles.button}>Download Solver File</button>
                             )}
-                        </p>
-                    )}
+                            <input
+                                type="file"
+                                ref={solverFileInputRef}
+                                onChange={handleSolverFileChange}
+                                disabled={!isUpdateEnabled}
+                                className={styles.inputFile}
+                            />
+                            {solverMetadata.size && (
+                                <p>
+                                    <strong>File Size:</strong> {solverMetadata.size} bytes<br />
+                                    <strong>File Type:</strong> {solverMetadata.type}
+                                </p>
+                            )}
+                        </div>
+                        <div>
+                            <p><strong>Parameters (JSON File):</strong> {submission.inputData?.parameters ? 'Uploaded' : 'Not Uploaded'}</p>
+                            {submission.inputData?.parameters && (
+                                <button onClick={() => downloadFile(submission.inputData.parameters, 'parameters.json', parametersMetadata.type)} className={styles.button}>Download Parameters File</button>
+                            )}
+                            <input
+                                type="file"
+                                ref={parametersFileInputRef}
+                                onChange={handleParametersFileChange}
+                                disabled={!isUpdateEnabled}
+                                className={styles.inputFile}
+                            />
+                            {parametersMetadata.size && (
+                                <p>
+                                    <strong>File Size:</strong> {parametersMetadata.size} bytes<br />
+                                    <strong>File Type:</strong> {parametersMetadata.type}<br />
+                                    <strong>Number of Locations:</strong> {parametersMetadata.locationsCount}<br />
+                                    {parametersMetadata.bounds && (
+                                        <>
+                                            <strong>Bounds:</strong> <br />
+                                            - Min Latitude: {parametersMetadata.bounds.minLatitude}<br />
+                                            - Max Latitude: {parametersMetadata.bounds.maxLatitude}<br />
+                                            - Min Longitude: {parametersMetadata.bounds.minLongitude}<br />
+                                            - Max Longitude: {parametersMetadata.bounds.maxLongitude}
+                                        </>
+                                    )}
+                                </p>
+                            )}
+                        </div>
+                        <p><strong>Number of Vehicles:</strong></p>
+                        <input
+                            type="number"
+                            value={numVehicles}
+                            onChange={(e) => setNumVehicles(e.target.value)}
+                            disabled={!isUpdateEnabled}
+                            className={styles.input}
+                        />
+                        <p><strong>Depot:</strong></p>
+                        <input
+                            type="number"
+                            value={depot}
+                            onChange={(e) => setDepot(e.target.value)}
+                            disabled={!isUpdateEnabled}
+                            className={styles.input}
+                        />
+                        <p><strong>Max Distance:</strong></p>
+                        <input
+                            type="number"
+                            value={maxDistance}
+                            onChange={(e) => setMaxDistance(e.target.value)}
+                            disabled={!isUpdateEnabled}
+                            className={styles.input}
+                        />
+                    </div>
+                    <div className={styles.buttons}>
+                        {!isAdmin && (
+                            <button onClick={handleUpdate} disabled={!isUpdateEnabled} className={styles.button}>Update Submission</button>
+                        )}
+                        <button onClick={handleGoBack} className={`${styles.button} ${styles.buttonRed}`}>Back to Submissions</button>
+                    </div>
                 </div>
-                <p><strong>Number of Vehicles:</strong></p>
-                <input
-                    type="number"
-                    value={numVehicles}
-                    onChange={(e) => setNumVehicles(e.target.value)}
-                    disabled={!isUpdateEnabled}
-                    className={styles.input}
-                />
-                <p><strong>Depot:</strong></p>
-                <input
-                    type="number"
-                    value={depot}
-                    onChange={(e) => setDepot(e.target.value)}
-                    disabled={!isUpdateEnabled}
-                    className={styles.input}
-                />
-                <p><strong>Max Distance:</strong></p>
-                <input
-                    type="number"
-                    value={maxDistance}
-                    onChange={(e) => setMaxDistance(e.target.value)}
-                    disabled={!isUpdateEnabled}
-                    className={styles.input}
-                />
             </div>
-            <div className={styles.buttons}>
-                {!isAdmin && (
-                    <button onClick={handleUpdate} disabled={!isUpdateEnabled} className={styles.button}>Update Submission</button>
-                )}
-                <button onClick={handleGoBack} className={`${styles.button} ${styles.buttonRed}`}>Back to Submissions</button>
-            </div>
-        </div>
-            <Footer/>
+            <Footer />
         </div>
     );
 };

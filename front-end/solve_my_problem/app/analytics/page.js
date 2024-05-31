@@ -8,6 +8,7 @@ import styles from '../styles/Analytics.module.css';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import {encrypt} from "../utils/encrypt";
+import withAuth from '../utils/withAuth';
 
 const Analytics = () => {
     const [analytics, setAnalytics] = useState({});
@@ -23,12 +24,13 @@ const Analytics = () => {
     const [selectedLastMonthDiagram, setSelectedLastMonthDiagram] = useState('totalResourceUsagePerDay');
     const [selectedLast24HoursDiagram, setSelectedLast24HoursDiagram] = useState('totalResourceUsagePerHour');
     const [selectedGeneralDiagram, setSelectedGeneralDiagram] = useState('table');
-
-
-
+    const [isAdmin, setIsAdmin] = useState(false);
 
 
     useEffect(() => {
+        const isAdmin = localStorage.getItem('isAdmin') === 'true';
+        setIsAdmin(isAdmin);
+
         const fetchAnalytics = async () => {
             try {
                 const response = await axios.get('http://localhost:3007/analytics', {
@@ -148,7 +150,7 @@ const Analytics = () => {
 
     return (
         <div>
-            <Header isAdmin={localStorage.getItem('isAdmin') === 'true'} />
+            <Header isAdmin={isAdmin} />
         <div className={styles.container}>
             <h1 className={styles.heading}>Analytics</h1>
             {loading ? (
@@ -480,4 +482,4 @@ const Analytics = () => {
     );
 };
 
-export default Analytics;
+export default withAuth(Analytics);

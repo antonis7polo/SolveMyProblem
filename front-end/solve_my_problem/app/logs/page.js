@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { encrypt } from "../utils/encrypt";
+import withAuth from '../utils/withAuth';
 import styles from '../styles/Logs.module.css';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
@@ -16,8 +17,12 @@ const Logs = () => {
         username: '',
         submissionId: ''
     });
+    const [isAdmin, setIsAdmin] = useState(false);
 
     useEffect(() => {
+        const isAdmin = localStorage.getItem('isAdmin') === 'true';
+        setIsAdmin(isAdmin);
+
         const fetchLogs = async () => {
             try {
                 const response = await axios.get('http://localhost:3007/logs', {
@@ -72,7 +77,7 @@ const Logs = () => {
 
     return (
         <div>
-            <Header isAdmin={localStorage.getItem('isAdmin') === 'true'} />
+            <Header isAdmin={isAdmin} />
         <div className={styles.container}>
             <h1 className={styles.heading}>Logs</h1>
             <div className={styles.filterContainer}>
@@ -165,4 +170,4 @@ const Logs = () => {
     );
 };
 
-export default Logs;
+export default withAuth(Logs);

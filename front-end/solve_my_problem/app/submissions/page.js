@@ -1,13 +1,13 @@
 "use client";
 
-import {useEffect, useState} from 'react';
+import { useEffect, useState } from 'react';
 import axios from 'axios';
-import {useRouter} from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import withAuth from '../utils/withAuth';
-import {encrypt} from "../utils/encrypt";
+import { encrypt } from "../utils/encrypt";
 import Footer from '../components/Footer';
 import Header from '../components/Header';
-import styles from '../styles/AdminSubmissions.module.css'
+import styles from '../styles/AdminSubmissions.module.css';
 
 const Submissions = () => {
     const [submissions, setSubmissions] = useState([]);
@@ -15,10 +15,14 @@ const Submissions = () => {
     const [loading, setLoading] = useState(true);
     const [searchTerm, setSearchTerm] = useState('');
     const [error, setError] = useState(null);
+    const [isAdmin, setIsAdmin] = useState(false);
     const router = useRouter();
-    const isAdmin = localStorage.getItem('isAdmin') === 'true';
 
     useEffect(() => {
+        // Access localStorage only on the client side
+        const isAdmin = localStorage.getItem('isAdmin') === 'true';
+        setIsAdmin(isAdmin);
+
         const fetchSubmissions = async () => {
             try {
                 const response = await axios.get('http://localhost:3000/submission', {
@@ -73,7 +77,7 @@ const Submissions = () => {
 
     return (
         <div>
-            <Header isAdmin={isAdmin}/>
+            <Header isAdmin={isAdmin} />
             <div className={styles.container}>
                 <h1 className={styles.title}>Submissions</h1>
                 <div className={styles.searchContainer}>
@@ -95,44 +99,49 @@ const Submissions = () => {
                     <div className={styles.tableContainer}>
                         <table className={styles.table}>
                             <thead>
-                            <tr>
-                                <th>Creator</th>
-                                <th>Submission Name</th>
-                                <th>Created At</th>
-                                <th>Updated At</th>
-                                <th>Status</th>
-                                <th>Actions</th>
-                            </tr>
+                                <tr>
+                                    <th>Creator</th>
+                                    <th>Submission Name</th>
+                                    <th>Created At</th>
+                                    <th>Updated At</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
                             </thead>
                             <tbody>
-                            {filteredSubmissions.map((submission) => (
-                                <tr key={submission._id}>
-                                    <td>{submission.username}</td>
-                                    <td>{submission.name}</td>
-                                    <td>{new Date(submission.createdAt).toLocaleString()}</td>
-                                    <td>{new Date(submission.updatedAt).toLocaleString()}</td>
-                                    <td>{submission.status}</td>
-                                    <td>
-                                        <button onClick={() => handleView(submission._id, submission.userId)}
+                                {filteredSubmissions.map((submission) => (
+                                    <tr key={submission._id}>
+                                        <td>{submission.username}</td>
+                                        <td>{submission.name}</td>
+                                        <td>{new Date(submission.createdAt).toLocaleString()}</td>
+                                        <td>{new Date(submission.updatedAt).toLocaleString()}</td>
+                                        <td>
+                                            {submission.status === 'completed' && 'Problem executed successfully'}
+                                            {submission.status === 'failed' && 'Problem execution failed'}
+                                            {submission.status === 'ready' && 'Ready to execute problem'}
+                                            {submission.status === 'in_progress' && 'Problem execution in progress'}
+                                        </td>
+                                        <td>
+                                            <button onClick={() => handleView(submission._id, submission.userId)}
                                                 className={`${styles.button} ${styles.viewButton}`}>View
-                                        </button>
-                                        {submission.status === 'completed' && (
-                                            <button onClick={() => handleViewResults(submission._id, submission.userId)}
-                                                    className={`${styles.button} ${styles.resultsButton}`}>View
-                                                Results</button>
-                                        )}
-                                        <button onClick={() => handleDelete(submission._id)}
+                                            </button>
+                                            {submission.status === 'completed' && (
+                                                <button onClick={() => handleViewResults(submission._id, submission.userId)}
+                                                    className={`${styles.button} ${styles.resultsButton}`}>View Results
+                                                </button>
+                                            )}
+                                            <button onClick={() => handleDelete(submission._id)}
                                                 className={`${styles.button} ${styles.deleteButton}`}>Delete
-                                        </button>
-                                    </td>
-                                </tr>
-                            ))}
+                                            </button>
+                                        </td>
+                                    </tr>
+                                ))}
                             </tbody>
                         </table>
                     </div>
                 )}
             </div>
-            <Footer/>
+            <Footer />
         </div>
     );
 };
