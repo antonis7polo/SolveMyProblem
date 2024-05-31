@@ -84,12 +84,12 @@ const Logs = () => {
                     </select>
                 </label>
                 <label className={styles.filterLabel}>
-                    Filter by Username:
+                    Search by Username:
                     <input type="text" name="username" onChange={handleFilterChange} value={filters.username} className={styles.filterInput} />
                 </label>
                 {filters.eventType === 'results' && (
                     <label className={styles.filterLabel}>
-                        Filter by Submission ID:
+                        Search by Submission ID:
                         <input type="text" name="submissionId" onChange={handleFilterChange} value={filters.submissionId} className={styles.filterInput} />
                     </label>
                 )}

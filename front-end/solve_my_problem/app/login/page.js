@@ -5,6 +5,7 @@ import axios from 'axios';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import Footer from '../components/Footer';
+import Header from '../components/Header';
 import { encrypt } from "../utils/encrypt";
 import styles from '../styles/Login.module.css';
 
@@ -60,29 +61,13 @@ const Login = () => {
     }
   };
 
-  const pageContainerStyle = {
-    display: 'flex',
-    flexDirection: 'column',
-    minHeight: '100vh',
-  };
-
-  const contentWrapperStyle = {
-    flex: 1,
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    justifyContent: 'center',
-  };
-
   return (
-    <div style={pageContainerStyle}>
-      <div style={contentWrapperStyle}>
-        <div className={styles.imageContainer}>
-          <img src="/login.png" alt="Login illustration" className={styles.image} />
-        </div>
+    <div className={styles.pageContainer}>
+      <Header isNoUser={true}/>
+      <div className={styles.contentWrapper}>
         <div className={styles.container}>
           <div className={styles.formContainer}>
-            <h1 className={styles.heading}>Sign in</h1>
+            <h1 className={styles.heading}>Sign In</h1>
             <form onSubmit={handleSubmit} className={styles.form}>
               <input
                 type="email"
@@ -102,7 +87,7 @@ const Login = () => {
                 required
                 className={styles.input}
               />
-              <button type="submit" className={styles.button}>Log in</button>
+              <button type="submit" className={styles.button}>Sign in</button>
             </form>
             {errors.length > 0 && (
               <ul className={styles.errorList}>
@@ -112,6 +97,9 @@ const Login = () => {
               </ul>
             )}
             <p>Don't have an account? <Link href="/signup" className={styles.link}>Create an account</Link></p>
+          </div>
+          <div className={styles.imageContainer}>
+            <img src="/login.png" alt="Login illustration" className={styles.image} />
           </div>
         </div>
       </div>

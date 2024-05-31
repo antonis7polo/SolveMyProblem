@@ -4,13 +4,10 @@ import { useState } from 'react';
 import axios from 'axios';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import styles from '../styles/Signup.module.css';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faUser, faEnvelope, faLock } from '@fortawesome/free-solid-svg-icons';
-import { encrypt } from "../utils/encrypt";
 import Footer from '../components/Footer';
-require('dotenv').config();
-
+import Header from '../components/Header';
+import { encrypt } from "../utils/encrypt";
+import styles from '../styles/Signup.module.css';
 
 const Signup = () => {
   const [formData, setFormData] = useState({
@@ -70,76 +67,67 @@ const Signup = () => {
   };
 
   return (
-      <div className={styles.container}>
-        <div className={styles.formContainer}>
-          <h1 className={styles.heading}>Sign up</h1>
-          <form onSubmit={handleSubmit} className={styles.form}>
-            <div className={styles.inputGroup}>
-              <FontAwesomeIcon icon={faUser} className={styles.icon} />
+    <div className={styles.pageContainer}>
+      <Header isNoUser={true}/>
+      <div className={styles.contentWrapper}>
+        <div className={styles.container}>
+          <div className={styles.formContainer}>
+            <h1 className={styles.heading}>Sign Up</h1>
+            <form onSubmit={handleSubmit} className={styles.form}>
               <input
-                  type="text"
-                  name="username"
-                  placeholder="Your username"
-                  value={formData.username}
-                  onChange={handleChange}
-                  required
-                  className={styles.input}
+                type="text"
+                name="username"
+                placeholder="Your username"
+                value={formData.username}
+                onChange={handleChange}
+                required
+                className={styles.input}
               />
-            </div>
-            <div className={styles.inputGroup}>
-              <FontAwesomeIcon icon={faEnvelope} className={styles.icon} />
               <input
-                  type="email"
-                  name="email"
-                  placeholder="Your Email"
-                  value={formData.email}
-                  onChange={handleChange}
-                  required
-                  className={styles.input}
+                type="email"
+                name="email"
+                placeholder="Your Email"
+                value={formData.email}
+                onChange={handleChange}
+                required
+                className={styles.input}
               />
-            </div>
-            <div className={styles.inputGroup}>
-              <FontAwesomeIcon icon={faLock} className={styles.icon} />
               <input
-                  type="password"
-                  name="password"
-                  placeholder="Password"
-                  value={formData.password}
-                  onChange={handleChange}
-                  required
-                  className={styles.input}
+                type="password"
+                name="password"
+                placeholder="Password"
+                value={formData.password}
+                onChange={handleChange}
+                required
+                className={styles.input}
               />
-            </div>
-            <div className={styles.inputGroup}>
-              <FontAwesomeIcon icon={faLock} className={styles.icon} />
               <input
-                  type="password"
-                  name="repassword"
-                  placeholder="Repeat your password"
-                  value={formData.repassword}
-                  onChange={handleChange}
-                  required
-                  className={styles.input}
+                type="password"
+                name="repassword"
+                placeholder="Repeat your password"
+                value={formData.repassword}
+                onChange={handleChange}
+                required
+                className={styles.input}
               />
-            </div>
-            <button type="submit" className={styles.button}>Register</button>
-          </form>
-          {errors.length > 0 && (
+              <button type="submit" className={styles.button}>Register</button>
+            </form>
+            {errors.length > 0 && (
               <ul className={styles.errorList}>
                 {errors.map((error, index) => (
-                    <li key={index} className={styles.error}>{error.msg}</li>
+                  <li key={index} className={styles.error}>{error.msg}</li>
                 ))}
               </ul>
-          )}
+            )}
+            <p>Already have an account? <Link href="/login" className={styles.link}>Sign in</Link></p>
+          </div>
+          <div className={styles.imageContainer}>
+            <img src="/signup.png" alt="Signup illustration" className={styles.image} />
+          </div>
         </div>
-        <div className={styles.imageContainer}>
-          <img src="/signup.png" alt="Signup illustration" className={styles.image} />
-          <p className={styles.memberLink}>
-            <Link href="/login" className={styles.link}>I already have an account</Link>
-          </p>
-        </div>
-        <Footer/>
       </div>
+      <Footer className={styles.footer}/>
+    </div>
   );
 };
 

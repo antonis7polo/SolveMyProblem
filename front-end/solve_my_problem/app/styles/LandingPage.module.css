@@ -1,133 +1,103 @@
+.pageContainer {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background-color: #E8F5E9; /* Light green background */
+  font-family: Arial, sans-serif;
+}
+
+.contentWrapper {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
 .container {
-    width: 100%;
-    height: 100vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    background: linear-gradient(135deg, #d0e1f9 50%, #ffffff 50%);
-    background-size: cover;
-  }
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-color: #FFFFFF; /* White background */
+  padding: 2rem;
+  border-radius: 8px;
+  max-width: 1000px;
+  margin: 4rem auto; /* Adds distance from the header and footer */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  gap: 2rem; /* Adds separation between the text and the image */
+  font-family: Arial, sans-serif;
+}
 
-  .navbar {
-    width: 100%;
-    padding: 1rem 2rem;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background-color: transparent;
-  }
+.heading {
+  color: #2E8B57; /* Seafoam Green */
+  font-size: 2.5rem;
+  font-weight: bold;
+  text-align: center;
+  margin-bottom: 2rem; /* Adds space below the heading */
+}
 
-  .logo {
-    font-size: 2rem;
-    font-weight: bold;
-    color: #333;
-    font-family: 'Poppins', sans-serif;
-  }
+.content {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: 2rem; /* Adds separation between the text and the image */
+}
 
-  .authLinks {
-    display: flex;
-    align-items: center;
-  }
+.textContainer {
+  flex: 1;
+}
 
-  .loginButton, .signupButton {
-    margin-left: 1rem;
-    padding: 0.5rem 1rem;
-    border-radius: 8px;
-    text-decoration: none;
-    font-weight: bold;
-    transition: all 0.3s ease;
-  }
+.description {
+  margin-bottom: 1rem;
+  font-size: 1.2rem;
+  line-height: 1.6;
+  color: #333333; /* Dark grey */
+}
 
-  .loginButton {
-    background-color: transparent;
-    color: #007bff;
-    border: 2px solid #007bff;
-  }
+.imageContainer {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
 
-  .signupButton {
-    background-color: #007bff;
-    color: white;
-  }
+.image {
+  width: auto; /* Maintain aspect ratio */
+  height: 250px; /* Adjust height to match the text */
+  border-radius: 8px;
+}
 
-  .loginButton:hover {
-    background-color: #007bff;
-    color: white;
-  }
+.ctaButtons {
+  display: flex;
+  gap: 5rem;
+  justify-content: center;
+  margin-top: 2rem; /* Adds space above the buttons */
+}
 
-  .signupButton:hover {
-    background-color: #0056b3;
-  }
+.button {
+  padding: 1rem 3rem;
+  background-color: #2E8B57; /* Seafoam Green */
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: background-color 0.3s;
+  text-decoration: none;
+  text-align: center;
+  min-width: 150px; /* Set a minimum width to match the widest button */
+}
 
-  .mainContent {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 2rem;
-    max-width: 1200px;
-    width: 100%;
-    margin-top: 5rem;
-  }
+.button:hover {
+  background-color: #276f47;
+}
 
-  .textContent {
-    max-width: 600px;
-  }
-
-  .textContent h1 {
-    font-size: 3rem;
-    margin-bottom: 1rem;
-    color: #333;
-  }
-
-  .textContent p {
-    font-size: 1.2rem;
-    margin-bottom: 2rem;
-    color: #666;
-  }
-
-  .buttons {
-    display: flex;
-    align-items: center;
-  }
-
-  .primaryButton {
-    background-color: #ff6f61;
-    color: white;
-    padding: 1rem 2rem;
-    border: none;
-    border-radius: 8px;
-    margin-right: 1rem;
-    cursor: pointer;
-    transition: background-color 0.3s;
-  }
-
-  .primaryButton:hover {
-    background-color: #e85c50;
-  }
-
-  .secondaryButton {
-    background-color: transparent;
-    color: #007bff;
-    padding: 1rem 2rem;
-    border: 2px solid #007bff;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: background-color 0.3s, color 0.3s;
-  }
-
-  .secondaryButton:hover {
-    background-color: #007bff;
-    color: white;
-  }
-
-  .imageContent {
-    flex: 1;
-    display: flex;
-    justify-content: flex-end;
-    align-items: center;
-    margin-left: 2rem;
-  }
-
-  .imageContent img {
-    max-width: 100%;
-    height: auto;
-  }
+.footer {
+  background-color: #2E8B57; /* Seafoam Green */
+  color: white;
+  padding: 1rem;
+  text-align: center;
+  width: 100%;
+}
