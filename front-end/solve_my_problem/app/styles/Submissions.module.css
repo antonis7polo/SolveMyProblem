@@ -103,9 +103,7 @@
 }
 
 .createButton {
-    display: block;
-    width: 100%;
-    background-color: #ffc107;
+    background-color: #28a745;
     color: white;
     padding: 10px 20px;
     text-align: center;
@@ -114,6 +112,9 @@
     cursor: pointer;
     transition: background-color 0.3s ease, box-shadow 0.3s ease;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    font-size: 14px; 
+    width: auto; 
+    display: inline-bl
 }
 
 .createButton:hover {

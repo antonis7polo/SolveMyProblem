@@ -5,8 +5,8 @@ import axios from 'axios';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import Footer from '../components/Footer';
+import { encrypt } from "../utils/encrypt";
 import styles from '../styles/Login.module.css';
-import {encrypt} from "../utils/encrypt";
 
 const Login = () => {
   const [formData, setFormData] = useState({
@@ -60,15 +60,31 @@ const Login = () => {
     }
   };
 
+  const pageContainerStyle = {
+    display: 'flex',
+    flexDirection: 'column',
+    minHeight: '100vh',
+  };
+
+  const contentWrapperStyle = {
+    flex: 1,
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'center',
+  };
+
   return (
-      <div className={styles.container}>
+    <div style={pageContainerStyle}>
+      <div style={contentWrapperStyle}>
         <div className={styles.imageContainer}>
           <img src="/login.png" alt="Login illustration" className={styles.image} />
         </div>
-        <div className={styles.formContainer}>
-          <h1 className={styles.heading}>Sign in</h1>
-          <form onSubmit={handleSubmit} className={styles.form}>
-            <input
+        <div className={styles.container}>
+          <div className={styles.formContainer}>
+            <h1 className={styles.heading}>Sign in</h1>
+            <form onSubmit={handleSubmit} className={styles.form}>
+              <input
                 type="email"
                 name="email"
                 placeholder="Your email"
@@ -76,8 +92,8 @@ const Login = () => {
                 onChange={handleChange}
                 required
                 className={styles.input}
-            />
-            <input
+              />
+              <input
                 type="password"
                 name="password"
                 placeholder="Password"
@@ -85,20 +101,22 @@ const Login = () => {
                 onChange={handleChange}
                 required
                 className={styles.input}
-            />
-            <button type="submit" className={styles.button}>Log in</button>
-          </form>
-          {errors.length > 0 && (
+              />
+              <button type="submit" className={styles.button}>Log in</button>
+            </form>
+            {errors.length > 0 && (
               <ul className={styles.errorList}>
                 {errors.map((error, index) => (
-                    <li key={index} className={styles.error}>{error.msg}</li>
+                  <li key={index} className={styles.error}>{error.msg}</li>
                 ))}
               </ul>
-          )}
-          <p>Don't have an account? <Link href="/signup" className={styles.link}>Create an account</Link></p>
+            )}
+            <p>Don't have an account? <Link href="/signup" className={styles.link}>Create an account</Link></p>
+          </div>
         </div>
-        <Footer/>
       </div>
+      <Footer className={styles.footer}/>
+    </div>
   );
 };
 
