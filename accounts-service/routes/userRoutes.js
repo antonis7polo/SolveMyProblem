@@ -8,7 +8,9 @@ const { login } = require('../controllers/loginController')
 const { checkHealth } = require('../controllers/healthCheckController');
 
 router.get('/health', originAuthMiddleware, checkHealth);
-router.post('/signup',originAuthMiddleware, signUpValidator, createUser);
+// router.post('/signup',originAuthMiddleware, signUpValidator, createUser);
+router.post('/signup', signUpValidator, createUser);
+
 router.post('/login',originAuthMiddleware, login);
 router.get('/user/:id',originAuthMiddleware, ensureCorrectUser, getUserData);
 router.post('/create-admin', createAdminUser);

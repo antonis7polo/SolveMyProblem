@@ -21,7 +21,6 @@ const CustomDialog = styled(Dialog)(({ theme }) => ({
     boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
     padding: '2rem',
     width: '500px', /* Adjust the width as needed */
-    borderRadius: '8px',
   }
 }));
 
@@ -194,6 +193,7 @@ const UserSubmissions = ({ params }) => {
                                                             {submission.status === 'completed' && 'Problem executed successfully'}
                                                             {submission.status === 'failed' && 'Problem execution failed'}
                                                             {submission.status === 'ready' && 'Ready to execute problem'}
+                                                            {submission.status === 'not_ready' && 'Problem not ready to execute'}
                                                             {submission.status === 'in_progress' && 'Problem execution in progress'}
                                                         </td>
                                                         <td>{submission.submissionTimestamp ? new Date(submission.submissionTimestamp).toLocaleString() : 'N/A'}</td>
