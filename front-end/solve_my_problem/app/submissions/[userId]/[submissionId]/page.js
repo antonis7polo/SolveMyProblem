@@ -157,6 +157,30 @@ const ViewEditSubmission = ({ params }) => {
         };
     };
 
+    const handleNumVehiclesChange = (e) => {
+        const value = e.target.value;
+        // Only allow digits
+        if (/^\d*$/.test(value)) {
+            setNumVehicles(value);
+        }
+    };
+
+    const handleDepotChange = (e) => {
+        const value = e.target.value;
+        // Only allow digits
+        if (/^\d*$/.test(value)) {
+            setDepot(value);
+        }
+    };
+
+    const handleMaxDistanceChange = (e) => {
+        const value = e.target.value;
+        // Only allow digits
+        if (/^\d*$/.test(value)) {
+            setMaxDistance(value);
+        }
+    };
+
     const handleUpdate = async () => {
         if (error) {
             return;
@@ -243,7 +267,13 @@ const ViewEditSubmission = ({ params }) => {
                             />
                         </div>
                         <div>
-                            <p><strong>Status: </strong>{submission.status}</p>
+                        <p><strong>Status: </strong>
+                            {submission.status === 'completed' && 'Problem executed successfully'}
+                            {submission.status === 'failed' && 'Problem execution failed'}
+                            {submission.status === 'ready' && 'Problem ready to execute'}
+                            {submission.status === 'not_ready' && 'Problem not ready to execute'}
+                            {submission.status === 'in_progress' && 'Problem execution in progress'}
+                        </p>
                         </div>
                         <p><strong>Creator:</strong> {submission.username}</p>
                         <p><strong>Created At:</strong> {new Date(submission.createdAt).toLocaleString()}</p>
@@ -303,25 +333,25 @@ const ViewEditSubmission = ({ params }) => {
                         </div>
                         <p><strong>Number of Vehicles:</strong></p>
                         <input
-                            type="number"
+                            type="text"
                             value={numVehicles}
-                            onChange={(e) => setNumVehicles(e.target.value)}
+                            onChange={handleNumVehiclesChange}
                             disabled={!isUpdateEnabled}
                             className={styles.input}
                         />
                         <p><strong>Depot:</strong></p>
                         <input
-                            type="number"
+                            type="text"
                             value={depot}
-                            onChange={(e) => setDepot(e.target.value)}
+                            onChange={handleDepotChange}
                             disabled={!isUpdateEnabled}
                             className={styles.input}
                         />
                         <p><strong>Max Distance:</strong></p>
                         <input
-                            type="number"
+                            type="text"
                             value={maxDistance}
-                            onChange={(e) => setMaxDistance(e.target.value)}
+                            onChange={handleMaxDistanceChange}
                             disabled={!isUpdateEnabled}
                             className={styles.input}
                         />

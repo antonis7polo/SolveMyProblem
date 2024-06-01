@@ -50,6 +50,30 @@ const CreateProblem = ({ params }) => {
         }
     };
 
+    const handleNumVehiclesChange = (e) => {
+        const value = e.target.value;
+        // Only allow digits
+        if (/^\d*$/.test(value)) {
+            setNumVehicles(value);
+        }
+    };
+
+    const handleDepotChange = (e) => {
+        const value = e.target.value;
+        // Only allow digits
+        if (/^\d*$/.test(value)) {
+            setDepot(value);
+        }
+    };
+
+    const handleMaxDistanceChange = (e) => {
+        const value = e.target.value;
+        // Only allow digits
+        if (/^\d*$/.test(value)) {
+            setMaxDistance(value);
+        }
+    };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
 
@@ -108,9 +132,9 @@ const CreateProblem = ({ params }) => {
                         <div className={styles.formGroup}>
                             <label>Number of Vehicles</label>
                             <input
-                                type="number"
+                                type="text"
                                 value={numVehicles}
-                                onChange={(e) => setNumVehicles(e.target.value)}
+                                onChange={handleNumVehiclesChange}
                                 placeholder="Enter number of vehicles"
                                 className={styles.input}
                             />
@@ -118,9 +142,9 @@ const CreateProblem = ({ params }) => {
                         <div className={styles.formGroup}>
                             <label>Depot</label>
                             <input
-                                type="number"
+                                type="text"
                                 value={depot}
-                                onChange={(e) => setDepot(e.target.value)}
+                                onChange={handleDepotChange}
                                 placeholder="Enter depot"
                                 className={styles.input}
                             />
@@ -128,9 +152,9 @@ const CreateProblem = ({ params }) => {
                         <div className={styles.formGroup}>
                             <label>Max Distance</label>
                             <input
-                                type="number"
+                                type="text"
                                 value={maxDistance}
-                                onChange={(e) => setMaxDistance(e.target.value)}
+                                onChange={handleMaxDistanceChange}
                                 placeholder="Enter max distance"
                                 className={styles.input}
                             />

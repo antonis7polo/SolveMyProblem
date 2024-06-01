@@ -118,7 +118,7 @@ const Submissions = () => {
                                         <td>
                                             {submission.status === 'completed' && 'Problem executed successfully'}
                                             {submission.status === 'failed' && 'Problem execution failed'}
-                                            {submission.status === 'ready' && 'Ready to execute problem'}
+                                            {submission.status === 'ready' && 'Problem ready to execute'}
                                             {submission.status === 'not_ready' && 'Problem not ready to execute'}
                                             {submission.status === 'in_progress' && 'Problem execution in progress'}
                                         </td>
