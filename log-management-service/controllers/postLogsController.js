@@ -32,7 +32,7 @@ async function handleResultsStored(messageData) {
     try {
         const {
             userId, username, submissionId, name, label, resourceUsage,    
-            cpuTime, taskCompletionTime, queueTime, executionTimestamp
+            cpuTime, taskCompletionTime, queueTime, executionTimestamp, resultsId
         } = messageData;
 
         // Find the user creation log to get the username
@@ -54,7 +54,8 @@ async function handleResultsStored(messageData) {
             cpuTime,
             taskCompletionTime,
             queueTime,
-            executionTimestamp
+            executionTimestamp,
+            resultsId
         });
 
         await logEntry.save();
