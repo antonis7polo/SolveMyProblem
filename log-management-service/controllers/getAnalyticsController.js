@@ -10,17 +10,17 @@ async function getAnalytics(req, res) {
         let totalCPUTime = 0, minCPUTime = Infinity, maxCPUTime = 0, cpuCount = 0;
         let totalQueueTime = 0, minQueueTime = Infinity, maxQueueTime = 0, queueCount = 0;
         let successCount = 0, failureCount = 0;
-        let totalResourceUsage = 0, minResourceUsage = Infinity, maxResourceUsage = 0, resourceCount = 0;
+        let totalCreditsUsed = 0, minCreditsUsed = Infinity, maxCreditsUsed = 0, creditsCount = 0;
         let resultsCount = 0;
 
         let cpuTimePerUser = {};
         let queueTimePerUser = {};
-        let resourceUsagePerUser = {};
+        let creditsUsedPerUser = {};
 
-        let totalResourceUsagePerDay = {};
+        let totalCreditsUsedPerDay = {};
         let totalCPUTimePerDay = {};
         let totalQueueTimePerDay = {};
-        let totalResourceUsagePerHour = Array(24).fill(0);
+        let totalCreditsUsedPerHour = Array(24).fill(0);
         let totalCPUTimePerHour = Array(24).fill(0);
         let totalQueueTimePerHour = Array(24).fill(0);
         let newUsersPerDay = {};
@@ -94,26 +94,26 @@ async function getAnalytics(req, res) {
                     failureCount++;
                 }
 
-                // Resource Usage calculations
-                if (log.resourceUsage !== undefined) {
-                    const resourceUsage = log.resourceUsage;
-                    totalResourceUsage += resourceUsage;
-                    resourceCount++;
-                    if (resourceUsage < minResourceUsage) minResourceUsage = resourceUsage;
-                    if (resourceUsage > maxResourceUsage) maxResourceUsage = resourceUsage;
+                // credits Usage calculations
+                if (log.creditsUsed !== undefined) {
+                    const creditsUsed = log.creditsUsed;
+                    totalCreditsUsed += creditsUsed;
+                    creditsCount++;
+                    if (creditsUsed < minCreditsUsed) minCreditsUsed = creditsUsed;
+                    if (creditsUsed > maxCreditsUsed) maxCreditsUsed = creditsUsed;
 
-                    if (!resourceUsagePerUser[userId]) {
-                        resourceUsagePerUser[userId] = { totalResourceUsage: 0, count: 0 };
+                    if (!creditsUsedPerUser[userId]) {
+                        creditsUsedPerUser[userId] = { totalCreditsUsed: 0, count: 0 };
                     }
-                    resourceUsagePerUser[userId].totalResourceUsage += resourceUsage;
-                    resourceUsagePerUser[userId].count++;
+                    creditsUsedPerUser[userId].totalCreditsUsed += creditsUsed;
+                    creditsUsedPerUser[userId].count++;
 
-                    // Total resource usage per day
-                    totalResourceUsagePerDay[executionDate] = (totalResourceUsagePerDay[executionDate] || 0) + resourceUsage;
+                    // Total credits usage per day
+                    totalCreditsUsedPerDay[executionDate] = (totalCreditsUsedPerDay[executionDate] || 0) + creditsUsed;
 
-                    // Total resource usage per hour for the last 24 hours
+                    // Total credits usage per hour for the last 24 hours
                     if (executionTimestamp.isAfter(last24Hours)) {
-                        totalResourceUsagePerHour[executionHour] += resourceUsage;
+                        totalCreditsUsedPerHour[executionHour] += creditsUsed;
                     }
                 }
 
@@ -144,17 +144,17 @@ async function getAnalytics(req, res) {
             totalQueueTime: queueTimePerUser[userId].totalQueueTime
         }));
 
-        const averageResourceUsagePerUser = Object.keys(resourceUsagePerUser).map(userId => ({
+        const averageCreditsUsedPerUser = Object.keys(creditsUsedPerUser).map(userId => ({
             userId,
             username: userMap[userId] || 'Unknown',
-            averageResourceUsage: resourceUsagePerUser[userId].count ? (resourceUsagePerUser[userId].totalResourceUsage / resourceUsagePerUser[userId].count) : 0,
-            totalResourceUsage: resourceUsagePerUser[userId].totalResourceUsage
+            averageCreditsUsed: creditsUsedPerUser[userId].count ? (creditsUsedPerUser[userId].totalCreditsUsed / creditsUsedPerUser[userId].count) : 0,
+            totalCreditsUsed: creditsUsedPerUser[userId].totalCreditsUsed
         }));
 
         // Calculate overall averages
         const averageCPUTime = cpuCount ? (totalCPUTime / cpuCount) : 0;
         const averageQueueTime = queueCount ? (totalQueueTime / queueCount) : 0;
-        const averageResourceUsage = resourceCount ? (totalResourceUsage / resourceCount) : 0;
+        const averageCreditsUsed = creditsCount ? (totalCreditsUsed / creditsCount) : 0;
         const throughput = resultsCount / (24 * 60); // Assuming logs are within a 24-hour timeframe
 
         // Construct analytics response
@@ -168,21 +168,21 @@ async function getAnalytics(req, res) {
             maxQueueTime: queueCount ? maxQueueTime : 0,
             throughput,
             successRate: resultsCount ? (successCount / resultsCount) : 0,
-            averageResourceUsage,
-            minResourceUsage: resourceCount ? minResourceUsage : 0,
-            maxResourceUsage: resourceCount ? maxResourceUsage : 0,
+            averageCreditsUsed,
+            minCreditsUsed: creditsCount ? minCreditsUsed : 0,
+            maxCreditsUsed: creditsCount ? maxCreditsUsed : 0,
             successCount,
             failureCount,
             averageCPUTimePerUser,
             averageQueueTimePerUser,
-            averageResourceUsagePerUser,
+            averageCreditsUsedPerUser,
             totalCPUTimePerUser: averageCPUTimePerUser.map(user => ({ userId: user.userId, username: user.username, totalCPUTime: user.totalCPUTime })),
             totalQueueTimePerUser: averageQueueTimePerUser.map(user => ({ userId: user.userId, username: user.username, totalQueueTime: user.totalQueueTime })),
-            totalResourceUsagePerUser: averageResourceUsagePerUser.map(user => ({ userId: user.userId, username: user.username, totalResourceUsage: user.totalResourceUsage })),
-            totalResourceUsagePerDay,
+            totalCreditsUsedPerUser: averageCreditsUsedPerUser.map(user => ({ userId: user.userId, username: user.username, totalCreditsUsed: user.totalCreditsUsed })),
+            totalCreditsUsedPerDay,
             totalCPUTimePerDay,
             totalQueueTimePerDay,
-            totalResourceUsagePerHour,
+            totalCreditsUsedPerHour,
             totalCPUTimePerHour,
             totalQueueTimePerHour,
             newUsersPerDay

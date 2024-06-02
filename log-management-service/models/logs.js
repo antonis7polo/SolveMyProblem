@@ -41,7 +41,7 @@ const logsSchema = new mongoose.Schema({
             return this.eventType === 'results' && this.label === 'success';
         }
     },
-    resourceUsage: {
+    creditsUsed: {
         type: Number,
         required: function() {
             return this.eventType === 'results';

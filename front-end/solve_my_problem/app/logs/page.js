@@ -113,7 +113,7 @@ const Logs = () => {
                                 <th>Submission ID</th>
                                 <th>Submission Name</th>
                                 <th>Label</th>
-                                <th>Resource Usage</th>
+                                <th>Credits Used</th>
                                 <th>CPU Time (ms)</th>
                                 <th>Task Completion Time (ms)</th>
                                 <th>Queue Time (ms)</th>
@@ -130,7 +130,7 @@ const Logs = () => {
                                     <td>{log.submissionId || ''}</td>
                                     <td>{log.name || ''}</td>
                                     <td>{log.label || ''}</td>
-                                    <td>{log.resourceUsage || ''}</td>
+                                    <td>{log.creditsUsed || ''}</td>
                                     <td>{log.cpuTime || 0}</td>
                                     <td>{log.taskCompletionTime || 0}</td>
                                     <td>{log.queueTime || 0}</td>

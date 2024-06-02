@@ -36,7 +36,7 @@ async function handleMessage(msg, channel) {
                 resultsId: newResult._id,
                 taskCompletionTime: data.taskCompletionTime,
                 cpuTime: data.cpuTime,
-                resourceUsage: data.resourceUsage,
+                creditsUsed: data.creditsUsed,
                 queueTime: data.queueTime,
                 executionTimestamp: data.executionTimestamp
             }, channel);
@@ -54,7 +54,7 @@ async function handleMessage(msg, channel) {
             resultsId: null,
             taskCompletionTime: data.taskCompletionTime,
             cpuTime: data.cpuTime,
-            resourceUsage: data.resourceUsage,
+            creditsUsed: data.creditsUsed,
             queueTime: data.queueTime,
             executionTimestamp: data.executionTimestamp,
             label: 'fail'
@@ -83,7 +83,7 @@ function publishToLog(data, channel) {
         resultsId: data.resultsId,
         taskCompletionTime: data.taskCompletionTime,
         cpuTime: data.cpuTime,
-        resourceUsage: data.resourceUsage,
+        creditsUsed: data.creditsUsed,
         queueTime: data.queueTime,
         executionTimestamp: data.executionTimestamp
     };

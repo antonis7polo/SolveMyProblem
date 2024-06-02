@@ -21,8 +21,8 @@ const Analytics = () => {
     const [isDropdownVisible, setIsDropdownVisible] = useState(false);
     const [searchTerm, setSearchTerm] = useState('');
     const [selectedDiagram, setSelectedDiagram] = useState('averageQueueTime');
-    const [selectedLastMonthDiagram, setSelectedLastMonthDiagram] = useState('totalResourceUsagePerDay');
-    const [selectedLast24HoursDiagram, setSelectedLast24HoursDiagram] = useState('totalResourceUsagePerHour');
+    const [selectedLastMonthDiagram, setSelectedLastMonthDiagram] = useState('totalCreditsUsedPerDay');
+    const [selectedLast24HoursDiagram, setSelectedLast24HoursDiagram] = useState('totalCreditsUsedPerHour');
     const [selectedGeneralDiagram, setSelectedGeneralDiagram] = useState('table');
     const [isAdmin, setIsAdmin] = useState(false);
 
@@ -40,7 +40,7 @@ const Analytics = () => {
                 const data = response.data;
 
                 data.totalCPUTimePerHour = rotateHourlyData(data.totalCPUTimePerHour);
-                data.totalResourceUsagePerHour = rotateHourlyData(data.totalResourceUsagePerHour);
+                data.totalCreditsUsedPerHour = rotateHourlyData(data.totalCreditsUsedPerHour);
     
                 setAnalytics(response.data);
             } catch (error) {
@@ -128,9 +128,9 @@ const Analytics = () => {
         'maxQueueTime',
         'throughput',
         'successRate',
-        'averageResourceUsage',
-        'minResourceUsage',
-        'maxResourceUsage',
+        'averageCreditsUsed',
+        'minCreditsUsed',
+        'maxCreditsUsed',
     ];
 
     const analyticsLabels = {
@@ -143,9 +143,9 @@ const Analytics = () => {
         maxQueueTime: 'Maximum Queue Time',
         throughput: 'Throughput',
         successRate: 'Success Rate',
-        averageResourceUsage: 'Average Resource Usage',
-        minResourceUsage: 'Minimum Resource Usage',
-        maxResourceUsage: 'Maximum Resource Usage',
+        averageCreditsUsed: 'Average Credits Used',
+        minCreditsUsed: 'Minimum Credits Used',
+        maxCreditsUsed: 'Maximum Credits Used',
       };
 
     return (
@@ -279,10 +279,10 @@ const Analytics = () => {
                             <div className={styles.userAnalyticsContent}>
                                 <div className={styles.diagramMenu}>
                                     <button
-                                        className={`${styles.menuButton} ${selectedLast24HoursDiagram === 'totalResourceUsagePerHour' ? styles.active : ''}`}
-                                        onClick={() => setSelectedLast24HoursDiagram('totalResourceUsagePerHour')}
+                                        className={`${styles.menuButton} ${selectedLast24HoursDiagram === 'totalCreditsUsedPerHour' ? styles.active : ''}`}
+                                        onClick={() => setSelectedLast24HoursDiagram('totalCreditsUsedPerHour')}
                                     >
-                                        Total Resource Usage per Hour
+                                        Total Credits Used per Hour
                                     </button>
                                     <button
                                         className={`${styles.menuButton} ${selectedLast24HoursDiagram === 'totalCPUTimePerHour' ? styles.active : ''}`}
@@ -326,10 +326,10 @@ const Analytics = () => {
                             <div className={styles.userAnalyticsContent}>
                                 <div className={styles.diagramMenu}>
                                     <button
-                                        className={`${styles.menuButton} ${selectedLastMonthDiagram === 'totalResourceUsagePerDay' ? styles.active : ''}`}
-                                        onClick={() => setSelectedLastMonthDiagram('totalResourceUsagePerDay')}
+                                        className={`${styles.menuButton} ${selectedLastMonthDiagram === 'totalCreditsUsedPerDay' ? styles.active : ''}`}
+                                        onClick={() => setSelectedLastMonthDiagram('totalCreditsUsedPerDay')}
                                     >
-                                        Total Resource Usage per Day
+                                        Total Credits Used per Day
                                     </button>
                                     <button
                                         className={`${styles.menuButton} ${selectedLastMonthDiagram === 'totalCPUTimePerDay' ? styles.active : ''}`}
@@ -432,16 +432,16 @@ const Analytics = () => {
                                             Total CPU Time
                                         </button>
                                         <button
-                                            className={`${styles.menuButton} ${selectedDiagram === 'averageResourceUsage' ? styles.active : ''}`}
-                                            onClick={() => setSelectedDiagram('averageResourceUsage')}
+                                            className={`${styles.menuButton} ${selectedDiagram === 'averageCreditsUsed' ? styles.active : ''}`}
+                                            onClick={() => setSelectedDiagram('averageCreditsUsed')}
                                         >
-                                            Average Resource Usage
+                                            Average Credits Used
                                         </button>
                                         <button
-                                            className={`${styles.menuButton} ${selectedDiagram === 'totalResourceUsage' ? styles.active : ''}`}
-                                            onClick={() => setSelectedDiagram('totalResourceUsage')}
+                                            className={`${styles.menuButton} ${selectedDiagram === 'totalCreditsUsed' ? styles.active : ''}`}
+                                            onClick={() => setSelectedDiagram('totalCreditsUsed')}
                                         >
-                                            Total Resource Usage
+                                            Total Credits Used
                                         </button>
                                     </div>
                                     <div className={styles.chart}>

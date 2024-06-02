@@ -86,7 +86,7 @@ async function solveProblem(problem) {
             taskCompletionTime,
             cpuTime,
             executionTimestamp: executionTimestamp.toISOString(),
-            resourceUsage: problem.costOfSolution,
+            creditsUsed: problem.costOfSolution,
             queueTime 
         };
 
@@ -108,7 +108,7 @@ async function solveProblem(problem) {
             taskCompletionTime,
             cpuTime,
             executionTimestamp: executionTimestamp.toISOString(),
-            resourceUsage: problem.costOfSolution,
+            creditsUsed: problem.costOfSolution,
             queueTime
         };
 
@@ -136,7 +136,7 @@ async function publishResults(problem, solution, label = 'success', logInfo) {
         taskCompletionTime: logInfo.taskCompletionTime,
         cpuTime: logInfo.cpuTime,
         executionTimestamp: logInfo.executionTimestamp,
-        resourceUsage: logInfo.resourceUsage,
+        creditsUsed: logInfo.creditsUsed,
         queueTime: logInfo.queueTime
     });
     await channel.publish(RESULTS_EXCHANGE_NAME, RESULTS_ROUTING_KEY, Buffer.from(message));
