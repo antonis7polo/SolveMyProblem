@@ -22,7 +22,9 @@ const Header = ({ isAdmin, isNoUser }) => {
         { url: 'http://localhost:3004/credits/health', name: 'Add Credits Microservice' },
         { url: 'http://localhost:3005/health', name: 'Accounts Microservice' },
         { url: 'http://localhost:3006/health', name: 'Solver Microservice' },
-        { url: 'http://localhost:3007/health', name: 'Log Management Microservice' }
+        { url: 'http://localhost:3007/health', name: 'Log Management Microservice' },
+        { url: 'http://localhost:3008/health', name: 'Solver Wrapper Microservice' },
+
     ];
 
     useEffect(() => {

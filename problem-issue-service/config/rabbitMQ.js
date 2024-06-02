@@ -126,7 +126,7 @@ async function handleMessage(msg, queueName) {
 
 async function publishToSolverQueue(problem) {
     const msg = JSON.stringify(problem);
-    await channel.publish(SOLVER_EXCHANGE, SOLVER_ROUTING_KEY, Buffer.from(msg));
+    await channel.publish(SOLVER_EXCHANGE, SOLVER_ROUTING_KEY, Buffer.from(msg), { persistent: true });
     console.log('Problem published to solver queue: ', msg);
 }
 
