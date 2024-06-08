@@ -16,6 +16,7 @@ async function connectRabbitMQ() {
 
         // Declare a direct exchange
         await channel.assertExchange(exchangeName, 'direct', { durable: true });
+        console.log('RabbitMQ correctly connected');
 
 
         // Handle connection close

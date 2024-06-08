@@ -32,6 +32,7 @@ async function setupRabbitMQ() {
     channel.prefetch(1);
     await consumeMessages(channel);
     await consumeDeleteMessages(channel);
+    console.log('RabbitMQ correctly connected');
 
 }
 

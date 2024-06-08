@@ -21,6 +21,7 @@ async function connectRabbitMQ() {
         channel = await connection.createChannel();
         await setupQueues();
         await consumeWrapperQueue();
+        console.log('RabbitMQ correctly connected')
     } catch (error) {
         console.error('Failed to connect or configure RabbitMQ:', error);
         setTimeout(connectRabbitMQ, 5000);

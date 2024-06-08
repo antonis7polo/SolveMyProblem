@@ -13,6 +13,7 @@ async function connectRabbitMQ() {
         connection = await amqp.connect(RABBITMQ_URL);
         channel = await connection.createChannel();
         await setupExchangesAndQueues();
+        console.log('RabbitMQ correctly connected');
     } catch (error) {
         console.error('Failed to connect or configure RabbitMQ:', error);
         setTimeout(connectRabbitMQ, 5000);
