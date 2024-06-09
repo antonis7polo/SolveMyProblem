@@ -22,7 +22,6 @@ solveMyProblem is a web-based service targeting users who need to solve computat
 
 ## Table of Contents
 
-- [Installation](#installation)
 - [Usage](#usage)
   - [Running with Docker](#running-with-docker)
 - [Services](#services)
@@ -31,18 +30,6 @@ solveMyProblem is a web-based service targeting users who need to solve computat
 - [AI Assistance Log](#ai-assistance-log)
 - [License](#license)
 
-## Installation
-
-### Prerequisites
-Before you begin, ensure you have met the following requirements:
-- **Operating System**: A compatible operating system such as Windows, macOS, or Linux.
-- **Node.js**: [Node.js](https://nodejs.org/) (v20.9.0 or higher) installed.
-- **Database**: Access to a MongoDB database.
-- **RabbitMQ**: RabbitMQ installed and running.
-- **Docker**: [Docker](https://www.docker.com/get-started) installed for containerization.
-- **Browser**: A modern web browser like Google Chrome, Mozilla Firefox, or Safari.
-- **Git**: [Git](https://git-scm.com/) for version control.
-- **API Testing Tool**: (Optional) An API testing tool like Postman for testing the API endpoints.
 
 ## Usage
 
