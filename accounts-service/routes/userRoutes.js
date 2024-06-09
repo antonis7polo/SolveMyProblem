@@ -13,7 +13,7 @@ router.get('/health', originAuthMiddleware, checkHealth);
 router.post('/signup',originAuthMiddleware, signUpValidator, createUser);
 router.post('/login',originAuthMiddleware, login);
 router.get('/user/:id',originAuthMiddleware, ensureCorrectUser, getUserData);
-router.post('/create-admin', createAdminUser);
+router.post('/create-admin', originAuthMiddleware, createAdminUser);
 
 
 
