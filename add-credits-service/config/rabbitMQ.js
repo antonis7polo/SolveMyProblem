@@ -11,6 +11,8 @@ const setupRabbitMQ = async () => {
         const exchange = process.env.CREDITS_EXCHANGE_NAME;
         await channel.assertExchange(exchange, 'direct', { durable: true });
 
+        console.log('RabbitMQ correctly connected')
+
     } catch (error) {
         console.error("Failed to connect to RabbitMQ:", error);
         setTimeout(setupRabbitMQ, 5000); // Retry connection

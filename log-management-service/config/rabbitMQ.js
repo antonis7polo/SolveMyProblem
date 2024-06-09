@@ -15,6 +15,7 @@ async function setupRabbitMQ() {
         
         // Assert queues and consume messages
         await configureRabbitMQ();
+        console.log('RabbitMQ correctly connected')
     } catch (error) {
         console.error('Failed to set up RabbitMQ connection:', error);
         setTimeout(setupRabbitMQ, 10000); // Retry after 10 seconds

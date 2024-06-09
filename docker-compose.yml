@@ -1,4 +1,4 @@
-version: '3.9'
+version: '3'
 
 services:
   # Log Management Database
@@ -78,6 +78,11 @@ services:
       - RABBITMQ_DEFAULT_PASS=thrylos
     networks:
       - app-network
+    healthcheck:
+      test: ["CMD-SHELL", "rabbitmq-diagnostics ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
 
   # Accounts Service
   accounts_service:
@@ -87,8 +92,9 @@ services:
     ports:
       - "3005:3005"
     depends_on:
-      - users_db
-      - rabbitmq
+       - users_db  
+       - rabbitmq
+          
     environment:
       - MONGO_URI=mongodb://el20167:thrylos@users_db:27017/usersDB?authSource=admin
       - PORT=3005
@@ -117,6 +123,7 @@ services:
       - "3004:3004"
     depends_on:
       - rabbitmq
+
     environment:
       - RABBITMQ_URL=amqp://el20167:thrylos@rabbitmq
       - PORT=3004
@@ -188,8 +195,9 @@ services:
     ports:
       - "3002:3002"
     depends_on:
-      - problems_db
-      - rabbitmq
+       - problems_db    
+       - rabbitmq
+  
     environment:
       - MONGO_URI=mongodb://el20167:thrylos@problems_db:27017/problemsDB?authSource=admin
       - PORT=3002
@@ -202,9 +210,9 @@ services:
       - CREDITS_UPDATED_QUEUE_NAME=creditsUpdatedQueue
       - CREDITS_ADDED_ROUTING_KEY=creditsAdded
       - CREDITS_UPDATED_ROUTING_KEY=creditsUpdated
-      - SOLVER_EXCHANGE_NAME=solverExchange
-      - SOLVER_QUEUE_NAME=solverQueue
-      - SOLVER_ROUTING_KEY=solver
+      - SOLVER_EXCHANGE_NAME=wrapperExchange
+      - SOLVER_QUEUE_NAME=wrapperQueue
+      - SOLVER_ROUTING_KEY=wrapper
       - PROGRESS_EXCHANGE_NAME=progressExchange
       - PROGRESS_QUEUE_NAME=progressQueue
       - PROGRESS_ROUTING_KEY=progress
@@ -308,6 +316,30 @@ services:
       - app-network
     restart: always
   
+  solver_wrapper_service:
+    build:
+      context: ./solver-wrapper-service
+      dockerfile: Dockerfile
+    ports:
+      - "3008:3008"
+    depends_on:
+      - rabbitmq
+    environment:
+      - RABBITMQ_URL=amqp://el20167:thrylos@rabbitmq
+      - PORT=3008
+      - SOLVER_EXCHANGE_NAME=solverExchange
+      - SOLVER_QUEUE_NAME=solverQueue
+      - SOLVER_ROUTING_KEY=solver
+      - SOLVER_WRAPPER_EXCHANGE_NAME=wrapperExchange
+      - SOLVER_WRAPPER_QUEUE_NAME=wrapperQueue
+      - SOLVER_WRAPPER_ROUTING_KEY=wrapper
+      - SECRET_ENCRYPT=12345678901234567890123456789012
+      - SECRET_STRING_SERVICES=v3ry53cr3t53rv1c35
+    networks:
+      - app-network
+    restart: always
+
+
 
   # Frontend Service
   frontend_service:
