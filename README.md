@@ -14,7 +14,7 @@ This project is the result of collaborative efforts by a team of aspiring softwa
 
 - **Antonios Alexiadis el20167@mail.ntua.gr** - Contributed to the backend and frontend, worked on Dockerization, and also contributed to user interface design.
 - **Nikolaos Bothos Vouterakos el20158@mail.ntua.gr** - Contributed to the backend and frontend, focused on user interface design, and assisted with stress testing.
-- **Chrisostomos Kopitas el20136@mail.ntua.gr** - 
+- **Chrisostomos Kopitas el20136@mail.ntua.gr** - Contributed to the architecture and backend.
 - **Charidimos Papadakis el20022@mail.ntua.gr** - Contributed to the backend and frontend, focused on the architecture and stress testing, and had a significant involvement in backend development.
 
 ## Description
@@ -28,6 +28,7 @@ solveMyProblem is a web-based service targeting users who need to solve computat
 - [Stress Testing](#stress-testing)
 - [Diagrams](#diagrams)
 - [AI Assistance Log](#ai-assistance-log)
+- [Project Planning and Monitoring](#project-planning-and-monitoring)
 - [License](#license)
 
 
@@ -202,6 +203,9 @@ The AI log serves to:
 - **Inform Future Projects**: These logs act as a learning tool for future teams to understand the potential and limitations of AI in software development processes.
 
 By meticulously documenting our AI interactions, we aim to provide insights into the integration of AI in software engineering and its evolving role.
+
+## Project Planning and Monitoring
+For detailed project planning and monitoring, please refer to our [GitHub Project Board](https://github.com/users/ntua-el20022/projects/2).
 
 ## License
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
