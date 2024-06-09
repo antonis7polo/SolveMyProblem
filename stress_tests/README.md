@@ -29,7 +29,7 @@ Despite these errors, the queue processed more than 1.5k problems successfully, 
 
 The RabbitMQ queue performance was monitored throughout the tests. Below is a screenshot showing the queue handling over 1.5k problems without issues.
 
-![Queue Performance](https://github.com/ntua/saas2024-21/tree/main/stress_tests/Screenshot%202024-06-09%20at%2001.00.47.png)
+![Queue Performance](https://github.com/ntua/saas2024-21/blob/main/stress_tests/queue.png)
 
 ## Results and Reports
 
