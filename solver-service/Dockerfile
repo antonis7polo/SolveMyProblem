@@ -5,12 +5,17 @@ LABEL maintainer="alexiadisanton@gmail.com harrypapadakis02@gmail.com nikolasbv1
 WORKDIR /usr/src/app
 
 COPY package*.json ./
-
 RUN npm install --production
 
 COPY . .
 
-RUN apt-get update && apt-get install -y python3
+RUN apt-get update && apt-get install -y python3 python3-pip python3-venv
+
+RUN python3 -m venv /usr/src/app/venv
+RUN /usr/src/app/venv/bin/pip install ortools
+
+ENV VIRTUAL_ENV=/usr/src/app/venv
+ENV PATH="$VIRTUAL_ENV/bin:$PATH"
 
 EXPOSE 3006
 
