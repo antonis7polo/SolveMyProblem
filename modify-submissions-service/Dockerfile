@@ -14,6 +14,6 @@ RUN apt-get update && apt-get install -y curl
 
 EXPOSE 3001
 
-HEALTHCHECK --interval=60s --timeout=10s --retries=3 CMD curl -f http://localhost:3001/health || exit 1
+HEALTHCHECK --interval=60s --timeout=10s --retries=3 CMD curl -f http://localhost:3001/submission/health || exit 1
 
 CMD [ "node", "server.js" ]

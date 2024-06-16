@@ -7,7 +7,7 @@ const isAdmin = require('../middlewares/adminMiddleware');
 const originAuthMiddleware = require('../middlewares/originAuthMiddleware');
 const { checkHealth } = require('../controllers/healthCheckController');
 
-router.get('/health', originAuthMiddleware, checkHealth);
+router.get('/health', checkHealth);
 router.get('/analytics',originAuthMiddleware, isAdmin, getAnalytics);
 
 module.exports = router;

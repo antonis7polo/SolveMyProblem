@@ -1,11 +1,8 @@
-#!/usr/bin/env node
-
 const axios = require('axios');
 const { Command } = require('commander');
 const crypto = require('crypto');
 const dotenv = require('dotenv');
 const algorithm = 'aes-256-cbc';
-
 
 dotenv.config();
 
@@ -17,13 +14,12 @@ program
     .requiredOption('-u, --username <username>', 'Admin username')
     .requiredOption('-e, --email <email>', 'Admin email')
     .requiredOption('-p, --password <password>', 'Admin password')
-    .option('-U, --url <url>', 'Backend URL', 'http://localhost:3005/create-admin')
+    .option('-U, --url <url>', 'Backend URL', 'http://accounts_service:3005/create-admin')
     .parse(process.argv);
 
 const options = program.opts();
 
 const encrypt = (text) => {
-
     const iv = crypto.randomBytes(16);
     const cipher = crypto.createCipheriv(algorithm, Buffer.from(process.env.SECRET_ENCRYPT), iv);
     let encrypted = cipher.update(text);

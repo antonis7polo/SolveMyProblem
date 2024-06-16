@@ -9,7 +9,7 @@ const ensureCorrectUser = require('../middlewares/correctUserMiddleware');
 const { login } = require('../controllers/loginController')
 const { checkHealth } = require('../controllers/healthCheckController');
 
-router.get('/health', originAuthMiddleware, checkHealth);
+router.get('/health', checkHealth);
 router.post('/signup',originAuthMiddleware, signUpValidator, createUser);
 router.post('/login',originAuthMiddleware, login);
 router.get('/user/:id',originAuthMiddleware, ensureCorrectUser, getUserData);

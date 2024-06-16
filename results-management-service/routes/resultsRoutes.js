@@ -6,7 +6,7 @@ const originAuth = require('../middlewares/originAuthMiddleware');
 const ensureCorrectUser = require('../middlewares/correctUserMiddleware');
 const { checkHealth } = require('../controllers/healthCheckController');
 
-router.get('/health', originAuth, checkHealth);
+router.get('/health', checkHealth);
 router.get('/result/:id',originAuth, ensureCorrectUser,  resultsController.getResultById);
 
 module.exports = router;

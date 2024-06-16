@@ -12,5 +12,4 @@ COPY . .
 
 RUN apt-get update && apt-get install -y curl
 
-CMD  ["node", "cli.js" ]
-
+ENTRYPOINT ["node", "cli.js"]

@@ -9,7 +9,7 @@ const ensureCorrectUserOrAdminForSubmissionById = require('../middlewares/correc
 const originAuthMiddleware = require('../middlewares/originAuthMiddleware');
 const { checkHealth } = require('../controllers/healthCheckController');
 
-router.get('/health', originAuthMiddleware, checkHealth);
+router.get('/health', checkHealth);
 router.get('/submission/:userId',originAuthMiddleware, ensureCorrectUserOrAdminForSubmissionsByUserId,submissionsController.getSubmissionsByUserId);
 router.get('/submission', originAuthMiddleware, isAdmin, submissionsController.getAllSubmissions);
 router.get('/submission/data/:id', originAuthMiddleware, ensureCorrectUserOrAdminForSubmissionById, submissionsController.getSubmissionDataById);
