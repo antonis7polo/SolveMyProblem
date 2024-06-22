@@ -9,6 +9,8 @@ services:
       - MONGO_INITDB_ROOT_USERNAME=el20167
       - MONGO_INITDB_ROOT_PASSWORD=thrylos
       - MONGO_INITDB_DATABASE=logManagementDB
+    volumes:
+      - log_management_db_data:/data/db
     networks:
       - app-network
 
@@ -22,6 +24,8 @@ services:
       - MONGO_INITDB_ROOT_USERNAME=el20167
       - MONGO_INITDB_ROOT_PASSWORD=thrylos
       - MONGO_INITDB_DATABASE=problemsDB
+    volumes:
+      - problems_db_data:/data/db
     networks:
       - app-network
 
@@ -35,6 +39,8 @@ services:
       - MONGO_INITDB_ROOT_USERNAME=el20167
       - MONGO_INITDB_ROOT_PASSWORD=thrylos
       - MONGO_INITDB_DATABASE=resultsDB
+    volumes:
+      - results_db_data:/data/db
     networks:
       - app-network
 
@@ -48,6 +54,8 @@ services:
       - MONGO_INITDB_ROOT_USERNAME=el20167
       - MONGO_INITDB_ROOT_PASSWORD=thrylos
       - MONGO_INITDB_DATABASE=submissionsDB
+    volumes: 
+      - submissions_db_data:/data/db
     networks:
       - app-network
 
@@ -61,6 +69,8 @@ services:
       - MONGO_INITDB_ROOT_USERNAME=el20167
       - MONGO_INITDB_ROOT_PASSWORD=thrylos
       - MONGO_INITDB_DATABASE=usersDB
+    volumes:
+      - users_db_data:/data/db
     networks:
       - app-network
 
@@ -374,4 +384,12 @@ services:
 networks:
   app-network:
     driver: bridge
+
+volumes:
+  log_management_db_data:
+  problems_db_data:
+  results_db_data:
+  submissions_db_data:
+  users_db_data:
+  rabbitmq_data:
 

@@ -45,11 +45,16 @@ solveMyProblem is a web-based service targeting users who need to solve computat
    Make sure you have Docker installed on your system. You can download it from [Docker's official website](https://www.docker.com/get-started).
 
 3. **Run Docker Compose:**
-   Navigate to the directory containing the docker-compose.yml file and run Docker Compose:
+   Navigate to the directory containing (it's the root directory of the project) the docker-compose.yml file and run Docker Compose (the Docker Engine should already be running, i.e. start the Docker Desktop App):
+   ```bash
+   docker-compose up --build
+   ```
+   This command will start all the services defined in the docker-compose.yml file. It will pull the necessary Docker images, build the custom images, and start all the containers. After the containers have been build, to run the project you only need to run the following command:
+
    ```bash
    docker-compose up
    ```
-   This command will start all the services defined in the docker-compose.yml file. It will pull the necessary Docker images, build the custom images, and start all the containers.
+   If changes are made to any of the microservices you will have to rebuild the project using docker-compose up --build to apply the modifications.
 
 4. **Access the Services:**
 
@@ -69,6 +74,7 @@ solveMyProblem is a web-based service targeting users who need to solve computat
    ```bash
    docker-compose down
    ```
+   You may also need to stop the Docker Engine running in the background.
 
 ## Services
 
@@ -79,6 +85,10 @@ solveMyProblem is a web-based service targeting users who need to solve computat
 ### Add Credits Service
 - Handles adding credits to user accounts.
 - [Add Credits Service README](https://github.com/ntua/saas2024-21/tree/main/add-credits-service/README.md)
+
+### Admin CLI Service
+- Handles the creation of a user with Admin Privileges
+- [Admin CLI Service README](https://github.com/ntua/saas2024-21/tree/main/admin-cli/README.md)
 
 ### Log Management Service
 - Manages logs and analytics, communicating with the Results Management and Accounts services.
