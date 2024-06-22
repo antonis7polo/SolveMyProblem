@@ -131,9 +131,15 @@ const Logs = () => {
                                     <td>{log.name || ''}</td>
                                     <td>{log.label || ''}</td>
                                     <td>{log.creditsUsed || ''}</td>
-                                    <td>{log.cpuTime || 0}</td>
-                                    <td>{log.taskCompletionTime || 0}</td>
-                                    <td>{log.queueTime || 0}</td>
+                                    <td>
+                                        {log.cpuTime ? Number(log.cpuTime.toFixed(3)).toString() : '0'}
+                                    </td>
+                                    <td>
+                                        {log.taskCompletionTime ? Number(log.taskCompletionTime.toFixed(3)).toString() : '0'}
+                                    </td>
+                                    <td>
+                                        {log.queueTime ? Number(log.queueTime.toFixed(3)).toString() : '0'}
+                                    </td>
                                     <td>{new Date(log.executionTimestamp).toLocaleString()}</td>
                                 </tr>
                             ))}
