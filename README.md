@@ -23,7 +23,7 @@ solveMyProblem is a web-based service targeting users who need to solve computat
 ## Table of Contents
 
 - [Usage](#usage)
-  - [Running with Docker](#running-with-docker)
+- [Running with Docker](#running-with-docker)
 - [Services](#services)
 - [Stress Testing](#stress-testing)
 - [Diagrams](#diagrams)
