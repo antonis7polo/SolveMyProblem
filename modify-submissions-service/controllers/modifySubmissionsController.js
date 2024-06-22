@@ -18,9 +18,6 @@ exports.uploadFiles = async (req, res) => {
         const { pythonFile, jsonFile } = req.files;
         const { id, name, username, userId, numVehicles, depot, maxDistance } = req.body;
 
-        console.log(req.user.id);
-        console.log(userId);
-
         if (req.user.id !== userId) {
             return res.status(403).json({ message: 'Not authorized to upload files for another user.' });
         }
@@ -29,13 +26,13 @@ exports.uploadFiles = async (req, res) => {
 
         if (pythonFile && pythonFile.length > 0) {
             const solver = pythonFile[0];
-            inputData.solver = solver.buffer.toString('base64');
+            inputData.solver = solver.buffer;
             inputData.solverMetadata = { size: solver.size, type: solver.mimetype };
         }
 
         if (jsonFile && jsonFile.length > 0) {
             const parameters = jsonFile[0];
-            inputData.parameters = parameters.buffer.toString('base64');
+            inputData.parameters = parameters.buffer;
             inputData.parametersMetadata = { size: parameters.size, type: parameters.mimetype };
         }
 

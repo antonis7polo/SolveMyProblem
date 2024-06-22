@@ -13,7 +13,7 @@ exports.runProblem = async (req, res) => {
             return res.status(404).json({ message: "Not enough credits", error: "Account not found"});
         }
 
-        const decodedParameters = JSON.parse(Buffer.from(problem.inputData.parameters, 'base64').toString('utf-8'));
+        const decodedParameters = JSON.parse(problem.inputData.parameters.toString('utf-8'));
 
         let costOfSolution = calculateCost(decodedParameters);
 

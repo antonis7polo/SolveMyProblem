@@ -8,6 +8,7 @@ import { encrypt } from "../utils/encrypt";
 import Footer from '../components/Footer';
 import Header from '../components/Header';
 import styles from '../styles/AdminSubmissions.module.css';
+import Alert from '@mui/material/Alert';
 
 const Submissions = () => {
     const [submissions, setSubmissions] = useState([]);
@@ -64,6 +65,7 @@ const Submissions = () => {
             setFilteredSubmissions(filteredSubmissions.filter(submission => submission._id !== submissionId));
         } catch (error) {
             console.error('Error deleting submission:', error);
+            setError('Error deleting submission. Service is temporarily down.');
         }
     };
 
@@ -89,54 +91,55 @@ const Submissions = () => {
                         className={styles.searchInput}
                     />
                 </div>
+                {error && (
+                    <Alert severity="error" onClose={() => setError(null)} style={{ marginBottom: '20px' }}>{error}</Alert>
+                )}
                 {loading ? (
                     <p>Loading...</p>
-                ) : error ? (
-                    <p>{error}</p>
                 ) : filteredSubmissions.length === 0 ? (
                     <p>No submissions found</p>
                 ) : (
                     <div className={styles.tableContainer}>
                         <table className={styles.table}>
                             <thead>
-                                <tr>
-                                    <th>Creator</th>
-                                    <th>Submission Name</th>
-                                    <th>Created At</th>
-                                    <th>Updated At</th>
-                                    <th>Status</th>
-                                    <th>Actions</th>
-                                </tr>
+                            <tr>
+                                <th>Creator</th>
+                                <th>Submission Name</th>
+                                <th>Created At</th>
+                                <th>Updated At</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
                             </thead>
                             <tbody>
-                                {filteredSubmissions.map((submission) => (
-                                    <tr key={submission._id}>
-                                        <td>{submission.username}</td>
-                                        <td>{submission.name}</td>
-                                        <td>{new Date(submission.createdAt).toLocaleString()}</td>
-                                        <td>{new Date(submission.updatedAt).toLocaleString()}</td>
-                                        <td>
-                                            {submission.status === 'completed' && 'Problem executed successfully'}
-                                            {submission.status === 'failed' && 'Problem execution failed'}
-                                            {submission.status === 'ready' && 'Problem ready to execute'}
-                                            {submission.status === 'not_ready' && 'Problem not ready to execute'}
-                                            {submission.status === 'in_progress' && 'Problem execution in progress'}
-                                        </td>
-                                        <td>
-                                            <button onClick={() => handleView(submission._id, submission.userId)}
+                            {filteredSubmissions.map((submission) => (
+                                <tr key={submission._id}>
+                                    <td>{submission.username}</td>
+                                    <td>{submission.name}</td>
+                                    <td>{new Date(submission.createdAt).toLocaleString()}</td>
+                                    <td>{new Date(submission.updatedAt).toLocaleString()}</td>
+                                    <td>
+                                        {submission.status === 'completed' && 'Problem executed successfully'}
+                                        {submission.status === 'failed' && 'Problem execution failed'}
+                                        {submission.status === 'ready' && 'Problem ready to execute'}
+                                        {submission.status === 'not_ready' && 'Problem not ready to execute'}
+                                        {submission.status === 'in_progress' && 'Problem execution in progress'}
+                                    </td>
+                                    <td>
+                                        <button onClick={() => handleView(submission._id, submission.userId)}
                                                 className={`${styles.button} ${styles.viewButton}`}>View
-                                            </button>
-                                            {submission.status === 'completed' && (
-                                                <button onClick={() => handleViewResults(submission._id, submission.userId)}
+                                        </button>
+                                        {submission.status === 'completed' && (
+                                            <button onClick={() => handleViewResults(submission._id, submission.userId)}
                                                     className={`${styles.button} ${styles.resultsButton}`}>View Results
-                                                </button>
-                                            )}
-                                            <button onClick={() => handleDelete(submission._id)}
-                                                className={`${styles.button} ${styles.deleteButton}`}>Delete
                                             </button>
-                                        </td>
-                                    </tr>
-                                ))}
+                                        )}
+                                        <button onClick={() => handleDelete(submission._id)}
+                                                className={`${styles.button} ${styles.deleteButton}`}>Delete
+                                        </button>
+                                    </td>
+                                </tr>
+                            ))}
                             </tbody>
                         </table>
                     </div>

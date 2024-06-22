@@ -51,7 +51,7 @@ const ViewEditSubmission = ({ params }) => {
                 setParametersFile(null);
                 setSolverMetadata(submissionData.inputData?.solverMetadata || { size: null, type: null });
                 if (submissionData.inputData?.parameters) {
-                    const parameters = JSON.parse(atob(submissionData.inputData.parameters));
+                    const parameters = JSON.parse(new TextDecoder().decode(new Uint8Array(submissionData.inputData.parameters.data)));
                     setParametersMetadata({
                         size: submissionData.inputData.parametersMetadata.size,
                         type: submissionData.inputData.parametersMetadata.type,
@@ -214,9 +214,16 @@ const ViewEditSubmission = ({ params }) => {
             router.push(`/submissions/${userId}`);
         } catch (error) {
             console.error('Error updating submission:', error);
+            if (error.response) {
+                setError('Error updating submission. Please try again.');
+            } else if (error.request) {
+                setError('Error updating submission. Service is temporarily down.');
+            } else {
+                setError('An unknown error occurred.');
+            }
+            setShowErrorAlert(true);
         }
     };
-
     const handleGoBack = () => {
         if (isAdmin) {
             router.push(`/submissions`);
@@ -226,12 +233,15 @@ const ViewEditSubmission = ({ params }) => {
     };
 
     const downloadFile = (fileData, fileName, fileType) => {
+        const blob = new Blob([new Uint8Array(fileData.data)], { type: fileType });
+        const url = window.URL.createObjectURL(blob);
         const link = document.createElement('a');
-        link.href = `data:${fileType};base64,${fileData}`;
+        link.href = url;
         link.download = fileName;
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
+        window.URL.revokeObjectURL(url);
     };
 
     if (loading) {
@@ -267,13 +277,13 @@ const ViewEditSubmission = ({ params }) => {
                             />
                         </div>
                         <div>
-                        <p><strong>Status: </strong>
-                            {submission.status === 'completed' && 'Problem executed successfully'}
-                            {submission.status === 'failed' && 'Problem execution failed'}
-                            {submission.status === 'ready' && 'Problem ready to execute'}
-                            {submission.status === 'not_ready' && 'Problem not ready to execute'}
-                            {submission.status === 'in_progress' && 'Problem execution in progress'}
-                        </p>
+                            <p><strong>Status: </strong>
+                                {submission.status === 'completed' && 'Problem executed successfully'}
+                                {submission.status === 'failed' && 'Problem execution failed'}
+                                {submission.status === 'ready' && 'Problem ready to execute'}
+                                {submission.status === 'not_ready' && 'Problem not ready to execute'}
+                                {submission.status === 'in_progress' && 'Problem execution in progress'}
+                            </p>
                         </div>
                         <p><strong>Creator:</strong> {submission.username}</p>
                         <p><strong>Created At:</strong> {new Date(submission.createdAt).toLocaleString()}</p>

@@ -53,7 +53,6 @@ async function consumeSolverQueue() {
     }, { noAck: false });
 }
 
-
 const EXECUTION_TIMEOUT = 3600000; // 1 hour in milliseconds
 
 async function solveProblem(problem) {
@@ -62,11 +61,10 @@ async function solveProblem(problem) {
     const solverPath = path.join(tempDir, `solver_${problem.submissionId}.py`);
     const parametersPath = path.join(tempDir, `parameters_${problem.submissionId}.json`);
 
-    // Decode and write the Python and JSON files
-    fs.writeFileSync(solverPath, Buffer.from(solver, 'base64'));
-    fs.writeFileSync(parametersPath, Buffer.from(parameters, 'base64'));
+    // Decode and write the Python and JSON files as buffers
+    fs.writeFileSync(solverPath, Buffer.from(solver.data));
+    fs.writeFileSync(parametersPath, Buffer.from(parameters.data));
 
-    //const command = `python ${solverPath} ${parametersPath} ${numVehicles} ${depot} ${maxDistance}`;
     const command = `python3 ${solverPath} ${parametersPath} ${numVehicles} ${depot} ${maxDistance}`;
     const startTime = process.hrtime();
     const cpuStartTime = process.cpuUsage();
@@ -88,7 +86,7 @@ async function solveProblem(problem) {
             cpuTime,
             executionTimestamp: executionTimestamp.toISOString(),
             creditsUsed: problem.costOfSolution,
-            queueTime 
+            queueTime
         };
 
         if (stdout.includes("No solution found")) {
@@ -120,7 +118,6 @@ async function solveProblem(problem) {
         fs.unlinkSync(parametersPath);
     }
 }
-
 
 async function publishResults(problem, solution, label = 'success', logInfo) {
     console.log(problem);

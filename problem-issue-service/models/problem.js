@@ -1,4 +1,3 @@
-//problem.js
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
@@ -6,8 +5,8 @@ const problemSchema = new mongoose.Schema({
     submissionId: { type: mongoose.Schema.Types.ObjectId, required: true, unique: true },
     name: { type: String, required: true },
     inputData: {
-        parameters: { type: String },
-        solver: { type: String },
+        parameters: { type: Buffer },
+        solver: { type: Buffer },
         numVehicles: { type: Number },
         depot: { type: Object },
         maxDistance: { type: Number }

@@ -1,4 +1,3 @@
-// calculateCostController.js
 const calculateCost = require('../config/calculateCost');
 const Problem = require("../models/problem");
 
@@ -11,7 +10,7 @@ exports.getCost = async (req, res) => {
             return res.status(404).json({ message: "Problem not found" });
         }
 
-        const decodedParameters = JSON.parse(Buffer.from(problem.inputData.parameters, 'base64').toString('utf-8'));
+        const decodedParameters = JSON.parse(problem.inputData.parameters.toString('utf-8'));
 
         // Calculate cost dynamically
         let costOfSolution = calculateCost(decodedParameters);

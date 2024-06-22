@@ -1,4 +1,4 @@
-"use client";
+"use client"
 
 import { useState, useEffect } from 'react';
 import axios from 'axios';
@@ -18,6 +18,7 @@ const ViewResults = ({ params }) => {
     const [result, setResult] = useState(null);
     const [metadata, setMetadata] = useState({ numVehicles: 0, totalDistance: 0, distances: [] });
     const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(false);
     const router = useRouter();
     const searchParams = useSearchParams();
     const isAdmin = searchParams.get('isAdmin') === 'true';
@@ -33,6 +34,7 @@ const ViewResults = ({ params }) => {
                 setMetadata(parsedMetadata);
             } catch (error) {
                 console.error('Error fetching result:', error);
+                setError(true);
             } finally {
                 setLoading(false);
             }
@@ -110,6 +112,10 @@ const ViewResults = ({ params }) => {
         return <p>Loading...</p>;
     }
 
+    if (error) {
+        return <p className={styles.errorMessage}>Service is temporarily down. Please try again later.</p>;
+    }
+
     if (!result) {
         return <p>Result not found</p>;
     }
@@ -117,33 +123,33 @@ const ViewResults = ({ params }) => {
     return (
         <div>
             <Header isAdmin={isAdmin} />
-        <div className={styles.container}>
-            <h1 className={styles.heading}>Submission Results</h1>
-            <div className={styles.resultInfo}>
-                <div className={styles.leftPanel}>
-                    <h2 className={styles.subheading}>Result Info</h2>
-                    <p><strong>ID:</strong> {result._id}</p>
-                    <p><strong>Name:</strong> {result.name}</p>
-                    <p><strong>Submission ID:</strong> {result.submissionId}</p>
-                    <p><strong>Username:</strong> {result.username}</p>
-                    <p><strong>User ID:</strong> {result.userId}</p>
-                    <p><strong>Created At:</strong> {new Date(result.createdAt).toLocaleString()}</p>
-                    <p><strong>Submitted At:</strong> {new Date(result.submissionTimestamp).toLocaleString()}</p>
-                    <p><strong>Completed At:</strong> {new Date(result.updatedAt).toLocaleString()}</p>
-                    <h2 className={styles.subheading}>Metadata</h2>
-                    <p><strong>Number of Vehicles:</strong> {metadata.numVehicles}</p>
-                    <p><strong>Total Distance:</strong> {metadata.totalDistance}m</p>
-                    <a href={generateDownloadLink()} download="results.txt" className={styles.downloadLink}>Download Results</a>
+            <div className={styles.container}>
+                <h1 className={styles.heading}>Submission Results</h1>
+                <div className={styles.resultInfo}>
+                    <div className={styles.leftPanel}>
+                        <h2 className={styles.subheading}>Result Info</h2>
+                        <p><strong>ID:</strong> {result._id}</p>
+                        <p><strong>Name:</strong> {result.name}</p>
+                        <p><strong>Submission ID:</strong> {result.submissionId}</p>
+                        <p><strong>Username:</strong> {result.username}</p>
+                        <p><strong>User ID:</strong> {result.userId}</p>
+                        <p><strong>Created At:</strong> {new Date(result.createdAt).toLocaleString()}</p>
+                        <p><strong>Submitted At:</strong> {new Date(result.submissionTimestamp).toLocaleString()}</p>
+                        <p><strong>Completed At:</strong> {new Date(result.updatedAt).toLocaleString()}</p>
+                        <h2 className={styles.subheading}>Metadata</h2>
+                        <p><strong>Number of Vehicles:</strong> {metadata.numVehicles}</p>
+                        <p><strong>Total Distance:</strong> {metadata.totalDistance}m</p>
+                        <a href={generateDownloadLink()} download="results.txt" className={styles.downloadLink}>Download Results</a>
+                    </div>
+                    <div className={styles.rightPanel}>
+                        <Bar data={data} options={options} width={600} height={400} />
+                    </div>
                 </div>
-                <div className={styles.rightPanel}>
-                    <Bar data={data} options={options} width={600} height={400} />
+                <div className={styles.buttonContainer}>
+                    <button onClick={handleGoBack} className={styles.button}>Back to Submissions</button>
                 </div>
             </div>
-            <div className={styles.buttonContainer}>
-                <button onClick={handleGoBack} className={styles.button}>Back to Submissions</button>
-            </div>
-        </div>
-            <Footer/>
+            <Footer />
         </div>
     );
 };

@@ -8,15 +8,15 @@ const submissionSchema = new mongoose.Schema({
         enum: ['not_ready', 'ready', 'completed', 'failed', 'in_progress'],
         default: 'not_ready'
     },
-    userId: { type: Schema.Types.ObjectId, required: true,  index: true },
+    userId: { type: Schema.Types.ObjectId, required: true, index: true },
     username: { type: String, required: true },
     inputData: {
-        parameters: { type: String },
+        parameters: { type: Buffer },
         parametersMetadata: {
             size: { type: Number },
             type: { type: String }
         },
-        solver: { type: String },
+        solver: { type: Buffer },
         solverMetadata: {
             size: { type: Number },
             type: { type: String }
