@@ -115,6 +115,13 @@ const Analytics = () => {
         }
     };
 
+    const formatValue = (value) => {
+        if (typeof value === 'number') {
+            return value % 1 !== 0 ? value.toFixed(3) : value;
+        }
+        return value;
+    };
+
     const last31Days = getLastNDays(31);
     const last24Hours = getLast24Hours();
 
@@ -135,12 +142,12 @@ const Analytics = () => {
 
     const analyticsLabels = {
         uniqueUsers: 'Total Users',
-        averageCPUTime: 'Average CPU Time',
-        minCPUTime: 'Minimum CPU Time',
-        maxCPUTime: 'Maximum CPU Time',
-        averageQueueTime: 'Average Queue Time',
-        minQueueTime: 'Minimum Queue Time',
-        maxQueueTime: 'Maximum Queue Time',
+        averageCPUTime: 'Average CPU Time (ms)',
+        minCPUTime: 'Minimum CPU Time (ms)',
+        maxCPUTime: 'Maximum CPU Time (ms)',
+        averageQueueTime: 'Average Queue Time (ms)',
+        minQueueTime: 'Minimum Queue Time (ms)',
+        maxQueueTime: 'Maximum Queue Time (ms)',
         throughput: 'Throughput',
         successRate: 'Success Rate',
         averageCreditsUsed: 'Average Credits Used',
@@ -220,7 +227,7 @@ const Analytics = () => {
                                                 {analyticsForTable.map(key => (
                                                     <tr key={key}>
                                                         <td>{analyticsLabels[key] || key}</td>
-                                                        <td>{analytics[key]}</td>
+                                                        <td>{formatValue(analytics[key])}</td>
                                                     </tr>
                                                 ))}
                                             </tbody>
