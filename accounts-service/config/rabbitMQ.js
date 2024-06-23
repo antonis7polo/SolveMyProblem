@@ -72,7 +72,7 @@ async function updateCredits(userId, creditsChange) {
         if (user) {
             user.credits += creditsChange;
             await user.save();
-            console.log(`Credits updated for user ${userId}: ${creditsChange} credits added`);
+            console.log(`Credits updated for user ${userId}: ${creditsChange}`);
         } else {
             console.log(`User not found: ${userId}`);
         }

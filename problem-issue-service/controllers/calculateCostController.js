@@ -15,7 +15,6 @@ exports.getCost = async (req, res) => {
         // Calculate cost dynamically
         let costOfSolution = calculateCost(decodedParameters);
 
-        console.log(costOfSolution);
 
         res.json({ cost: costOfSolution });
 

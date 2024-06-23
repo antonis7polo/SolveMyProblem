@@ -35,7 +35,6 @@ const ensureCorrectUserOrAdminForSubmissionById = async (req, res, next) => {
         if (isAdmin || userIdFromToken === submission.userId.toString()) {
             req.user = decodedToken.user;
             req.submission = submission;
-            console.log(req.user);
             return next();
         }
 

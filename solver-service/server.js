@@ -120,7 +120,6 @@ async function solveProblem(problem) {
 }
 
 async function publishResults(problem, solution, label = 'success', logInfo) {
-    console.log(problem);
     const message = JSON.stringify({
         submissionId: problem.submissionId,
         name: problem.name,

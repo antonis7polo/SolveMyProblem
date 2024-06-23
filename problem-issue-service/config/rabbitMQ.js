@@ -87,26 +87,26 @@ async function handleMessage(msg, queueName) {
         switch(queueName) {
             case QUEUE_NAME:
                 if (action === 'insert') {
-                    const result = await createProblem({
+                    await createProblem({
                         submissionId: messageContent.data.submissionId,
                         name: messageContent.data.name,
                         userId: messageContent.data.userId,
                         username: messageContent.data.username,
                         inputData: messageContent.data.inputData,
                     });
-                    console.log('Problem inserted successfully:', result);
+                    console.log(`Problem inserted successfully: Name: ${messageContent.data.name}, Submission ID: ${messageContent.data.submissionId}`);
                 } else if (action === 'delete') {
                     const result = await deleteProblem(messageContent.submissionId);
                     console.log('Problem deleted successfully:', result);
                 } else if (action === 'update') {
-                    const result = await updateProblem({
+                    await updateProblem({
                         submissionId: messageContent.data.submissionId,
                         name: messageContent.data.name,
                         userId: messageContent.data.userId,
                         username: messageContent.data.username,
                         inputData: messageContent.data.inputData,
                     });
-                    console.log('Problem updated successfully:', result);
+                    console.log(`Problem updated successfully: Name: ${messageContent.data.name}, Submission ID: ${messageContent.data.submissionId}`);
                 }
                 break;
             case CREDITS_QUEUE:
@@ -128,7 +128,8 @@ async function handleMessage(msg, queueName) {
 async function publishToSolverQueue(problem) {
     const msg = JSON.stringify(problem);
     await channel.publish(SOLVER_EXCHANGE, SOLVER_ROUTING_KEY, Buffer.from(msg), { persistent: true });
-    console.log('Problem published to solver queue: ', msg);
+    console.log('Problem published to solver queue: ', problem.submissionId);
+
 }
 
 async function publishCreditsUpdate(userID, creditsChange) {

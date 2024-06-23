@@ -9,6 +9,7 @@ import Footer from '../../components/Footer';
 import styles from '../../styles/Submissions.module.css';
 import { styled } from '@mui/material/styles';
 import Alert from '@mui/material/Alert';
+import Snackbar from '@mui/material/Snackbar';
 import { Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Button, Slide } from '@mui/material';
 
 const Transition = React.forwardRef(function Transition(props, ref) {
@@ -73,16 +74,35 @@ const UserSubmissions = ({ params }) => {
     const [currentSubmissionId, setCurrentSubmissionId] = useState(null);
     const [cost, setCost] = useState(null);
     const [creditsError, setCreditsError] = useState(null);
+    const [openSnackbar, setOpenSnackbar] = useState(false);
+
+    useEffect(() => {
+        if (error) {
+            setOpenSnackbar(true);
+        }
+    }, [error]);
+
+    const handleCloseSnackbar = () => {
+        setOpenSnackbar(false);
+        setError(null);
+    };
 
     useEffect(() => {
         const fetchSubmissions = async () => {
             try {
                 const response = await axios.get(`http://localhost:3000/submission/${userId}`, {
-                    headers: { 'X-OBSERVATORY-AUTH': localStorage.getItem('token'), 'custom-services-header': JSON.stringify(encrypt(process.env.NEXT_PUBLIC_SECRET_STRING_SERVICES)) }
+                    headers: {
+                        'X-OBSERVATORY-AUTH': localStorage.getItem('token'),
+                        'custom-services-header': JSON.stringify(encrypt(process.env.NEXT_PUBLIC_SECRET_STRING_SERVICES))
+                    }
                 });
                 setSubmissions(response.data);
             } catch (error) {
-                setError(error.response ? error.response.data.message : 'Error fetching submissions. Service is temporarily down.');
+                if (error.response && error.response.status === 404) {
+                    setSubmissions([]); // No submissions found, set empty array
+                } else {
+                    setError(error.response ? error.response.data.message : 'Error fetching submissions. Service is temporarily down.');
+                }
             } finally {
                 setLoading(false);
             }
@@ -163,8 +183,18 @@ const UserSubmissions = ({ params }) => {
             <Header isAdmin={false} />
             <div className={styles.container}>
                 <h1 className={styles.title}>Submissions</h1>
-                {error && (
-                    <Alert severity="error" onClose={() => setError(null)} style={{ marginBottom: '20px' }}>{error}</Alert>                )}
+                <Snackbar
+                    open={openSnackbar}
+                    autoHideDuration={6000}
+                    onClose={handleCloseSnackbar}
+                    anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+                >
+                    {error && (
+                        <Alert severity="error" onClose={handleCloseSnackbar} style={{ marginBottom: '20px' }}>
+                            {error}
+                        </Alert>
+                    )}
+                </Snackbar>
                 {loading ? (
                     <p>Loading...</p>
                 ) : (

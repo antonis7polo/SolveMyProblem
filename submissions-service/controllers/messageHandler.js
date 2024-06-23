@@ -1,15 +1,18 @@
-// messageHandler.js
 const { createOrUpdateSubmission, updateSubmissionStatus, deleteSubmission, updateProgressStatus } = require('./rabbitMQController');
 
 function handleMessage(msg, channel) {
     const messageContent = msg.content.toString();
     const messageData = JSON.parse(messageContent);
-    console.log('Received message:', messageData);
 
     switch (messageData.action) {
         case 'modify':
             createOrUpdateSubmission(messageData.data, channel)
-                .then(result => console.log('Submission modified successfully:', result))
+                .then(result => {
+                    console.log('Submission modified successfully:', {
+                        name: result.name,
+                        username: result.username
+                    });
+                })
                 .catch(error => console.error('Failed to modify submission:', error));
             break;
         case 'delete':
@@ -19,7 +22,9 @@ function handleMessage(msg, channel) {
             break;
         case 'update':
             updateProgressStatus(messageData)
-                .then(updatedSubmission => console.log('Submission status updated successfully'))
+                .then( updatedSubmission => {
+                    console.log('Submission status successfully');
+                })
                 .catch(error => console.error('Failed to update submission status:', error));
             break;
         default:
@@ -29,7 +34,7 @@ function handleMessage(msg, channel) {
 
 function processResult(msg, channel) {
     const resultData = JSON.parse(msg.content.toString());
-    console.log('Processing result for submission:', resultData.submissionId);
+    console.log('Processing result for submission:', { submissionId: resultData.submissionId });
 
     updateSubmissionStatus({
         submissionId: resultData.submissionId,
@@ -40,6 +45,5 @@ function processResult(msg, channel) {
         console.error('Failed to update submission status:', error);
     });
 }
-
 
 module.exports = { handleMessage, processResult };

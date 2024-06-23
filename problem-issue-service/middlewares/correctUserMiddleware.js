@@ -33,7 +33,6 @@ const ensureCorrectUser= async (req, res, next) => {
         if ( userIdFromToken === problem.userId.toString()) {
             req.user = decodedToken.user;
             req.problem = problem;
-            console.log(req.user);
             return next();
         }
 

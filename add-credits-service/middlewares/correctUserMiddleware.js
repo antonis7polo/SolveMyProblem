@@ -29,7 +29,6 @@ const ensureCorrectUser = async (req, res, next) => {
     }
 
     req.user = decodedToken.user;
-    console.log(req.user);
     next();
 };
 

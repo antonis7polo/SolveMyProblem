@@ -17,7 +17,6 @@ exports.runProblem = async (req, res) => {
 
         let costOfSolution = calculateCost(decodedParameters);
 
-        console.log(costOfSolution);
 
         if (account.credits < costOfSolution) {
             return res.status(400).json({ message: "Not enough credits" });

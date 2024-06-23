@@ -21,7 +21,6 @@ exports.getSubmissionsByUserId = async (req, res) => {
 };
 
 exports.getAllSubmissions = async (req, res) => {
-    console.log('Getting all submissions');
     try {
         const submissions = await Submission.find({}).sort({ updatedAt: -1 });
         if(submissions.length === 0) {

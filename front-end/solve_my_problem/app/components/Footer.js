@@ -17,13 +17,6 @@ const Footer = () => {
                     </Typography>
                 </Box>
                 <Box sx={{ marginBottom: '10px' }}>
-                    <Typography variant="h6" sx={{ marginBottom: '5px' }}>Staff</Typography>
-                    <Typography variant="body2">John Doe - CEO</Typography>
-                    <Typography variant="body2">Jane Smith - CTO</Typography>
-                    <Typography variant="body2">Emily Johnson - Legal Counsel</Typography>
-                    <Typography variant="body2">Michael Brown - CFO</Typography>
-                </Box>
-                <Box sx={{ marginBottom: '10px' }}>
                     <Typography variant="h6" sx={{ marginBottom: '5px' }}>Contact Us</Typography>
                     <Typography variant="body2">Email: <Link href="mailto:support@solvemyproblem.com" sx={{ color: 'white', textDecoration: 'none', '&:hover': { textDecoration: 'underline' } }}>support@solvemyproblem.com</Link></Typography>
                     <Typography variant="body2">Phone: (123) 456-7890</Typography>

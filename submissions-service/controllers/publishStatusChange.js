@@ -1,4 +1,3 @@
-// publishStatusChange.js
 function publishStatusChange(submissionId, action, submissionData, channel) {
     let message;
     if (action === 'insert' && submissionData) {
@@ -38,7 +37,23 @@ function publishStatusChange(submissionId, action, submissionData, channel) {
     const ROUTING_KEY = process.env.PROBLEMS_ROUTING_KEY;
     try {
         channel.publish(EXCHANGE_NAME, ROUTING_KEY, Buffer.from(JSON.stringify(message)), { persistent: true });
-        console.log('Published status change:', message);
+        // Log only the relevant fields without inputData
+        if (message.data) {
+            console.log('Published status change:', {
+                action: message.action,
+                data: {
+                    submissionId: message.data.submissionId,
+                    name: message.data.name,
+                    userId: message.data.userId,
+                    username: message.data.username
+                }
+            });
+        } else {
+            console.log('Published status change:', {
+                action: message.action,
+                submissionId: message.submissionId
+            });
+        }
     } catch (error) {
         console.error('Failed to publish message:', error);
     }
@@ -61,5 +76,4 @@ async function publishDeletionToResultsService(submissionId, channel) {
     }
 }
 
-
-module.exports = { publishStatusChange, publishDeletionToResultsService};
+module.exports = { publishStatusChange, publishDeletionToResultsService };

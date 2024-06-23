@@ -22,7 +22,6 @@ module.exports = async (req, res, next) => {
 
 
     req.user = decodedToken.user;
-    console.log(req.user)
     next();
 
 };

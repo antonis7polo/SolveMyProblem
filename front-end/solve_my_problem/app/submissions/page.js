@@ -35,7 +35,11 @@ const Submissions = () => {
                 setSubmissions(response.data);
                 setFilteredSubmissions(response.data);
             } catch (error) {
-                setError(error.response ? error.response.data.message : 'Error fetching submissions');
+                if (error.response && error.response.status === 404) {
+                    setSubmissions([]);
+                } else {
+                    setError(error.response ? error.response.data.message : 'Error fetching submissions. Service is temporarily down.');
+                }
             } finally {
                 setLoading(false);
             }

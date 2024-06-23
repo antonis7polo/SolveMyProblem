@@ -6,7 +6,6 @@ async function createOrUpdateSubmission(messageData, channel) {
     const { id, name, userId, username, inputData } = messageData;
     let previousStatus = null;
 
-    console.log('Creating or updating submission:', inputData);
 
     if (id) {
         const currentSubmission = await Submission.findById(id);

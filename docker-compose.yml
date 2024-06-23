@@ -96,8 +96,8 @@ services:
     environment:
       - RABBITMQ_DEFAULT_USER=el20167
       - RABBITMQ_DEFAULT_PASS=thrylos
-    volumes: 
-      - ./rabbitmq.conf:/etc/rabbitmq/rabbitmq.conf
+    volumes:
+      - ./rabbitmq/rabbitmq.conf:/etc/rabbitmq/rabbitmq.conf
     networks:
       - app-network
     healthcheck:

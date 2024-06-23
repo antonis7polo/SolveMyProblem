@@ -99,7 +99,7 @@ const CreateProblem = ({ params }) => {
             });
             router.push(`/submissions/${userId}`);
         } catch (error) {
-            setError('Error creating problem submission');
+            setError('Error creating submission. Service may be temporarily down.');
             console.error('Error creating problem submission:', error);
         } finally {
             setLoading(false);

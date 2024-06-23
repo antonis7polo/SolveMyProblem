@@ -26,7 +26,6 @@ const ensureCorrectUser = async (req, res, next) => {
 
     if (isAdmin) {
         req.user = decodedToken.user;
-        console.log(req.user);
         return next();
     }
 
@@ -36,7 +35,6 @@ const ensureCorrectUser = async (req, res, next) => {
     }
 
     req.user = decodedToken.user;
-    console.log(req.user);
     next();
 };
 

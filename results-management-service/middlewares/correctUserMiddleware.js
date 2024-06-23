@@ -34,7 +34,6 @@ const ensureCorrectUser = async (req, res, next) => {
         if (isAdmin || userIdFromToken === result.userId.toString()) {
             req.user = decodedToken.user;
             req.result = result;
-            console.log(req.user);
             return next();
         }
 
