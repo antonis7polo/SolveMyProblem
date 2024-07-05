@@ -1,6 +1,6 @@
 FROM node:18
 
-LABEL maintainer="alexiadisanton@gmail.com harrypapadakis02@gmail.com nikolasbv10@gmail.com"
+LABEL maintainer="alexiadisanton@gmail.com harrypapadakis02@gmail.com nikolasbv10@gmail.com chrisostomoskopitas@gmail.com"
 
 WORKDIR /usr/src/app
 

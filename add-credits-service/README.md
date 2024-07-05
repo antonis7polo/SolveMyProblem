@@ -7,6 +7,9 @@ The Add Credits Service is a critical microservice in the solveMyProblem SaaS pr
 - Add credits to a user's account
 - Publish an event when credits are added
 
+## How to add Credits
+In order to add credits you will have to visit the following website [Payment with Stripe](https://docs.stripe.com/testing) select one of the available credit card numbers, select a future date and a valid ZIP/Postal code to complete the mock payment using the Add Credits functionality.
+
 ## API Endpoints
 - `GET /health`: Check the health of the service.
 - `POST /credits/add`: Add credits to a user's account.
